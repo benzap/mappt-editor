@@ -194,9 +194,21 @@ MapptEditor.prototype.init = function() {
     this.context_image.click(function(e) {
 	var xPosition = e.clientX - mappt.contextOffset.left;
 	var yPosition = e.clientY - mappt.contextOffset.top;
-	alert(xPosition.toString() + " " + yPosition.toString());
 	mappt.createPoint(xPosition, yPosition, "DOOR");
     }.bind(this));
+    
+    //upon focusing, binds global event keys to control our editor
+    $(window).focus(function(e) {
+	$(document).keypress(function(e) {
+	    
+	 
+	}.bind(this));
+    }.bind(this));
+
+    $(window).blur(function(e) {
+	$(window).off("keypress");
+    }.bind(this));
+
 }
 
 MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
@@ -209,7 +221,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     
     //create the paper point
     var paperPoint = this.context_paper.circle(
-	xPosition, yPosition, 5)
+	xPosition, yPosition, 2)
 	.attr("fill", "#ff0000");
     
     //create the data point
@@ -223,26 +235,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     this.paperPoints.push([dataPoint.uuid, paperPoint]);
 
 }
-
-mapTrack = function (jqobj, img) {
-
-    var width = jqobj.width(); 
-    var height = jqobj.height() || jqobj.width();
-    var paper = Raphael(jqobj[0], this.w, this.h);
-
-
-    var map = paper.image(img, 0, 0, width, height);
-    var points = [];
-
-    map.click(function(e){
-	points.push(paper.circle(e.clientX, e.clientY, 10).attr("fill","#ff0000"));
-    });
-
-    this.mouseover = function (e) {
-    }
-    this.mouseout = function (e) {
-    }    
-};
 
 mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
 mappt.init();
