@@ -51,10 +51,10 @@
      - Doors:Array{PointInfo.UUID}
      - VertexList:Array{(float,float)}
 * Steps
-  - Include state changes for [4/6]
+  - Include state changes for [6/6]
     - [X] Add Node
     - [X] Remove Node
     - [X] Add Link
-    - [ ] Remove Link
+    - [X] Remove Link
     - [X] Change State (Mode)
-    - [ ] Export to JSON
+    - [X] Export to JSON
