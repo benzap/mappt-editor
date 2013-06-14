@@ -24,6 +24,8 @@ var Mappt_keycodes = {
     "2" : 50,
     "3" : 51,
     "4" : 52,
+    "5" : 53,
+    "e" : 101,
 };
 //The radius of the node circles
 var Mappt_Node_Radius = 5;
@@ -262,6 +264,9 @@ MapptEditor.prototype.init = function() {
 	else if (e.keyCode == Mappt_keycodes["4"]) {
 	    this.mode("removeLink");
 	}
+	else if (e.keyCode == Mappt_keycodes["e"]) {
+	    this.exportJSON(this.imageURL + ".js");
+	}
     }.bind(this));
 }
 
@@ -362,6 +367,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		//remove the link if it exists
 		if (linkTuple) {
 		    linkTuple[2].remove();
+		    var tupleIndex = mapptEditor.paperLinks.indexOf(linkTuple);
+		    mapptEditor.paperLinks.splice(tupleIndex, 1);
 		}
 		
 		//set to null
@@ -383,6 +390,21 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 
 MapptEditor.prototype.mode = function(state) {
     this.state = state;
+}
+
+MapptEditor.prototype.exportJSON = function(filename) {
+    var pointLinks = _.map(this.paperLinks, function(elem) {
+	elem.splice(2, 1);
+	return elem;
+    });
+
+    var json_data = {
+	"PointInfoList" : this.pointInfoManager.getAllPoints(),
+	"LinkInfoList" : pointLinks,
+    };
+
+    json_data_s = JSON.stringify(json_data);
+    console.log(json_data_s);
 }
 
 mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
