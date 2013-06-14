@@ -19,15 +19,22 @@ Class Structures:
 //MapptEditor Configuration Variables
 var Mappt_Toolbar_Padding = 50;
 var Mappt_List_Padding = 100;
+var Mappt_keycodes = {
+    "1" : 49,
+    "2" : 50,
+    "3" : 51,
+    "4" : 52,
+};
+//The radius of the node circles
+var Mappt_Node_Radius = 5;
 
-//The state of the editor, used by events
-// Init
-// Label
-// Layout
-// Place-Door
-// Place-Walk
-// Connect-Node
-var Mappt_State = "Init";
+//Node Colors
+var Mappt_Node_Color_Default = "#ff0000";
+var Mappt_Node_Color_Selected = "#0000ff"
+var Mappt_Node_Color_Hover = "#00ff00";
+
+//Temporary for linking
+var addLink_currentlySelected = null;
 
 function guid() {
     s4 = function() {
@@ -38,13 +45,35 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
+//grabs the first value from a pair contained in a list of pairs with
+//the given second value
+function grabFirstWhereSecond(pairList, second) {
+    var tuple = _.find(pairList, function(elem) {
+	return (elem[1] == second);
+    });
+    return tuple[0];
+}
+
+//grabs the second value from a pair contained in a list of pairs with
+//the given first value
+function grabSecondWhereFirst(pairList, first) {
+    var tuple = _.find(pairList, function(elem) {
+	return (elem[0] == first);
+    });
+    return tuple[1];
+}
+
 //Class structure used to represent points on the map
 PointInfoElement = function(xPosition, yPosition, type) {
     this.position = [xPosition, yPosition];
+    this.id = PointInfoElement.increment;
+    PointInfoElement.increment += 1;
     this.uuid = guid();
     this.bros = [];
     this.type = type;
 }
+//Static Incrementer
+PointInfoElement.increment = 0;
 
 //Manager used to store all of the points being represented on the map
 PointInfoManager = function() {
@@ -67,6 +96,13 @@ PointInfoManager.prototype.removePoint = function(uuid) {
 PointInfoManager.prototype.getPointByUUID = function(uuid) {
     var thePoint = _.find(this.PointInfoElementList, function(elem) {
 	return (elem.uuid == uuid);
+    });
+    return thePoint;
+}
+
+PointInfoManager.prototype.getPointByID = function(id) {
+    var thePoint = _.find(this.PointInfoElementList, function(elem) {
+	return (elem.id == id);
     });
     return thePoint;
 }
@@ -162,10 +198,20 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     this.areaLayoutManager = new AreaLayoutManager();
     this.pointInfoManager = new PointInfoManager();
     
-    //relation table, which contains pairs of (uuid, paper.circle)
-    this.paperPoints = []
-    //relation table, which contains pairs of (uuid, [paper.path])
-    this.paperAreas = []
+    //relation table, which contains pairs of (id, paper.circle)
+    this.paperPoints = [];
+    
+    //relation table, which contains pairs of (id, [paper.path])
+    this.paperAreas = [];
+    //relation table, which contains pairs of (id, id, paper.path)
+    this.paperLinks = [];
+
+    //The state of the editor, used by events
+    // addNode
+    // removeNode
+    // addLink
+    // removeLink
+    this.state = "addNode";
 }
 
 MapptEditor.prototype.setImage = function(imageURL) {
@@ -191,24 +237,31 @@ MapptEditor.prototype.init = function() {
 	    position: "relative",
 	});
 
+    var mapptEditor = this;
     this.context_image.click(function(e) {
-	var xPosition = e.clientX - mappt.contextOffset.left;
-	var yPosition = e.clientY - mappt.contextOffset.top;
-	mappt.createPoint(xPosition, yPosition, "DOOR");
+	if (mapptEditor.state == "addNode") {
+	    var xPosition = e.clientX - mapptEditor.contextOffset.left;
+	    var yPosition = e.clientY - mapptEditor.contextOffset.top;
+	    mapptEditor.createPoint(xPosition, yPosition, "DOOR");
+	}
     }.bind(this));
     
     //upon focusing, binds global event keys to control our editor
-    $(window).focus(function(e) {
-	$(document).keypress(function(e) {
-	    
-	 
-	}.bind(this));
+    
+    $(window).keypress(function(e) {
+	if (e.keyCode == Mappt_keycodes["1"]) {
+	    this.mode("addNode");
+	}
+	else if (e.keyCode == Mappt_keycodes["2"]) {
+	    this.mode("removeNode");
+	}
+	else if (e.keyCode == Mappt_keycodes["3"]) {
+	    this.mode("addLink");
+	}
+	else if (e.keyCode == Mappt_keycodes["4"]) {
+	    this.mode("removeLink");
+	}
     }.bind(this));
-
-    $(window).blur(function(e) {
-	$(window).off("keypress");
-    }.bind(this));
-
 }
 
 MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
@@ -221,9 +274,62 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     
     //create the paper point
     var paperPoint = this.context_paper.circle(
-	xPosition, yPosition, 2)
-	.attr("fill", "#ff0000");
+	xPosition, yPosition, Mappt_Node_Radius)
+	.attr("fill", Mappt_Node_Color_Default);
     
+    var mapptEditor = this;
+    paperPoint.click(function(e) {
+	//remove the point from the paper and from the data structure
+	if (mapptEditor.state == "removeNode") {
+	    var temp_paperPoint = _.find(mapptEditor.paperPoints, function(elem) {
+		return (this == elem[1]);
+	    }.bind(this));
+	    
+	    temp_paperPoint[1].remove();
+	    mapptEditor.pointInfoManager.removePoint(temp_paperPoint[0]);
+	}
+	else if (mapptEditor.state == "addLink") {
+	    if (addLink_currentlySelected == null) {
+		addLink_currentlySelected = this;
+		this.attr({"fill":Mappt_Node_Color_Selected});
+	    }
+	    else if (addLink_currentlySelected == this) {
+		this.attr({"fill":Mappt_Node_Color_Default})
+		addLink_currentlySelected = null;
+	    }
+	    else {
+		this.attr({"fill":Mappt_Node_Color_Default});
+		var position1_id = grabFirstWhereSecond(
+		    mapptEditor.paperPoints,
+		    this);
+		var position2_id = grabFirstWhereSecond(
+		    mapptEditor.paperPoints,
+		    addLink_currentlySelected);
+
+		var position1 = mapptEditor.pointInfoManager.getPointByID(position1_id).position;
+		var position2 = mapptEditor.pointInfoManager.getPointByID(position2_id).position;
+
+		var movetoString = "M " + position1[0].toString() + " " +
+		    position1[1].toString();
+
+		var lineString = "L " + position2[0].toString() + " " +
+		    position2[1].toString();
+
+		var temp_paperPath = mapptEditor.context_paper.path(
+		    movetoString + lineString);
+		
+		
+
+		alert(movetoString + lineString);
+
+		mapptEditor.paperLinks.push(
+		    this.id, 
+		    addLink_currentlySelected.id, 
+		    temp_paperPath);
+	    }
+	}
+    });
+
     //create the data point
     var dataPoint = new PointInfoElement(
 	xPosition, yPosition, type);
@@ -232,25 +338,12 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     this.pointInfoManager.addPoint(dataPoint);
     
     //store both in our relation table
-    this.paperPoints.push([dataPoint.uuid, paperPoint]);
-
+    this.paperPoints.push([dataPoint.id, paperPoint]);
 }
 
-mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
+MapptEditor.prototype.mode = function(state) {
+    this.state = state;
+}
+
+mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
 mappt.init();
-
-areaLayoutManager = new AreaLayoutManager();
-someArea = new AreaLayoutElement("351");
-
-areaLayoutManager.addLayout(someArea);
-console.log(areaLayoutManager.getAllLayouts().length);
-areaLayoutManager.removeLayout(someArea.uuid);
-console.log(areaLayoutManager.getAllLayouts().length);
-
-somePoint = new PointInfoElement(0,10,"DOOR");
-pointInfoManager = new PointInfoManager();
-
-pointInfoManager.addPoint(somePoint);
-console.log(pointInfoManager.getAllPoints().length);
-pointInfoManager.removePoint(somePoint.uuid);
-console.log(pointInfoManager.getAllPoints().length);
