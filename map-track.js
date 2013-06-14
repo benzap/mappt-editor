@@ -8,11 +8,97 @@ Dependencies:
 - JQuery
 
 Class Structures:
-- 
+- PointInfoElement
+- PointInfoManager
+- AreaLayoutManager
+- AreaLayoutElement
 - MapptEditor
 
 */
 
+function guid() {
+    s4 = function() {
+	return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);}
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+//Class structure used to represent points on the map
+PointInfoElement = function(xPosition, yPosition, type) {
+    this.position = [xPosition, yPosition];
+    this.uuid = guid();
+    this.bros = [];
+    this.type = type;
+}
+
+//Manager used to store all of the points being represented on the map
+PointInfoManager = function() {
+    this.PointInfoElementList = [];
+}
+
+PointInfoManager.prototype.addPoint = function(elem) {
+    //TODO: check if it is a PointInfoElement
+    this.PointInfoElementList.push(elem);
+}
+
+PointInfoManager.prototype.removePoint = function(uuid) {
+    var thePoint = _.find(this.PointInfoElementList, function(elem) {
+	return (elem.uuid == uuid);
+    });
+    var index = this.PointInfoElementList.indexOf(thePoint);
+    this.PointInfoElementList.splice(index,1);
+}
+
+PointInfoManager.prototype.getPointByUUID = function(uuid) {
+    var thePoint = _.find(this.PointInfoElementList, function(elem) {
+	return (elem.uuid == uuid);
+    });
+    return thePoint;
+}
+
+PointInfoManager.prototype.getAllPoints = function() {
+    return this.PointInfoElementList;
+}
+
+//Used to represent areas within the map
+AreaLayoutElement = function(label) {
+    this.label = label;
+    this.uuid = guid();
+    this.doors = [];
+    this.vertexList = [] //[x,y]
+}
+
+//Used to manage the areas within the map
+AreaLayoutManager = function() {
+    this.AreaLayoutElementList = []
+}
+
+AreaLayoutManager.prototype.addLayout = function(elem) {
+    this.AreaLayoutElementList.push(elem);
+}
+
+AreaLayoutManager.prototype.removeLayout = function(uuid) {
+    var thePoint = _.find(this.AreaLayoutElementList, function(elem) {
+	return (elem.uuid == uuid);
+    });
+    var index = this.AreaLayoutElementList.indexOf(thePoint);
+    this.AreaLayoutElementList.splice(index,1);
+}
+
+AreaLayoutManager.prototype.getLayoutByUUID = function(uuid) {
+    var thePoint = _.find(this.AreaLayoutElementList, function(elem) {
+	return (elem.uuid == uuid);
+    });
+    return thePoint;
+}
+
+AreaLayoutManager.prototype.getAllLayouts = function() {
+    return this.AreaLayoutElementList;
+}
+
+//Main Class that needs to be initialized
 MapptEditor = function (context_id, context_width, context_height, imageURL) {
     //The id of the DIV element to place our MapptEditor
     this.context_id = context_id;
@@ -102,35 +188,21 @@ mapTrack = function (jqobj, img) {
     }    
 };
 
-//! The name of the div element that holds our map
-var mppt_context = "#mappt-editor-main";
-
-//! Mppt Editor Object
-var mppt_editor;
-
-//! Test: test image
-var img = "img/floor.png";
-var myImg = new Image();
-//myImg.src = img;
-/*
-myImg.onload = function() {
-    var width = myImg.width;
-    var height = myImg.height;
-
-
-    div = $(mppt_context).css(
-	{
-	    width: width, 
-	    height: height,
-	    position: "absolute",
-	    border: "0px solid black"
-	});
-
-    m = new mapTrack(div, img);
-    div.data("mapTrack", m);
-    
-}
-*/
-
 mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
 mappt.init();
+
+areaLayoutManager = new AreaLayoutManager();
+someArea = new AreaLayoutElement("351");
+
+areaLayoutManager.addLayout(someArea);
+console.log(areaLayoutManager.getAllLayouts().length);
+areaLayoutManager.removeLayout(someArea.uuid);
+console.log(areaLayoutManager.getAllLayouts().length);
+
+somePoint = new PointInfoElement(0,10,"DOOR");
+pointInfoManager = new PointInfoManager();
+
+pointInfoManager.addPoint(somePoint);
+console.log(pointInfoManager.getAllPoints().length);
+pointInfoManager.removePoint(somePoint.uuid);
+console.log(pointInfoManager.getAllPoints().length);
