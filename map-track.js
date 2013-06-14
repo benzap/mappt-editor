@@ -48,6 +48,22 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
+function log(t1, t2, t3, t4, t5, t6, t7, t8, t9){
+    if(typeof(console)=="object"){
+	var a = [t1,t2,t3,t4,t5,t6,t7,t8,t9]
+	a.each(function(i,v){
+            if(v!=undefined){
+		if(typeof v == "object")
+		    a[i] = ser(v)
+            }
+            else if(typeof v == "function"){
+            a[i] = "function(){...}"
+            }
+	})
+	    console.log(a.join("\t"));
+    }
+}
+
 //grabs the first value from a pair contained in a list of pairs with
 //the given second value
 function grabFirstWhereSecond(pairList, second) {
@@ -164,7 +180,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
 
     //check if the given ID exists
     (this.contextObj.length) || 
-	console.log("ERROR: Provided ID does not match any element within the DOM");
+	log("ERROR: Provided ID does not match any element within the DOM");
 
     //get the origin of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
@@ -181,7 +197,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     }
 
     this.imageObject.onerror = function() {
-	console.log("ERROR: the imageURL provided does not exist");
+	log("ERROR: the imageURL provided does not exist");
     }
 
     //Allocate our image if it exists
@@ -219,14 +235,14 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
 
 MapptEditor.prototype.setImage = function(imageURL) {
     (this.imageURL != null) || 
-	console.log("ERROR: Provided input is not a URL");
+	log("ERROR: Provided input is not a URL");
     this.imageURL = imageURL;
     this.imageObject.src = imageURL;
 }
 
 MapptEditor.prototype.init = function() {
     (this.imageURL) ||
-	console.log("ERROR: No Image was provided");
+	log("ERROR: No Image was provided");
     this.context_paper = Raphael(this.context_id, this.context_width, this.context_height);
 
     this.context_image = this.context_paper.image(this.imageURL, 
@@ -295,7 +311,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 	    mapptEditor.pointInfoManager.removePoint(tempID);
 	    
 	    //remove any links that include the removed node
-	    console.log("l2: " + mapptEditor.paperLinks.length);
 	    mapptEditor.paperLinks = _.filter(mapptEditor.paperLinks, function(elem) {
 		if (tempID == elem[0] || tempID == elem[1]) {
 		    elem[2].remove();
@@ -303,7 +318,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		}
 		return true;
 	    });
-	    console.log("l2: " + mapptEditor.paperLinks.length);
 	}
 	else if (mapptEditor.state == "addLink") {
 	    if (addLink_currentlySelected == null) {
@@ -363,11 +377,11 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		    mapptEditor.paperPoints,
 		    removeLink_currentlySelected);
 
-		console.log("Position1: "+position1_id);
-		console.log("Position2: "+position2_id);
+		log("Position1: "+position1_id);
+		log("Position2: "+position2_id);
 
 		var linkTuple = _.find(mapptEditor.paperLinks, function(elem) {
-		    console.log(elem[0].toString() + " " + elem[1].toString());
+		    log(elem[0].toString() + " " + elem[1].toString());
 		    if (position1_id == elem[0] && position2_id == elem[1] ||
 			position1_id == elem[1] && position2_id == elem[0]) {
 			return true;
@@ -415,7 +429,7 @@ MapptEditor.prototype.exportJSON = function(filename) {
     };
 
     json_data_s = JSON.stringify(json_data);
-    console.log(json_data_s);
+    log(json_data_s);
 }
 
 mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
