@@ -1,0 +1,52 @@
+* Requirements
+ - Grab a bitmap / png and display it on the screen.
+ - The app is used to map out the areas of the current layout.
+ - Click on the screen, and points are produced over top
+   of the bitmap which describe
+   + Doors for the current region
+   + The edges of the area or room that we are describing.
+ - Need a way to label this region on the screen.
+ - All of the information that we obtain should be stored
+   somewhere. Going to consider local storage.
+ - Import and Export of this information in the form of JSON
+* Development
+ - Using Raphael, possibly with JQuery.
+ - First iteration should allow you to click on areas of the screen
+   and log this information in an array. The points are logged in a
+   visual list that you can scroll through on the side. Clicking on
+   one of these items on the list on the side will highlight the point
+   that it corresponds to.
+ - Second iteration should allow you to change the state of what
+   clicking does, and perform a polygon construction, where you
+   construct a polygon to describe the area of the map that the door
+   point corresponds to.
+ - No third iteration till further notice.
+* Design
+ - PointInfoManager, used for storing all of the PointInfo objects
+   + Attributes ::
+     - PointInfoList:Array{PointInfo}
+   + Methods ::
+     - AddPoint(PointInfo)
+     - RemovePoint(UUID:String)
+     - GetPointByUUID(String)
+     - GetAllPoints():Array{PointInfo}
+ - PointInfo class, for representing points on the map.
+   + Attributes ::
+     - Position:Array(float,float)
+     - UUID:String
+     - Bros:Array{PointInfo.UUID}
+     - Type:[DOOR, WALK]
+ - AreaLayoutManager, used to store all of the AreaLayout objects
+   + Attributes ::
+     - AreaLayoutList:Array(AreaLayout)
+   + Method ::
+     - AddArea(AreaLayout)
+     - RemoveArea(UUID:String)
+     - GetAreaByUUID(UUID:String)
+     - GetAllRooms():Array{AreaLayout}
+ - AreaLayout class, for representing rooms / areas of the map.
+   + Attributes ::
+     - UUID:String
+     - Label:String
+     - Doors:Array{PointInfo.UUID}
+     - VertexList:Array{(float,float)}
