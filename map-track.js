@@ -16,6 +16,19 @@ Class Structures:
 
 */
 
+//MapptEditor Configuration Variables
+var Mappt_Toolbar_Padding = 50;
+var Mappt_List_Padding = 100;
+
+//The state of the editor, used by events
+// Init
+// Label
+// Layout
+// Place-Door
+// Place-Walk
+// Connect-Node
+var Mappt_State = "Init";
+
 function guid() {
     s4 = function() {
 	return Math.floor((1 + Math.random()) * 0x10000)
@@ -114,6 +127,10 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     (this.contextObj.length) || 
 	console.log("ERROR: Provided ID does not match any element within the DOM");
 
+    //get the origin of our context in order to draw on the paper correctly
+    this.contextOffset = this.contextObj.offset();
+
+
     //The image URL
     this.imageURL = typeof imageURL !== 'undefined' ? imageURL : null;
 
@@ -141,6 +158,14 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     //contains the image for our paper
     this.context_image = null;
 
+    //data managers used to contain the room layouts and nodes
+    this.areaLayoutManager = new AreaLayoutManager();
+    this.pointInfoManager = new PointInfoManager();
+    
+    //relation table, which contains pairs of (uuid, paper.circle)
+    this.paperPoints = []
+    //relation table, which contains pairs of (uuid, [paper.path])
+    this.paperAreas = []
 }
 
 MapptEditor.prototype.setImage = function(imageURL) {
@@ -165,8 +190,39 @@ MapptEditor.prototype.init = function() {
 	    height: this.context_height,
 	    position: "relative",
 	});
+
+    this.context_image.click(function(e) {
+	var xPosition = e.clientX - mappt.contextOffset.left;
+	var yPosition = e.clientY - mappt.contextOffset.top;
+	alert(xPosition.toString() + " " + yPosition.toString());
+	mappt.createPoint(xPosition, yPosition, "DOOR");
+    }.bind(this));
 }
 
+MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
+    if (type == "DOOR") {
+	//set of attributes
+    }
+    else if (type == "WALK") {
+	//set of attributes
+    }
+    
+    //create the paper point
+    var paperPoint = this.context_paper.circle(
+	xPosition, yPosition, 5)
+	.attr("fill", "#ff0000");
+    
+    //create the data point
+    var dataPoint = new PointInfoElement(
+	xPosition, yPosition, type);
+    
+    //store the data point in our manager
+    this.pointInfoManager.addPoint(dataPoint);
+    
+    //store both in our relation table
+    this.paperPoints.push([dataPoint.uuid, paperPoint]);
+
+}
 
 mapTrack = function (jqobj, img) {
 
@@ -180,7 +236,7 @@ mapTrack = function (jqobj, img) {
 
     map.click(function(e){
 	points.push(paper.circle(e.clientX, e.clientY, 10).attr("fill","#ff0000"));
-    })
+    });
 
     this.mouseover = function (e) {
     }
