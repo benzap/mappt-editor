@@ -290,9 +290,20 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 	    var temp_paperPoint = _.find(mapptEditor.paperPoints, function(elem) {
 		return (this == elem[1]);
 	    }.bind(this));
-	    
+	    var tempID = temp_paperPoint[0]; 
 	    temp_paperPoint[1].remove();
-	    mapptEditor.pointInfoManager.removePoint(temp_paperPoint[0]);
+	    mapptEditor.pointInfoManager.removePoint(tempID);
+	    
+	    //remove any links that include the removed node
+	    console.log("l2: " + mapptEditor.paperLinks.length);
+	    mapptEditor.paperLinks = _.filter(mapptEditor.paperLinks, function(elem) {
+		if (tempID == elem[0] || tempID == elem[1]) {
+		    elem[2].remove();
+		    return false;
+		}
+		return true;
+	    });
+	    console.log("l2: " + mapptEditor.paperLinks.length);
 	}
 	else if (mapptEditor.state == "addLink") {
 	    if (addLink_currentlySelected == null) {
@@ -393,14 +404,14 @@ MapptEditor.prototype.mode = function(state) {
 }
 
 MapptEditor.prototype.exportJSON = function(filename) {
-    var pointLinks = _.map(this.paperLinks, function(elem) {
+    var dataPaintLinks = _.map(this.paperLinks, function(elem) {
 	elem.splice(2, 1);
 	return elem;
     });
 
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
-	"LinkInfoList" : pointLinks,
+	"LinkInfoList" : dataPaintLinks,
     };
 
     json_data_s = JSON.stringify(json_data);
