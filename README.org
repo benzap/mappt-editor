@@ -51,10 +51,15 @@
      - Doors:Array{PointInfo.UUID}
      - VertexList:Array{(float,float)}
 * Steps
-  - Include state changes for [6/6]
+  - Iteration 1 [6/6]
     - [X] Add Node
     - [X] Remove Node
     - [X] Add Link
     - [X] Remove Link
     - [X] Change State (Mode)
     - [X] Export to JSON
+  - Iteration 2 [2/2]
+    - [X] State to click on node and assign to variable
+    - [X] Add setAttr command, which modifies variable
+  - Iteration 3 [0/1]
+    - [ ] Routing function getRoute(room1, room2). Returns lists of routes with a total score

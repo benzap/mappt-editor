@@ -39,6 +39,9 @@ var Mappt_Node_Color_Hover = "#00ff00";
 var addLink_currentlySelected = null;
 var removeLink_currentlySelected = null;
 
+//Temporary for holding a node for modification
+var selectNode_currentlySelected = null;
+
 function guid() {
     s4 = function() {
 	return Math.floor((1 + Math.random()) * 0x10000)
@@ -90,6 +93,7 @@ PointInfoElement = function(xPosition, yPosition, type) {
     this.uuid = guid();
     this.bros = [];
     this.type = type;
+    this.room = "";
 }
 //Static Incrementer
 PointInfoElement.increment = 0;
@@ -230,6 +234,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     // removeNode
     // addLink
     // removeLink
+    // selectNode
     this.state = "addNode";
 }
 
@@ -282,6 +287,9 @@ MapptEditor.prototype.init = function() {
 	}
 	else if (e.keyCode == Mappt_keycodes["e"]) {
 	    this.exportJSON(this.imageURL + ".js");
+	}
+	else if (e.keyCode == Mappt_keycodes["5"]) {
+	    this.mode("selectNode");
 	}
     }.bind(this));
 }
@@ -400,6 +408,22 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		removeLink_currentlySelected = null;
 	    }
 	}
+	else if (mapptEditor.state == "selectNode") {
+	    if (selectNode_currentlySelected == null) {
+		selectNode_currentlySelected = this;
+		this.attr({"fill":Mappt_Node_Color_Selected});
+	    }
+	    else if (selectNode_currentlySelected == this) {
+		this.attr({"fill":Mappt_Node_Color_Default})
+		selectNode_currentlySelected = null;
+	    }
+	    else {
+		selectNode_currentlySelected.attr(
+		    {"fill":Mappt_Node_Color_Default});
+		selectNode_currentlySelected = this;
+		this.attr({"fill":Mappt_Node_Color_Selected});
+	    }
+	}
     });
 
     //create the data point
@@ -430,6 +454,21 @@ MapptEditor.prototype.exportJSON = function(filename) {
 
     json_data_s = JSON.stringify(json_data);
     log(json_data_s);
+}
+
+MapptEditor.prototype.setAttr = function(key, value) {
+    var elementID = grabFirstWhereSecond(this.paperPoints, selectNode_currentlySelected);
+    var element = this.pointInfoManager.getPointByID(elementID);
+
+    element[key] = value;
+    log(element);
+}
+
+MapptEditor.prototype.getAttr = function(key) {
+    var elementID = grabFirstWhereSecond(this.paperPoints, selectNode_currentlySelected);
+    var element = this.pointInfoManager.getPointByID(elementID);
+
+    return element[key];
 }
 
 mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
