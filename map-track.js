@@ -35,6 +35,7 @@ var Mappt_Node_Color_Hover = "#00ff00";
 
 //Temporary for linking
 var addLink_currentlySelected = null;
+var removeLink_currentlySelected = null;
 
 function guid() {
     s4 = function() {
@@ -85,9 +86,9 @@ PointInfoManager.prototype.addPoint = function(elem) {
     this.PointInfoElementList.push(elem);
 }
 
-PointInfoManager.prototype.removePoint = function(uuid) {
+PointInfoManager.prototype.removePoint = function(id) {
     var thePoint = _.find(this.PointInfoElementList, function(elem) {
-	return (elem.uuid == uuid);
+	return (elem.id == id);
     });
     var index = this.PointInfoElementList.indexOf(thePoint);
     this.PointInfoElementList.splice(index,1);
@@ -299,6 +300,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 	    }
 	    else {
 		this.attr({"fill":Mappt_Node_Color_Default});
+		addLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
 		var position1_id = grabFirstWhereSecond(
 		    mapptEditor.paperPoints,
 		    this);
@@ -316,16 +318,54 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		    position2[1].toString();
 
 		var temp_paperPath = mapptEditor.context_paper.path(
-		    movetoString + lineString);
-		
+		    movetoString + lineString)
+		.insertAfter(mapptEditor.context_image);
 		
 
-		alert(movetoString + lineString);
+		mapptEditor.paperLinks.push([
+		    position1_id, 
+		    position2_id, 
+		    temp_paperPath]);
+		addLink_currentlySelected = null;
+	    }
+	}
+	else if (mapptEditor.state == "removeLink") {
+	    if (removeLink_currentlySelected == null) {
+		removeLink_currentlySelected = this;
+		this.attr({"fill":Mappt_Node_Color_Selected});
+	    }
+	    else if (removeLink_currentlySelected == this) {
+		this.attr({"fill":Mappt_Node_Color_Default})
+		removeLink_currentlySelected = null;
+	    }
+	    else {
+		removeLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
+		var position1_id = grabFirstWhereSecond(
+		    mapptEditor.paperPoints,
+		    this);
+		var position2_id = grabFirstWhereSecond(
+		    mapptEditor.paperPoints,
+		    removeLink_currentlySelected);
 
-		mapptEditor.paperLinks.push(
-		    this.id, 
-		    addLink_currentlySelected.id, 
-		    temp_paperPath);
+		console.log("Position1: "+position1_id);
+		console.log("Position2: "+position2_id);
+
+		var linkTuple = _.find(mapptEditor.paperLinks, function(elem) {
+		    console.log(elem[0].toString() + " " + elem[1].toString());
+		    if (position1_id == elem[0] && position2_id == elem[1] ||
+			position1_id == elem[1] && position2_id == elem[0]) {
+			return true;
+		    }
+		    return false;
+		});
+
+		//remove the link if it exists
+		if (linkTuple) {
+		    linkTuple[2].remove();
+		}
+		
+		//set to null
+		removeLink_currentlySelected = null;
 	    }
 	}
     });
