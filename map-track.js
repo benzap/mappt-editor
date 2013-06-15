@@ -186,7 +186,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     (this.contextObj.length) || 
 	log("ERROR: Provided ID does not match any element within the DOM");
 
-    //get the origin of our context in order to draw on the paper correctly
+    //get the offset of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
 
 
@@ -264,9 +264,23 @@ MapptEditor.prototype.init = function() {
     var mapptEditor = this;
     this.context_image.click(function(e) {
 	if (mapptEditor.state == "addNode") {
-	    var xPosition = e.clientX - mapptEditor.contextOffset.left;
-	    var yPosition = e.clientY - mapptEditor.contextOffset.top;
+	    var xPosition = e.clientX - mapptEditor.contextOffset.left +
+		document.body.scrollLeft;
+	    var yPosition = e.clientY - mapptEditor.contextOffset.top + 
+		document.body.scrollTop;
 	    mapptEditor.createPoint(xPosition, yPosition, "DOOR");
+	}
+	else if (mapptEditor.state == "removeNode") {
+	
+	}
+	else if (mapptEditor.state == "addLink") {
+	
+	}
+	else if (mapptEditor.state == "removeLink") {
+	
+	}
+	else if (mapptEditor.state == "selectNode") {
+	
 	}
     }.bind(this));
     
@@ -439,6 +453,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 
 MapptEditor.prototype.mode = function(state) {
     this.state = state;
+    document.title = "Map-Editor - " + state;
 }
 
 MapptEditor.prototype.exportJSON = function(filename) {
