@@ -6,6 +6,9 @@ applications.
 Dependencies:
 - Raphael
 - JQuery
+- JQuery.notify
+- JQuery.storage
+- underscore.js
 
 Class Structures:
 - PointInfoElement
@@ -26,10 +29,12 @@ var Mappt_keycodes = {
     "4" : 52,
     "5" : 53,
     "6" : 54,
+    "l" : 76,
+    "s" : 83,
     "e" : 101,
 };
 //The radius of the node circles
-var Mappt_Node_Radius = 3;
+var Mappt_Node_Radius = 2;
 
 //Node Colors
 var Mappt_Node_Color_Default = "#E2A469";
@@ -137,6 +142,10 @@ PointInfoManager.prototype.getAllPoints = function() {
     return this.PointInfoElementList;
 }
 
+PointInfoManager.prototype.clear = function() {
+    this.PointInfoElementList = [];
+}
+
 //Used to represent areas within the map
 AreaLayoutElement = function(label) {
     this.label = label;
@@ -237,7 +246,8 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     // removeNode
     // addLink
     // removeLink
-    // selectNode
+    // selectNode6
+    // moveNode
     this.state = "addNode";
 }
 
@@ -329,7 +339,8 @@ MapptEditor.prototype.init = function() {
     }.bind(this));
 }
 
-MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
+//if an ID is provided, an ID will not be generated
+MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
     if (type == "DOOR") {
 	//set of attributes
     }
@@ -340,7 +351,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     //create the paper point
     var paperPoint = this.context_paper.circle(
 	xPosition, yPosition, Mappt_Node_Radius)
-	.attr("fill", Mappt_Node_Color_Default);
+	.attr({fill: Mappt_Node_Color_Default,
+	      stroke: Mappt_Node_Outline_Default});
     
     var mapptEditor = this;
     paperPoint.click(function(e) {
@@ -476,6 +488,12 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     var dataPoint = new PointInfoElement(
 	xPosition, yPosition, type);
     
+    //if we provide our own id, fix our increment and apply the id
+    if (!_.isUndefined(id)) {
+	dataPoint.id = id;
+	PointInfoElement.increment = PointInfoElement.increment - 1;
+    }
+
     //store the data point in our manager
     this.pointInfoManager.addPoint(dataPoint);
 
@@ -550,7 +568,7 @@ MapptEditor.prototype.mode = function(state) {
 	if (removeLink_currentlySelected) {
 	    removeLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
 	}
-	removeLink_currentlySelected = null;
+	removeLink_currentlySelected = null;3
     }
     else if (this.state == "selectNode") {
 	selectNode_currentlySelected = null;
@@ -589,11 +607,30 @@ MapptEditor.prototype.getAttr = function(key) {
     return element[key];
 }
 
+MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
+    var firstNode = mapptEditor.pointInfoManager.getPointByID(nodeID1);
+    var secondNode = mapptEditor.pointInfoManager.getPointByID(nodeID2);
+    
+    var position1 = firstNode.position;
+    var position2 = secondNode.position;
+    
+    var movetoString = "M " + position1[0].toString() + " " +
+	position1[1].toString();
+    
+    var lineString = "L " + position2[0].toString() + " " +
+	position2[1].toString();
+    
+    elem[2].remove();
+    elem[2] = mapptEditor.context_paper.path(
+	movetoString + lineString)
+	.insertAfter(mapptEditor.context_image);
+}
+
 //for notifications
 $("#notify-container").notify({
     speed: 500,
 });
 
-mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
+mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
 mappt.init();
 
