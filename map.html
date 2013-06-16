@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
+    <link type="text/css" rel="stylesheet" href="ui.notify.css" />    
     <title>Map Editor</title>
   </head>
 
@@ -11,11 +11,22 @@
       <div id="mappt-editor-main"></div>
     </div>
 
+    <div id="notify-container" style="display:none">
+      
+      <div id="basic-template" style="font-size:8px; text-align:center;">
+	<p>#{text}</p>
+      </div>
+      
+      <div id="advanced-template">
+  </div>
+    </div>
+
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="raphael-min.js"></script>
+    <script src="jquery.notify.min.js"></script>
     <script src="underscore-min.js"></script>
-    <script src="map-track.js"></script>
     <script src="utils.js"></script>
+    <script src="map-track.js"></script>
   </body>
 </html>

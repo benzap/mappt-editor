@@ -25,6 +25,7 @@ var Mappt_keycodes = {
     "3" : 51,
     "4" : 52,
     "5" : 53,
+    "6" : 54,
     "e" : 101,
 };
 //The radius of the node circles
@@ -299,21 +300,31 @@ MapptEditor.prototype.init = function() {
     $(window).keypress(function(e) {
 	if (e.keyCode == Mappt_keycodes["1"]) {
 	    this.mode("addNode");
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Add Node'});
 	}
 	else if (e.keyCode == Mappt_keycodes["2"]) {
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Remove Node'});
 	    this.mode("removeNode");
 	}
 	else if (e.keyCode == Mappt_keycodes["3"]) {
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Add Link'});
 	    this.mode("addLink");
 	}
 	else if (e.keyCode == Mappt_keycodes["4"]) {
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Remove Link'});
 	    this.mode("removeLink");
 	}
 	else if (e.keyCode == Mappt_keycodes["e"]) {
+	    $("#notify-container").notify("create", {text: '<b>Exported to Console</b>'});
 	    this.exportJSON(this.imageURL + ".js");
 	}
 	else if (e.keyCode == Mappt_keycodes["5"]) {
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Select Node'});
 	    this.mode("selectNode");
+	}
+	else if (e.keyCode == Mappt_keycodes["6"]) {
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Move Node'});
+	    this.mode("moveNode");
 	}
     }.bind(this));
 }
@@ -409,11 +420,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		    mapptEditor.paperPoints,
 		    removeLink_currentlySelected);
 
-		log("Position1: "+position1_id);
-		log("Position2: "+position2_id);
-
 		var linkTuple = _.find(mapptEditor.paperLinks, function(elem) {
-		    log(elem[0].toString() + " " + elem[1].toString());
 		    if (position1_id == elem[0] && position2_id == elem[1] ||
 			position1_id == elem[1] && position2_id == elem[0]) {
 			return true;
@@ -453,6 +460,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     paperPoint.hover(function(e) {
 	if (mapptEditor.state == "addNode") {
 	    document.body.style.cursor = 'crosshair';
+	}
+	else if (mapptEditor.state == "moveNode") {
+	    document.body.style.cursor = 'move';
 	}
 	else {
 	    document.body.style.cursor = 'pointer';
@@ -500,7 +510,7 @@ MapptEditor.prototype.exportJSON = function(filename) {
     var dataPaintLinks = _.map(this.paperLinks, function(elem) {
 	elem.splice(2, 1);
 	return elem;
-    });
+    });2
 
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
@@ -526,5 +536,11 @@ MapptEditor.prototype.getAttr = function(key) {
     return element[key];
 }
 
+//for notifications
+$("#notify-container").notify({
+    speed: 500,
+});
+
 mappt = new MapptEditor("mappt-editor-main", 800, 600, "img/floor.png");
 mappt.init();
+
