@@ -28,12 +28,14 @@ var Mappt_keycodes = {
     "e" : 101,
 };
 //The radius of the node circles
-var Mappt_Node_Radius = 5;
+var Mappt_Node_Radius = 3;
 
 //Node Colors
-var Mappt_Node_Color_Default = "#ff0000";
-var Mappt_Node_Color_Selected = "#0000ff"
-var Mappt_Node_Color_Hover = "#00ff00";
+var Mappt_Node_Color_Default = "#E2A469";
+var Mappt_Node_Color_Selected = "#AE7D50";
+var Mappt_Node_Color_Hover = "#BF8E60";
+var Mappt_Node_Color_HoverSelected = "#3D3630";
+var Mappt_Node_Outline_Default = "#171612"
 
 //Temporary for linking
 var addLink_currentlySelected = null;
@@ -213,7 +215,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     this.imageObject.height = this.context_height;	    
 
     //contains the paper for our Raphael
-    this.context_paper = null;
+ this.context_paper = null;
     //contains the image for our paper
     this.context_image = null;
 
@@ -284,6 +286,14 @@ MapptEditor.prototype.init = function() {
 	}
     }.bind(this));
     
+    this.context_image.hover(function(e) {
+	document.body.style.cursor = 'crosshair';
+    },
+			     function(e) {
+				 document.body.style.cursor = 'default';
+			     });
+    
+
     //upon focusing, binds global event keys to control our editor
     
     $(window).keypress(function(e) {
@@ -438,8 +448,20 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 		this.attr({"fill":Mappt_Node_Color_Selected});
 	    }
 	}
+    }); //END paperPoint.click(function(e) {
+    
+    paperPoint.hover(function(e) {
+	if (mapptEditor.state == "addNode") {
+	    document.body.style.cursor = 'crosshair';
+	}
+	else {
+	    document.body.style.cursor = 'pointer';
+	}
+    },
+		     function(e) {
+			 
     });
-
+		     
     //create the data point
     var dataPoint = new PointInfoElement(
 	xPosition, yPosition, type);
@@ -452,6 +474,24 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
 }
 
 MapptEditor.prototype.mode = function(state) {
+    if (this.state == state) return;
+
+    //perform any transition effects
+    if (this.state == "addLink") {
+	if (addLink_currentlySelected) {
+	    addLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
+	}
+	addLink_currentlySelected = null;
+    }
+    else if (this.state == "removeLink") {
+	if (removeLink_currentlySelected) {
+	    removeLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
+	}
+	removeLink_currentlySelected = null;
+    }
+    else if (this.state == "selectNode") {
+	selectNode_currentlySelected = null;
+    }
     this.state = state;
     document.title = "Map-Editor - " + state;
 }
