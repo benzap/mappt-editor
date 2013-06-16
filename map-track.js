@@ -34,8 +34,8 @@ var Mappt_Node_Radius = 3;
 //Node Colors
 var Mappt_Node_Color_Default = "#E2A469";
 var Mappt_Node_Color_Selected = "#AE7D50";
-var Mappt_Node_Color_Hover = "#BF8E60";
-var Mappt_Node_Color_HoverSelected = "#3D3630";
+var Mappt_Node_Color_Drag_Hover = "#BF8E60";
+var Mappt_Node_Color_Drag_Selected = "#3D3630";
 var Mappt_Node_Outline_Default = "#171612"
 
 //Temporary for linking
@@ -478,7 +478,60 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type) {
     
     //store the data point in our manager
     this.pointInfoManager.addPoint(dataPoint);
-    
+
+    /* Drag functions */
+    //Start of the move operation
+    var dragStart = function () {
+	if (mapptEditor.state != "moveNode") return;
+	// storing original coordinates
+	this.ox = this.attr("cx");
+	this.oy = this.attr("cy");
+	this.attr({opacity: 0.5});
+	document.body.style.cursor = 'none';
+
+    },
+    dragMove = function (dx, dy) {
+	if (mapptEditor.state != "moveNode") return;
+	// move will be called with dx and dy
+	this.attr({cx: this.ox + dx, cy: this.oy + dy});
+
+	// pushing changes to the data point
+	mapptEditor.pointInfoManager.getPointByID(dataPoint.id).position = [this.ox+dx, this.oy+dy];
+	// fixing links
+	var relatedLinks = _.filter(mapptEditor.paperLinks, function(elem) {
+	    if (elem[0] == dataPoint.id || elem[1] == dataPoint.id) {
+		return true;
+	    }
+	    return false;
+	});
+	
+	_.map(relatedLinks, function(elem) {
+	    var firstNode = mapptEditor.pointInfoManager.getPointByID(elem[0]);
+	    var secondNode = mapptEditor.pointInfoManager.getPointByID(elem[1]);
+	    
+	    var position1 = firstNode.position;
+	    var position2 = secondNode.position;
+
+	    var movetoString = "M " + position1[0].toString() + " " +
+		position1[1].toString();
+	    
+	    var lineString = "L " + position2[0].toString() + " " +
+		position2[1].toString();
+	    
+	    elem[2].remove();
+	    elem[2] = mapptEditor.context_paper.path(
+		movetoString + lineString)
+		.insertAfter(mapptEditor.context_image);
+	});
+    },
+    dragUp = function () {
+	if (mapptEditor.state != "moveNode") return;
+	// restoring state
+	this.attr({opacity: 1});
+	log(dataPoint);
+    };
+    paperPoint.drag(dragMove, dragStart, dragUp);
+
     //store both in our relation table
     this.paperPoints.push([dataPoint.id, paperPoint]);
 }
