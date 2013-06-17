@@ -286,7 +286,7 @@ MapptEditor.prototype.init = function() {
 		document.body.scrollLeft;
 	    var yPosition = e.clientY - mapptEditor.contextOffset.top + 
 		document.body.scrollTop;
-	    mapptEditor.createPoint(xPosition, yPosition, "DOOR");
+	    mapptEditor.createPoint(xPosition, yPosition, {type:"DOOR"});
 	}
 	else if (mapptEditor.state == "removeNode") {
 	
@@ -349,13 +349,7 @@ MapptEditor.prototype.init = function() {
 }
 
 //if an ID is provided, an ID will not be generated
-MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
-    if (type == "DOOR") {
-	//set of attributes
-    }
-    else if (type == "WALK") {
-	//set of attributes
-    }
+MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
     
     //create the paper point
     var paperPoint = this.context_paper.circle(
@@ -491,7 +485,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 	    else {
 		//set the stroke of our previous route back
 		_.map(mapptEditor.paperLinks, function(elem) {
-		    elem[2].attr({stroke: "#FF7437"});
+		    elem[2].attr({stroke: Mappt_Node_Outline_Default});
 		});
 		
 		routeNode_currentlySelected.attr(
@@ -528,7 +522,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 			return false;});
 		    var pathObject = pathLink[2]
 
-		    pathObject.attr({stroke: "#ff0000"});
+		    pathObject.attr({stroke: "#FF7437"});
 		});
 		routeNode_currentlySelected = null;
 	    } //END else {
@@ -552,13 +546,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 		     
     //create the data point
     var dataPoint = new PointInfoElement(
-	xPosition, yPosition, type);
+	xPosition, yPosition);
     
-    //if we provide our own id, fix our increment and apply the id
-    if (!_.isUndefined(id)) {
-	dataPoint.id = id;
-	PointInfoElement.increment = PointInfoElement.increment - 1;
-    }
+    _.extend(dataPoint, attr);
 
     //store the data point in our manager
     this.pointInfoManager.addPoint(dataPoint);
@@ -688,8 +678,8 @@ MapptEditor.prototype.getAttr = function(key) {
 }
 
 MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
-    var firstNode = mapptEditor.pointInfoManager.getPointByID(nodeID1);
-    var secondNode = mapptEditor.pointInfoManager.getPointByID(nodeID2);
+    var firstNode = this.pointInfoManager.getPointByID(nodeID1);
+    var secondNode = this.pointInfoManager.getPointByID(nodeID2);
     
     var position1 = firstNode.position;
     var position2 = secondNode.position;
@@ -700,10 +690,11 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
     var lineString = "L " + position2[0].toString() + " " +
 	position2[1].toString();
     
-    elem[2].remove();
-    elem[2] = mapptEditor.context_paper.path(
+    var pathObject = this.context_paper.path(
 	movetoString + lineString)
-	.insertAfter(mapptEditor.context_image);
+	.insertAfter(this.context_image);
+
+    this.paperLinks.push([nodeID1, nodeID2, pathObject]);
 }
 
 MapptEditor.prototype.importJSON = function(routeTable) {
@@ -724,9 +715,18 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     var import_points = routeTable.PointInfoList;
     var import_links = routeTable.LinkInfoList;
 
-    this.paperPoints = _.map(import_points, function(elem) {
-	
+    _.map(import_points, function(elem) {
+	this.createPoint(elem.position[0], elem.position[1], elem);
+    }.bind(this));
+
+    var maxIncrement = _.max(this.paperPoints, function(elem) {
+	return elem[0];
     });
+    PointInfoElement.increment = maxIncrement+1;
+    
+    _.map(import_links, function(elem) {
+	this.addLink(elem[0], elem[1]);
+    }.bind(this));
 
 }
 
