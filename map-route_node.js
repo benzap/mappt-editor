@@ -14,30 +14,21 @@
 
 */
 
+var fs = require("fs");
+var _ = require('underscore');
+
 //if it is a starting point, we assign a cost of 0 and ensure that we supply a
 // null connection
 function createNode(point) {
     return {node: point, costSoFar: Number.MAX_VALUE, connection: null};
 }
 
-function getRoute(source, target, routeTable, costFunc) {
+function getRoute(source, target, routeTable) {
     var pointList = routeTable.PointInfoList;
     var linkList = routeTable.LinkInfoList;
 
     var closedList = [];
     var openList = [];
-
-    if (_.isUndefined(costFunc)) {
-	costFunc = function(currentNode, endNode) {
-	    startPosition = currentNode.position;
-	    endPosition = endNode.position;
-
-	    var cost = Math.sqrt(
-		Math.pow(endPosition[0] - startPosition[0],2) + 
-		    Math.pow(endPosition[1] - startPosition[1],2));
-	    return cost;
-	}
-    }
 
     //grab the starting point and assign it to the node
     var startingPoint = _.find(pointList, function(elem) {
@@ -54,7 +45,7 @@ function getRoute(source, target, routeTable, costFunc) {
 	    return elem.costSoFar;
 	});
 
-	log("Working with current ==> ", current.node.id);
+	console.log("Working with current ==> ", current.node.id);
 
 	//end our loop if we reach our target
 	//if (current.node.id == target) break;
@@ -79,7 +70,7 @@ function getRoute(source, target, routeTable, costFunc) {
 		endNodeID = currentConnection[0];
 	    }
 
-	    log("Looking at --> ", endNodeID);
+	    console.log("Looking at --> ", endNodeID);
 
 	    var endNode = _.find(pointList, function(elem) {
 		return (elem.id == endNodeID);
@@ -90,9 +81,9 @@ function getRoute(source, target, routeTable, costFunc) {
 	    var startPosition = current.node.position;
 
 	    //our cost function
-	    var endNodeCost = current.costSoFar + 
-		costFunc(current.node, endNode);
-		
+	    var endNodeCost = current.costSoFar + Math.sqrt(
+		Math.pow(endPosition[0] - startPosition[0],2) + 
+		    Math.pow(endPosition[1] - startPosition[1],2));
 
 	    //if it is within the closed list, continue
 	    var endNodeRecord;
@@ -100,7 +91,7 @@ function getRoute(source, target, routeTable, costFunc) {
 	    if (_.find(closedList, function(elem) {
 		return (elem.node.id == endNode.id);
 	    })) { 
-		log("In Closed List");
+		console.log("In Closed List");
 		continue; }
 	    
 	    //else if it is within the open list, check if our new
@@ -109,15 +100,15 @@ function getRoute(source, target, routeTable, costFunc) {
 		return (elem.node.id == endNode.id);
 	    }))) {
 		if (endNodeCost >= endNodeRecord.costSoFar) {
-		    log("Cost is already low, continuing");
+		    console.log("Cost is already low, continuing");
 		    continue;
 		}
-		log("New, better cost");
+		console.log("New, better cost");
 	    }
 	    //else we need to create our record and place it
 	    // within our open list
 	    else {
-		log("First Time Creation");
+		console.log("First Time Creation");
 		endNodeRecord = createNode(endNode);
 	    }
 
@@ -132,20 +123,20 @@ function getRoute(source, target, routeTable, costFunc) {
 	    });
 
 	    if(_.isUndefined(chk)) {
-		log("Pushing to our open list");
+		console.log("Pushing to our open list");
 		openList.push(endNodeRecord);
 	    }
 	} //END for (var i; i < linkConnections.length; i++) {
 
 	//add our node to the closed list and remove it from the openlist
 	closedList.push(current);
-	log(current.node.id);
+	console.log(current.node.id);
 	var openIndex = openList.indexOf(current);
 	openList.splice(openIndex, 1);
     } //END while (!_.isEmpty(openList)) {
 
-    log("All done!");
-    log("Closed List: ", closedList);
+    console.log("All done!");
+    console.log("Closed List: ", closedList);
 
     //grab our target node, and traverse backwards through the list to
     //our source
@@ -172,3 +163,11 @@ function getRoute(source, target, routeTable, costFunc) {
     pathList.reverse();
     return pathList;
 }
+
+fs.readFile("testRoute.json", 'utf8', function (err, data) {
+    if (err) throw err;
+    var routeTable = JSON.parse(data);    
+
+    pathList = getRoute(11,3, routeTable);
+    console.log("Final Path", pathList);
+}); //END fs.readFile(srcFile, ...

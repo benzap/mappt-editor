@@ -29,6 +29,7 @@ var Mappt_keycodes = {
     "4" : 52,
     "5" : 53,
     "6" : 54,
+    "7" : 55,
     "l" : 76,
     "s" : 83,
     "e" : 101,
@@ -49,6 +50,10 @@ var removeLink_currentlySelected = null;
 
 //Temporary for holding a node for modification
 var selectNode_currentlySelected = null;
+
+//Temporary for routing
+var routeNode_currentlySelected = null;
+
 
 function guid() {
     s4 = function() {
@@ -336,6 +341,10 @@ MapptEditor.prototype.init = function() {
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Move Node'});
 	    this.mode("moveNode");
 	}
+	if (e.keyCode == Mappt_keycodes["7"]) {
+	    this.mode("routeNode");
+	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Route Nodes'});
+	}
     }.bind(this));
 }
 
@@ -467,6 +476,37 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 		this.attr({"fill":Mappt_Node_Color_Selected});
 	    }
 	}
+	else if (mapptEditor.state == "routeNode") {
+	    //first node selection
+	    if (routeNode_currentlySelected == null) {
+		routeNode_currentlySelected = this;
+		this.attr({"fill":Mappt_Node_Color_Selected});
+	    }
+	    //selecting the same node makes it null
+	    else if (routeNode_currentlySelected == this) {
+		this.attr({"fill":Mappt_Node_Color_Default})
+		routeNode_currentlySelected = null;
+	    }
+	    //perform our operation!
+	    else {
+		routeNode_currentlySelected.attr(
+		    {"fill":Mappt_Node_Color_Default});
+
+		routeTable = mapptEditor.exportJSON();
+		//get the IDs for both of our nodes we are traversing
+		var startNode_ID = grabFirstWhereSecond(mapptEditor.paperPoints,
+							routeNode_currentlySelected);
+		var endNode_ID = grabFirstWhereSecond(mapptEditor.paperPoints,
+							this);
+		
+		var pathList = getRoute(startNode_ID, endNode_ID, routeTable);
+		log("firstid: ", startNode_ID);
+		log("endid: ", endNode_ID);
+		log(pathList);
+
+
+	    }
+	}
     }); //END paperPoint.click(function(e) {
     
     paperPoint.hover(function(e) {
@@ -573,6 +613,10 @@ MapptEditor.prototype.mode = function(state) {
     else if (this.state == "selectNode") {
 	selectNode_currentlySelected = null;
     }
+    else if (this.state == "routeNode") {
+	routeNode_currentlySelected = null;
+    }
+    
     this.state = state;
     document.title = "Map-Editor - " + state;
 }
@@ -590,6 +634,7 @@ MapptEditor.prototype.exportJSON = function(filename) {
 
     json_data_s = JSON.stringify(json_data);
     log(json_data_s);
+    return JSON.parse(json_data_s);
 }
 
 MapptEditor.prototype.setAttr = function(key, value) {
