@@ -15,42 +15,159 @@
 */
 
 var fs = require("fs");
+var _ = require('underscore');
 
 //if it is a starting point, we assign a cost of 0 and ensure that we supply a
 // null connection
-function createNode(point, isStart) {
-    if (isStart) {
-	return {node: point, costSoFar: [0], connection: [null]};
-    }
-    return {node: point, costSoFar: [], connection: []};
+function createNode(point) {
+    return {node: point, costSoFar: Number.MAX_VALUE, connection: null};
 }
 
-function getRoute(source, target, srcFile) {
-    fs.readFile(srcFile, 'utf8', function (err, data) {
-	if (err) throw err;
-	var routeTable = JSON.parse(data);
-	
-	var pointList = routeTable.PointInfoList;
-	console.log(pointList);
+function getRoute(source, target, routeTable) {
+    var pointList = routeTable.PointInfoList;
+    var linkList = routeTable.LinkInfoList;
 
-	var linkList = routeTable.LinkInfoList;
-	console.log(linkList);
+    var closedList = [];
+    var openList = [];
 
-	closedList = [];
-	openList = [];
+    //grab the starting point and assign it to the node
+    var startingPoint = _.find(pointList, function(elem) {
+	return (source == elem.id);
+    });
 
-	//grab the starting point and assign it to the node
-	var startingPoint = _.find(routeTable, function(elem) {
-	    return (source == elem.id);
+    var startingRecord = createNode(startingPoint);
+    startingRecord.costSoFar = 0;
+    openList.push(startingRecord);
+    
+    while (!_.isEmpty(openList)) {
+	//get the node with the smallest cost
+	var current = _.min(openList, function(elem) { 
+	    return elem.costSoFar;
 	});
 
-	openList.push(createNode(startingPoint, true));
+	console.log("Working with current ==> ", current.node.id);
+
+	//end our loop if we reach our target
+	//if (current.node.id == target) break;
 	
-	while (!_.isEmpty(openList)) {
-	    //get the node with the smallest cost
-	    var currentNode = _.min(openList, function(elem) { return elem.cost
-	}
+	//grab all of the connections for our current node
+	linkConnections = _.filter(linkList, function(elem) {
+	    if (elem[0] == current.node.id || elem[1] == current.node.id) {
+		return true;
+	    }
+	    return false;
+	});
+	//loop over each connection
+	for (var i = 0; i < linkConnections.length; i++) {
+	    
+	    var currentConnection = linkConnections[i];
+	    //get the end node id
+	    var endNodeID;
+	    if (current.node.id == currentConnection[0]) {
+		endNodeID = currentConnection[1];
+	    }
+	    else {
+		endNodeID = currentConnection[0];
+	    }
+
+	    console.log("Looking at --> ", endNodeID);
+
+	    var endNode = _.find(pointList, function(elem) {
+		return (elem.id == endNodeID);
+	    });
+
+	    //Find the lowest cost between the connections
+	    var endPosition = endNode.position;
+	    var startPosition = current.node.position;
+
+	    //our cost function
+	    var endNodeCost = current.costSoFar + Math.sqrt(
+		Math.pow(endPosition[0] - startPosition[0],2) + 
+		    Math.pow(endPosition[1] - startPosition[1],2));
+
+	    //if it is within the closed list, continue
+	    var endNodeRecord;
+
+	    if (_.find(closedList, function(elem) {
+		return (elem.node.id == endNode.id);
+	    })) { 
+		console.log("In Closed List");
+		continue; }
+	    
+	    //else if it is within the open list, check if our new
+	    //cost is better and continue otherwise
+	    else if (!_.isUndefined(endNodeRecord = _.find(openList, function(elem) {
+		return (elem.node.id == endNode.id);
+	    }))) {
+		if (endNodeCost >= endNodeRecord.costSoFar) {
+		    console.log("Cost is already low, continuing");
+		    continue;
+		}
+		console.log("New, better cost");
+	    }
+	    //else we need to create our record and place it
+	    // within our open list
+	    else {
+		console.log("First Time Creation");
+		endNodeRecord = createNode(endNode);
+	    }
+
+	    //place our new cost and connection within our endnode
+	    endNodeRecord.costSoFar = endNodeCost;
+	    endNodeRecord.connection = current.node.id;
+	    
+	    //check again if it's in our open list, and assign it otherwise
+	    //TODO: might be able to push earlier and reference
+	    var chk = _.find(openList, function(elem) {
+		return (elem.node.id == endNode.id);
+	    });
+
+	    if(_.isUndefined(chk)) {
+		console.log("Pushing to our open list");
+		openList.push(endNodeRecord);
+	    }
+	} //END for (var i; i < linkConnections.length; i++) {
+
+	//add our node to the closed list and remove it from the openlist
+	closedList.push(current);
+	console.log(current.node.id);
+	var openIndex = openList.indexOf(current);
+	openList.splice(openIndex, 1);
+    } //END while (!_.isEmpty(openList)) {
+
+    console.log("All done!");
+    console.log("Closed List: ", closedList);
+
+    //grab our target node, and traverse backwards through the list to
+    //our source
+    pathList = [];
+
+    var targetRecord = _.find(closedList, function(elem) {
+	return (elem.node.id == target);
     });
+
+    var sourceRecord = _.find(closedList, function(elem) {
+	return (elem.node.id == source);
+    });
+
+    //traverse from our target back to our source
+    var tempRecord = targetRecord;
+    pathList.push(tempRecord);
+    while (tempRecord != sourceRecord) {
+	var tempConnection = tempRecord.connection;
+	tempRecord = _.find(closedList, function(elem) {
+	    return (tempConnection == elem.node.id);
+	});
+	pathList.push(tempRecord);
+    }
+    pathList.reverse();
+    return pathList;
 }
 
-getRoute(1,2, "testRoute.json");
+fs.readFile("testRoute.json", 'utf8', function (err, data) {
+    if (err) throw err;
+    var routeTable = JSON.parse(data);    
+
+    pathList = getRoute(11,3, routeTable);
+    console.log("Final Path", pathList);
+}); //END fs.readFile(srcFile, ...
