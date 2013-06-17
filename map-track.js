@@ -489,6 +489,11 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 	    }
 	    //perform our operation!
 	    else {
+		//set the stroke of our previous route back
+		_.map(mapptEditor.paperLinks, function(elem) {
+		    elem[2].attr({stroke: "#FF7437"});
+		});
+		
 		routeNode_currentlySelected.attr(
 		    {"fill":Mappt_Node_Color_Default});
 
@@ -500,13 +505,34 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, type, id) {
 							this);
 		
 		var pathList = getRoute(startNode_ID, endNode_ID, routeTable);
-		log("firstid: ", startNode_ID);
-		log("endid: ", endNode_ID);
+
 		log(pathList);
+		var lastCase;
+		_.reduce(pathList, function(elem1, elem2) {
+		    if (_.isUndefined(elem1)) {
+			elem1 = lastCase;
+		    }
+		    lastCase = elem2;
+		   
 
+		    log(elem1.node.id, " --> ", elem2.node.id);
 
-	    }
-	}
+		    var firstID = elem1.node.id;
+		    var secondID = elem2.node.id;
+
+		    var pathLink = _.find(mapptEditor.paperLinks, function(elem) {
+			if (elem[0] == firstID && elem[1] == secondID ||
+			    elem[1] == firstID && elem[0] == secondID) {
+			    return true;
+			}
+			return false;});
+		    var pathObject = pathLink[2]
+
+		    pathObject.attr({stroke: "#ff0000"});
+		});
+		routeNode_currentlySelected = null;
+	    } //END else {
+	} //END else if (mapptEditor.state == "routeNode") {
     }); //END paperPoint.click(function(e) {
     
     paperPoint.hover(function(e) {
@@ -615,6 +641,10 @@ MapptEditor.prototype.mode = function(state) {
     }
     else if (this.state == "routeNode") {
 	routeNode_currentlySelected = null;
+	//set the stroke of our previous route back
+	_.map(this.paperLinks, function(elem) {
+	    elem[2].attr({stroke: "#000000"});
+	});
     }
     
     this.state = state;
@@ -623,9 +653,14 @@ MapptEditor.prototype.mode = function(state) {
 
 MapptEditor.prototype.exportJSON = function(filename) {
     var dataPaintLinks = _.map(this.paperLinks, function(elem) {
-	elem.splice(2, 1);
-	return elem;
-    });2
+	elemDEEP = _.map(elem, function(e) {
+	    return e;
+	});
+	elemDEEP.splice(2,1);
+	return elemDEEP;
+    });
+
+    console.log("DataPaintLinks: ", dataPaintLinks);
 
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
@@ -670,6 +705,31 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
 	movetoString + lineString)
 	.insertAfter(mapptEditor.context_image);
 }
+
+MapptEditor.prototype.importJSON = function(routeTable) {
+    //remove our nodes from paper.
+    _.map(this.paperPoints, function(elem) {
+	elem[1].remove();
+    });
+    this.paperPoints = [];
+    
+    //remove our links from the paper.
+    _.map(this.paperLinks, function(elem) {
+	elem[2].remove();
+    });
+    this.paperLinks = [];
+    //Clear all of the point data out of the point manager
+    this.pointInfoManager.clear();
+
+    var import_points = routeTable.PointInfoList;
+    var import_links = routeTable.LinkInfoList;
+
+    this.paperPoints = _.map(import_points, function(elem) {
+	
+    });
+
+}
+
 
 //for notifications
 $("#notify-container").notify({
