@@ -498,21 +498,16 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		var endNode_ID = grabFirstWhereSecond(mapptEditor.paperPoints,
 							this);
 		
-		var pathList = getRoute(startNode_ID, endNode_ID, routeTable);
+		var routeList = getRoute(startNode_ID, endNode_ID, routeTable)[0];
 
-		log(pathList);
+		log(routeList);
 		var lastCase;
-		_.reduce(pathList, function(elem1, elem2) {
-		    if (_.isUndefined(elem1)) {
-			elem1 = lastCase;
-		    }
-		    lastCase = elem2;
-		   
+		_.reduce(routeList.data, function(elem1, elem2) {
 
-		    log(elem1.node.id, " --> ", elem2.node.id);
+		    log(elem1, " --> ", elem2);
 
-		    var firstID = elem1.node.id;
-		    var secondID = elem2.node.id;
+		    var firstID = elem1;
+		    var secondID = elem2;
 
 		    var pathLink = _.find(mapptEditor.paperLinks, function(elem) {
 			if (elem[0] == firstID && elem[1] == secondID ||
@@ -523,6 +518,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    var pathObject = pathLink[2]
 
 		    pathObject.attr({stroke: "#FF7437"});
+		    return elem2;
 		});
 		routeNode_currentlySelected = null;
 	    } //END else {
