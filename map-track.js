@@ -643,6 +643,7 @@ MapptEditor.prototype.mode = function(state) {
 
 MapptEditor.prototype.exportJSON = function(filename) {
     var dataPaintLinks = _.map(this.paperLinks, function(elem) {
+	//fixes issues with deep copying
 	elemDEEP = _.map(elem, function(e) {
 	    return e;
 	});
@@ -650,14 +651,13 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	return elemDEEP;
     });
 
-    console.log("DataPaintLinks: ", dataPaintLinks);
-
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
 	"LinkInfoList" : dataPaintLinks,
     };
 
     json_data_s = JSON.stringify(json_data);
+    //json_data_s = JSON.stringify(json_data, undefined, 2);
     log(json_data_s);
     return JSON.parse(json_data_s);
 }
@@ -722,12 +722,11 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     var maxIncrement = _.max(this.paperPoints, function(elem) {
 	return elem[0];
     });
-    PointInfoElement.increment = maxIncrement+1;
+    PointInfoElement.increment = maxIncrement[0]+1;
     
     _.map(import_links, function(elem) {
 	this.addLink(elem[0], elem[1]);
     }.bind(this));
-
 }
 
 
