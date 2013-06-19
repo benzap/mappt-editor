@@ -234,6 +234,9 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     //contains the image for our paper
     this.context_image = null;
 
+    //contains the svg for our paper
+    this.context_svg = null;
+
     //data managers used to contain the room layouts and nodes
     this.areaLayoutManager = new AreaLayoutManager();
     this.pointInfoManager = new PointInfoManager();
@@ -264,14 +267,45 @@ MapptEditor.prototype.setImage = function(imageURL) {
 }
 
 MapptEditor.prototype.init = function() {
+    //modify to allow SVG files to be loaded onto the screen
     (this.imageURL) ||
 	log("ERROR: No Image was provided");
-    this.context_paper = Raphael(this.context_id, this.context_width, this.context_height);
 
-    this.context_image = this.context_paper.image(this.imageURL, 
+    var mapptEditor = this;
+
+    jQuery.ajax({
+	type: 'GET',
+	url: this.imageURL, //this is the svg file loaded as xml
+	dataType: 'xml',
+	success: function(svgXML) {
+	    this.context_svg = svgXML.getElementsByTagName('svg')[0];
+	    //var width = svg.getAttribute('width'), height = svg.getAttribute('height');
+
+	    this.context_paper = ScaleRaphael(this.context_id, this.context_width, this.context_height); 
+	    //$('#board').css('width', '100%');
+	    //paper.changeSize($('#board').width(), $('#board').width(), false, true);
+
+	    this.context_paper.importSVG(this.context_svg, {
+		//path: {fill: '#fff'}
+	    });
+
+	    //add a rectangle behind the svg to allow clicks
+	    this.context_image = this.context_paper.rect(0,0, this.context_width, this.context_height);
+	    this.context_image.attr({fill: "#ffffff", opacity: 0.0});
+
+	}.bind(this),
+	error: function (errObj, errString) {
+	    log("Error: ", errString);
+	},
+	async: false,
+    });
+    
+    //this.context_paper = Raphael(this.context_id, this.context_width, this.context_height);
+
+    /*this.context_image = this.context_paper.image(this.imageURL, 
 				     0, 0,
 				     this.context_width,
-				     this.context_height);
+				     this.context_height);*/
     this.contextObj.css(
 	{
 	    width: this.context_width, 
@@ -731,6 +765,7 @@ $("#notify-container").notify({
     speed: 500,
 });
 
-mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
+//mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
+mappt = new MapptEditor("mappt-editor-main", 1024, 768, "floorPlans_svg/test.svg");
 mappt.init();
 
