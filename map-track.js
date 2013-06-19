@@ -196,6 +196,10 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     //The height of our Raphael paper
     this.context_height = context_height;
 
+    //The SVG width and height values
+    this.context_svg_width = null;
+    this.context_svg_height = null;
+
     //our current context
     this.contextObj = $("#" + context_id);
 
@@ -203,34 +207,14 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     (this.contextObj.length) || 
 	log("ERROR: Provided ID does not match any element within the DOM");
 
+    //contains the image URL
+    this.imageURL = imageURL;
+
     //get the offset of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
 
-
-    //The image URL
-    this.imageURL = typeof imageURL !== 'undefined' ? imageURL : null;
-
-    //The image object
-    this.imageObject = new Image();
-    
-    this.imageObject.onload = function() {
-
-    }
-
-    this.imageObject.onerror = function() {
-	log("ERROR: the imageURL provided does not exist");
-    }
-
-    //Allocate our image if it exists
-    if (this.imageURL != null) {
-	this.imageObject.src = this.imageURL;
-    }
-
-    this.imageObject.width = this.context_width;
-    this.imageObject.height = this.context_height;	    
-
     //contains the paper for our Raphael
- this.context_paper = null;
+    this.context_paper = null;
     //contains the image for our paper
     this.context_image = null;
 
@@ -260,10 +244,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
 }
 
 MapptEditor.prototype.setImage = function(imageURL) {
-    (this.imageURL != null) || 
-	log("ERROR: Provided input is not a URL");
-    this.imageURL = imageURL;
-    this.imageObject.src = imageURL;
+
 }
 
 MapptEditor.prototype.init = function() {
@@ -279,7 +260,10 @@ MapptEditor.prototype.init = function() {
 	dataType: 'xml',
 	success: function(svgXML) {
 	    this.context_svg = svgXML.getElementsByTagName('svg')[0];
-	    //var width = svg.getAttribute('width'), height = svg.getAttribute('height');
+
+	    //the svg width and height
+	    this.context_svg_width = this.context_svg.getAttribute('width')
+	    this.context_svg_height = this.context_svg.getAttribute('height');
 
 	    this.context_paper = ScaleRaphael(this.context_id, this.context_width, this.context_height); 
 	    //$('#board').css('width', '100%');
@@ -289,7 +273,9 @@ MapptEditor.prototype.init = function() {
 		//path: {fill: '#fff'}
 	    });
 
-	    //add a rectangle behind the svg to allow clicks
+	    //add a rectangle in front of the svg to allow clicks. It
+	    // is added infront, because we have no way to our links
+	    // and nodes to appear infront of it
 	    this.context_image = this.context_paper.rect(0,0, this.context_width, this.context_height);
 	    this.context_image.attr({fill: "#ffffff", opacity: 0.0});
 
@@ -435,7 +421,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 
 		var movetoString = "M " + position1[0].toString() + " " +
 		    position1[1].toString();
-
 		var lineString = "L " + position2[0].toString() + " " +
 		    position2[1].toString();
 
@@ -684,6 +669,10 @@ MapptEditor.prototype.exportJSON = function(filename) {
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
 	"LinkInfoList" : dataPaintLinks,
+	"Context_Width" : this.context_width,
+	"Context_Height" : this.context_height,
+	"SVG_Width" : this.context_svg_width,
+	"SVG_Height" : this.context_svg_height,
     };
 
     json_data_s = JSON.stringify(json_data);
