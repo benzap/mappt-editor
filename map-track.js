@@ -5,10 +5,13 @@ applications.
 
 Dependencies:
 - Raphael
+- Raphael-utils
 - JQuery
 - JQuery.notify
 - JQuery.storage
 - underscore.js
+- utils.js
+- map-route.js
 
 Class Structures:
 - PointInfoElement
@@ -35,14 +38,12 @@ var Mappt_keycodes = {
     "e" : 101,
 };
 //The radius of the node circles
-var Mappt_Node_Radius = 2;
+var Mappt_Node_Radius = 4;
 
 //Node Colors
-var Mappt_Node_Color_Default = "#E2A469";
-var Mappt_Node_Color_Selected = "#AE7D50";
-var Mappt_Node_Color_Drag_Hover = "#BF8E60";
-var Mappt_Node_Color_Drag_Selected = "#3D3630";
-var Mappt_Node_Outline_Default = "#171612"
+var Mappt_Node_Color_Default = "#F5CB5B";
+var Mappt_Node_Color_Selected = "#FFA52B";
+var Mappt_Node_Outline_Default = "#282723"
 
 //Temporary for linking
 var addLink_currentlySelected = null;
@@ -297,9 +298,14 @@ MapptEditor.prototype.init = function() {
 
     this.context_image.click(function(e) {
 	if (mapptEditor.state == "addNode") {
-	    var xPosition = e.clientX - mapptEditor.contextOffset.left +
+
+	    var objectOffset = this.contextObj.offset();
+	    var xPosition = e.clientX -
+		objectOffset.left +
 		document.body.scrollLeft;
-	    var yPosition = e.clientY - mapptEditor.contextOffset.top + 
+
+	    var yPosition = e.clientY -
+		objectOffset.top +
 		document.body.scrollTop;
 	    mapptEditor.createPoint(xPosition, yPosition, {type:"DOOR"});
 	}
