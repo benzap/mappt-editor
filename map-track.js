@@ -188,7 +188,7 @@ AreaLayoutManager.prototype.getAllLayouts = function() {
 }
 
 //Main Class that needs to be initialized
-MapptEditor = function (context_id, context_width, context_height, imageURL) {
+MapptEditor = function (context_id, context_width, context_height) {
     //The id of the DIV element to place our MapptEditor
     this.context_id = context_id;
     //The width of our Raphael paper
@@ -208,7 +208,7 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
 	log("ERROR: Provided ID does not match any element within the DOM");
 
     //contains the image URL
-    this.imageURL = imageURL;
+    this.imageURL = null;
 
     //get the offset of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
@@ -243,17 +243,10 @@ MapptEditor = function (context_id, context_width, context_height, imageURL) {
     this.state = "addNode";
 }
 
-MapptEditor.prototype.setImage = function(imageURL) {
-
-}
-
-MapptEditor.prototype.init = function() {
-    //modify to allow SVG files to be loaded onto the screen
-    (this.imageURL) ||
-	log("ERROR: No Image was provided");
-
-    var mapptEditor = this;
-
+//sets the currently displayed image within the editor
+MapptEditor.prototype.setMap = function(imageURL) {
+    this.imageURL = imageURL;
+    
     jQuery.ajax({
 	type: 'GET',
 	url: this.imageURL, //this is the svg file loaded as xml
@@ -274,8 +267,8 @@ MapptEditor.prototype.init = function() {
 	    });
 
 	    //add a rectangle in front of the svg to allow clicks. It
-	    // is added infront, because we have no way to our links
-	    // and nodes to appear infront of it
+	    // is added infront because we have no way to make our
+	    // links and nodes to appear infront of it.
 	    this.context_image = this.context_paper.rect(0,0, this.context_width, this.context_height);
 	    this.context_image.attr({fill: "#ffffff", opacity: 0.0});
 
@@ -285,13 +278,16 @@ MapptEditor.prototype.init = function() {
 	},
 	async: false,
     });
-    
-    //this.context_paper = Raphael(this.context_id, this.context_width, this.context_height);
+    return this;
+}
 
-    /*this.context_image = this.context_paper.image(this.imageURL, 
-				     0, 0,
-				     this.context_width,
-				     this.context_height);*/
+MapptEditor.prototype.init = function() {
+    //modify to allow SVG files to be loaded onto the screen
+    (this.imageURL) ||
+	log("ERROR: No Image was provided");
+
+    var mapptEditor = this;
+
     this.contextObj.css(
 	{
 	    width: this.context_width, 
@@ -299,7 +295,6 @@ MapptEditor.prototype.init = function() {
 	    position: "relative",
 	});
 
-    var mapptEditor = this;
     this.context_image.click(function(e) {
 	if (mapptEditor.state == "addNode") {
 	    var xPosition = e.clientX - mapptEditor.contextOffset.left +
@@ -366,6 +361,7 @@ MapptEditor.prototype.init = function() {
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Route Nodes'});
 	}
     }.bind(this));
+    return this;
 }
 
 //if an ID is provided, an ID will not be generated
@@ -755,6 +751,7 @@ $("#notify-container").notify({
 });
 
 //mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
-mappt = new MapptEditor("mappt-editor-main", 1024, 768, "floorPlans_svg/test.svg");
-mappt.init();
+mappt = new MapptEditor("mappt-editor-main", 1024, 768)
+    .setMap("floorPlans_svg/test.svg")
+    .init();
 
