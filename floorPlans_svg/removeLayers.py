@@ -61,6 +61,14 @@ layerRemoval = [
     "CEILING",
     "CRAWLSPACE_ACCESS",
     "58",
+    "GRIDA",
+    "FILENAME",
+    "S-COLS-EXST",
+    "A-GLAZ",
+    "DOOR",
+    "A-DOOR-EXST",
+    "HOISTPWR",
+    
     ]
 
 if len(sys.argv) == 2:
