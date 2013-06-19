@@ -50,7 +50,7 @@ var addLink_currentlySelected = null;
 var removeLink_currentlySelected = null;
 
 //Temporary for holding a node for modification
-var selectNode_currentlySelected = null;
+var selectNode_currentlySelected = [];
 
 //Temporary for routing
 var routeNode_currentlySelected = null;
@@ -239,14 +239,17 @@ MapptEditor = function (context_id, context_width, context_height) {
     // removeNode
     // addLink
     // removeLink
-    // selectNode6
+    // selectNode
     // moveNode
+    // routeNode
     this.state = "addNode";
 }
 
 //sets the currently displayed image within the editor
 MapptEditor.prototype.setMap = function(imageURL) {
     this.imageURL = imageURL;
+
+    //TODO: clear out old image data.
     
     jQuery.ajax({
 	type: 'GET',
@@ -644,13 +647,13 @@ MapptEditor.prototype.mode = function(state) {
 	removeLink_currentlySelected = null;3
     }
     else if (this.state == "selectNode") {
-	selectNode_currentlySelected = null;
+	selectNode_currentlySelected = [];
     }
     else if (this.state == "routeNode") {
 	routeNode_currentlySelected = null;
 	//set the stroke of our previous route back
 	_.map(this.paperLinks, function(elem) {
-	    elem[2].attr({stroke: "#000000"});
+	    elem[2].attr({stroke: Mappt_Node_Outline_Default});
 	});
     }
     
@@ -714,6 +717,8 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
     var pathObject = this.context_paper.path(
 	movetoString + lineString)
 	.insertAfter(this.context_image);
+
+    pathObject.attr({stroke:Mappt_Node_Outline_Default});
 
     this.paperLinks.push([nodeID1, nodeID2, pathObject]);
 }
