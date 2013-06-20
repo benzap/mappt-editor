@@ -370,7 +370,8 @@ MapptEditor.prototype.init = function() {
     //Image scroll wheel events (zoom)
     $(this.context_image.node).bind('mousewheel', function(event, delta) {
         scale = delta > 0 ? 1.1 : 0.9;
-        console.log(delta);
+	
+        console.log(event);
     });
 
     //Image click and drag events
@@ -917,8 +918,38 @@ MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
     var yPosition = absoluteY -
 	objectOffset.top +
 	document.body.scrollTop +
-	this.currentView.y;   
+	this.currentView.y;
     return [xPosition, yPosition];
+}
+
+//used to translate the screen for panning and zooming
+MapptEditor.prototype.translatePaper(x, y, s) {
+    currentView.x = currentView.x + x;
+    currentView.y = currentView.y + y;
+    currentView.w = currentView.w * s;
+    currentView.h = currentView.h * s;
+
+    this.context_paper.setViewBox(
+	currentView.x,
+	currentView.y,
+	currentView.w,
+	currentView.h
+    );
+}
+
+//used to fit the current image to the full size of the paper
+MapptEditor.prototype.fitScreen() {
+    currentView.x = 0;
+    currentView.y = 0;
+    currentView.w = this.context_width;
+    currentView.h = this.context_height;
+    
+    this.context_paper.setViewBox(
+	currentView.x,
+	currentView.y,
+	currentView.w,
+	currentView.h
+    );
 }
 
 //for notifications
