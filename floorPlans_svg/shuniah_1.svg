@@ -11,7 +11,7 @@
    height="1052.36220472"
    id="svg3004"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="Shuniah - 1st Floor.svg"
+   sodipodi:docname="shuniah_1.svg"
    version="1.1"
    width="744.094488189">
   <metadata
@@ -33,8 +33,8 @@
      guidetolerance="10"
      id="namedview48455"
      inkscape:current-layer="g19437"
-     inkscape:cx="339.09593"
-     inkscape:cy="357.75007"
+     inkscape:cx="289.76301"
+     inkscape:cy="401.70068"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-height="1056"
@@ -55354,8 +55354,9 @@
        style="fill:none;stroke:#000000" />
     <path
        style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
-       d="M 410.28125 696.9375 L 410.28125 697.4375 L 409.78125 697.4375 L 409.78125 698.46875 L 410.28125 698.46875 L 410.28125 698.96875 L 410.6875 698.96875 L 410.6875 698.625 L 414.09375 698.625 L 414.09375 698.125 L 414.59375 698.125 C 414.60975 697.95491 414.65342 697.70068 414.40625 697.78125 L 414.09375 697.78125 L 414.09375 697.28125 L 410.6875 697.28125 L 410.6875 696.9375 C 410.55209 696.93749 410.41663 696.93755 410.28125 696.9375 z "
-       id="path27763" />
+       d="m 410.28125,696.9375 0,0.5 -0.5,0 0,1.03125 0.5,0 0,0.5 0.40625,0 0,-0.34375 3.40625,0 0,-0.5 0.5,0 c 0.016,-0.17009 0.0597,-0.42432 -0.1875,-0.34375 l -0.3125,0 0,-0.5 -3.40625,0 0,-0.34375 c -0.13541,-10e-6 -0.27087,5e-5 -0.40625,0 z"
+       id="path27763"
+       inkscape:connector-curvature="0" />
     <path
        d="m 414.08849,705.065 -3.97956,0"
        id="path27765"
@@ -68527,7 +68528,7 @@
      id="g43595"
      inkscape:groupmode="layer"
      inkscape:label="STAIR"
-     style="display:inline">
+     style="display:none">
     <path
        d="m 346.40598,571.73508 -4.15057,0"
        id="path43597"
@@ -69336,7 +69337,7 @@
     <text
        id="text43919"
        sodipodi:linespacing="125%"
-       style="font-size:0.50000000000000000px;line-height:125%;fill:#505050;font-family:Arial;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="font-size:0.5px;line-height:125%;fill:#505050;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;font-family:Arial"
        transform="matrix(-1,0,0,-1,85.489498,1284.7928)"
        x="42.744747"
        y="642.39642">
@@ -69365,7 +69366,7 @@
        d="m 172.3517,586.71133 -10.2029,0"
        id="path43929"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#505050;stroke-linecap:round;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none" />
+       style="fill:none;stroke:#505050;stroke-width:0.1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none" />
     <path
        d="m 160.033,599.35006 7.62042,0"
        id="path43931"

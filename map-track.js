@@ -55,6 +55,9 @@ var selectNode_currentlySelected = [];
 //Temporary for routing
 var routeNode_currentlySelected = null;
 
+//Temporary for storing the selection box
+var paper_selectionBox = null;
+
 
 function guid() {
     s4 = function() {
@@ -219,6 +222,11 @@ MapptEditor = function (context_id, context_width, context_height) {
     //contains the image for our paper
     this.context_image = null;
 
+    //contains the map that we are currently viewing this is
+    //represented by a group of elements, but operates like a single
+    //element
+    this.context_map = null;
+
     //contains the svg for our paper
     this.context_svg = null;
 
@@ -268,7 +276,7 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	    //$('#board').css('width', '100%');
 	    //paper.changeSize($('#board').width(), $('#board').width(), false, true);
 
-	    this.context_paper.importSVG(this.context_svg, {
+	    this.context_map = this.context_paper.importSVG(this.context_svg, {
 		//path: {fill: '#fff'}
 	    });
 
@@ -276,7 +284,25 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	    // is added infront because we have no way to make our
 	    // links and nodes to appear infront of it.
 	    this.context_image = this.context_paper.rect(0,0, this.context_width, this.context_height);
-	    this.context_image.attr({fill: "#ffffff", opacity: 0.0});
+	    this.context_image.attr({
+		fill: "#ffffff", 
+		'fill-opacity': 0.0,
+		stroke: "#000000"});
+
+	    //The view decides on the current position within our paper
+	    // Allows for easier panning and zooming
+	    this.currentView = {
+		x : 0.0,
+		y : 0.0,
+		w : this.context_width,
+		h : this.context_height,
+	    };
+	    
+	    this.context_paper.setViewBox(
+		this.currentView.x, this.currentView.y, 
+		this.currentView.w, this.currentView.h
+	    );
+	    
 
 	}.bind(this),
 	error: function (errObj, errString) {
@@ -300,9 +326,10 @@ MapptEditor.prototype.init = function() {
 	    height: this.context_height,
 	    position: "relative",
 	});
-
+    
+    //Image click events
     this.context_image.click(function(e) {
-	if (mapptEditor.state == "addNode") {
+	if (mapptEditor.state == "addNode" && e.button == 0) {
 
 	    var objectOffset = this.contextObj.offset();
 	    var xPosition = e.clientX -
@@ -328,6 +355,7 @@ MapptEditor.prototype.init = function() {
 	}
     }.bind(this));
     
+    //Image hover events
     this.context_image.hover(function(e) {
 	document.body.style.cursor = 'crosshair';
     },
@@ -335,6 +363,89 @@ MapptEditor.prototype.init = function() {
 				 document.body.style.cursor = 'default';
 			     });
     
+    //Image click and drag events
+    var dragStart = function (clientX, clientY) {
+	if (mapptEditor.state != "selectNode") return;
+	
+	var objectOffset = mapptEditor.contextObj.offset();
+
+	var xPosition = clientX -
+	    objectOffset.left +
+	    document.body.scrollLeft;
+
+	var yPosition = clientY -
+	    objectOffset.top +
+	    document.body.scrollTop;
+
+	paper_selectionBox = mapptEditor.context_paper.rect(xPosition, yPosition, 0,0);
+	paper_selectionBox.attr({
+	    stroke: "#000000",
+	    'stroke-dasharray': "--",
+	    opacity: 0.5,
+	});
+
+	//resembles the point where the box was started
+	paper_selectionBox.startX = xPosition;
+	paper_selectionBox.startY = yPosition;
+	
+	document.body.style.cursor = 'none';	
+    },
+    dragMove = function (dx, dy, clientX, clientY) {
+	if (mapptEditor.state != "selectNode") return;
+	//rectangle attributes
+	var width, height, x, y;
+
+	//the starting positions of our mouse pointer
+	var startX = paper_selectionBox.startX;
+	var startY = paper_selectionBox.startY;
+
+	var objectOffset = mapptEditor.contextObj.offset();
+
+	//current position of our mouse
+	var xPosition = clientX -
+	    objectOffset.left +
+	    document.body.scrollLeft;
+
+	var yPosition = clientY -
+	    objectOffset.top +
+	    document.body.scrollTop;
+
+	if (xPosition > startX) {
+	    width = xPosition - startX;
+	    x = startX;
+	} 
+	else {
+	    width = startX - xPosition;
+	    x = xPosition;
+	}
+	
+	if (yPosition > startY) {
+	    height = yPosition - startY;
+	    y = startY;
+	}
+	else {
+	    height = startY - yPosition;
+	    y = yPosition;
+	}
+
+	paper_selectionBox.attr({
+	    x: x,
+	    y: y,
+	    width: width,
+	    height: height,
+	});
+    },
+    dragUp = function () {
+	if (mapptEditor.state != "selectNode") return;
+	// restoring state
+
+	paper_selectionBox.remove();
+	document.body.style.cursor = 'crosshair';
+    };
+
+    this.context_image.drag(dragMove, dragStart, dragUp);
+
+    //END Events
 
     //upon focusing, binds global event keys to control our editor
     
@@ -533,8 +644,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		log(routeList);
 		var lastCase;
 		_.reduce(routeList.data, function(elem1, elem2) {
-
-		    log(elem1, " --> ", elem2);
 
 		    var firstID = elem1;
 		    var secondID = elem2;
