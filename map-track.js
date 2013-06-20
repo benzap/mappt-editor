@@ -339,11 +339,13 @@ MapptEditor.prototype.init = function() {
 	    var objectOffset = this.contextObj.offset();
 	    var xPosition = e.clientX -
 		objectOffset.left +
-		document.body.scrollLeft;
+		document.body.scrollLeft + 
+		this.currentView.x;
 
 	    var yPosition = e.clientY -
 		objectOffset.top +
-		document.body.scrollTop;
+		document.body.scrollTop +
+		this.currentView.y;
 	    mapptEditor.createPoint(xPosition, yPosition, {type:"DOOR"});
 	}
 	else if (mapptEditor.state == "removeNode") {
@@ -383,7 +385,6 @@ MapptEditor.prototype.init = function() {
 	if (e.button == 1) {
 	    panningStart = [xPosition, yPosition];
 	    document.body.style.cursor = "move";
-	    log(xPosition, yPosition);
 	}
 	//left click within selectNode selection box
 	else if (mapptEditor.state == "selectNode" && e.button == 0) {
@@ -402,8 +403,27 @@ MapptEditor.prototype.init = function() {
 	}//END else if (mapptEditor.state == "selectNode" && e.button == 0) {
     },
     dragMove = function (dx, dy, clientX, clientY, e) {
+	var objectOffset = mapptEditor.contextObj.offset();
+
+	//current position of our mouse
+	var xPosition = clientX -
+	    objectOffset.left +
+	    document.body.scrollLeft;
+
+	var yPosition = clientY -
+	    objectOffset.top +
+	    document.body.scrollTop;
+
+	panningStart["delta"] = [dx,dy];
+
 	if (e.button == 1) {
-	    
+	    mapptEditor.context_paper.setViewBox(
+		mapptEditor.currentView.x-dx,
+		mapptEditor.currentView.y-dy,
+		mapptEditor.currentView.w,
+		mapptEditor.currentView.h
+	    );
+	    console.log(mapptEditor.currentView);
 	}
 	//left click within selectNode selection box
 	else if (mapptEditor.state == "selectNode" && e.button == 0) {
@@ -413,17 +433,6 @@ MapptEditor.prototype.init = function() {
 	    //the starting positions of our mouse pointer
 	    var startX = paper_selectionBox.startX;
 	    var startY = paper_selectionBox.startY;
-
-	    var objectOffset = mapptEditor.contextObj.offset();
-
-	    //current position of our mouse
-	    var xPosition = clientX -
-		objectOffset.left +
-		document.body.scrollLeft;
-
-	    var yPosition = clientY -
-		objectOffset.top +
-		document.body.scrollTop;
 
 	    if (xPosition > startX) {
 		width = xPosition - startX;
@@ -454,7 +463,10 @@ MapptEditor.prototype.init = function() {
     dragUp = function (e) {
 	//middle mouse button
 	if (e.button == 1) {
-	    
+	    mapptEditor.currentView.x = mapptEditor.currentView.x - panningStart.delta[0];
+	    mapptEditor.currentView.y = mapptEditor.currentView.y - panningStart.delta[1];
+	    document.body.style.cursor = 'crosshair';
+	    log(mapptEditor.currentView);
 	}
 	//left click within selectNode selection box
 	else if (mapptEditor.state == "selectNode" && e.button == 0) {
