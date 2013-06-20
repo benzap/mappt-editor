@@ -337,15 +337,11 @@ MapptEditor.prototype.init = function() {
 	if (mapptEditor.state == "addNode") {
 
 	    var objectOffset = this.contextObj.offset();
-	    var xPosition = e.clientX -
-		objectOffset.left +
-		document.body.scrollLeft + 
-		this.currentView.x;
+	    var position = this.getMousePosition(e.clientX, e.clientY);
 
-	    var yPosition = e.clientY -
-		objectOffset.top +
-		document.body.scrollTop +
-		this.currentView.y;
+	    var xPosition = position[0];
+	    var yPosition = position[1];
+
 	    mapptEditor.createPoint(xPosition, yPosition, {type:"DOOR"});
 	}
 	else if (mapptEditor.state == "removeNode") {
@@ -408,11 +404,13 @@ MapptEditor.prototype.init = function() {
 	//current position of our mouse
 	var xPosition = clientX -
 	    objectOffset.left +
-	    document.body.scrollLeft;
+	    document.body.scrollLeft +
+	    mapptEditor.currentView.x;
 
 	var yPosition = clientY -
 	    objectOffset.top +
-	    document.body.scrollTop;
+	    document.body.scrollTop +
+	    mapptEditor.currentView.y;
 
 	panningStart["delta"] = [dx,dy];
 
@@ -423,7 +421,6 @@ MapptEditor.prototype.init = function() {
 		mapptEditor.currentView.w,
 		mapptEditor.currentView.h
 	    );
-	    console.log(mapptEditor.currentView);
 	}
 	//left click within selectNode selection box
 	else if (mapptEditor.state == "selectNode" && e.button == 0) {
@@ -908,6 +905,24 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     }.bind(this));
 }
 
+//returns an array with the x and y position of the mouse on the
+// paper. This corrects for panning and scaling. The provided x and y
+// position's are absolutes.
+MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
+    var objectOffset = this.contextObj.offset();
+
+    //current position of our mouse
+    var xPosition = absoluteX -
+	objectOffset.left +
+	document.body.scrollLeft +
+	this.currentView.x;
+
+    var yPosition = absoluteY -
+	objectOffset.top +
+	document.body.scrollTop +
+	this.currentView.y;    
+    return [xPosition, yPosition];
+}
 
 //for notifications
 $("#notify-container").notify({
