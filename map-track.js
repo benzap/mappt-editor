@@ -369,13 +369,9 @@ MapptEditor.prototype.init = function() {
     //Image click and drag events
     var dragStart = function (clientX, clientY, e) {
 	var objectOffset = mapptEditor.contextObj.offset();
-	var xPosition = clientX -
-	    objectOffset.left +
-	    document.body.scrollLeft;
-	    
-	var yPosition = clientY -
-	    objectOffset.top +
-	    document.body.scrollTop;
+	var position = mapptEditor.getMousePosition(clientX, clientY);
+	var xPosition = position[0];
+	var yPosition = position[1];
 
 	//middle mouse button panning
 	if (e.button == 1) {
@@ -401,16 +397,10 @@ MapptEditor.prototype.init = function() {
     dragMove = function (dx, dy, clientX, clientY, e) {
 	var objectOffset = mapptEditor.contextObj.offset();
 
-	//current position of our mouse
-	var xPosition = clientX -
-	    objectOffset.left +
-	    document.body.scrollLeft +
-	    mapptEditor.currentView.x;
 
-	var yPosition = clientY -
-	    objectOffset.top +
-	    document.body.scrollTop +
-	    mapptEditor.currentView.y;
+	var position = mapptEditor.getMousePosition(clientX, clientY);
+	var xPosition = position[0];
+	var yPosition = position[1];
 
 	panningStart["delta"] = [dx,dy];
 
