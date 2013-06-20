@@ -262,6 +262,8 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	    this.context_svg_width = this.context_svg.getAttribute('width')
 	    this.context_svg_height = this.context_svg.getAttribute('height');
 
+	    
+
 	    this.context_paper = ScaleRaphael(this.context_id, this.context_width, this.context_height); 
 	    //$('#board').css('width', '100%');
 	    //paper.changeSize($('#board').width(), $('#board').width(), false, true);
@@ -479,18 +481,22 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    }
 	}
 	else if (mapptEditor.state == "selectNode") {
-	    if (selectNode_currentlySelected == null) {
-		selectNode_currentlySelected = this;
+	    //If the selection list is empty
+	    if (_.isEmpty(selectNode_currentlySelected)) {
+		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
 		this.attr({"fill":Mappt_Node_Color_Selected});
 	    }
-	    else if (selectNode_currentlySelected == this) {
+	    //If the selection list has a copy of our value that was clicked, we remove it
+	    else if (_.some(selectNode_currentlySelected, 
+			    function(elem) { return (this == elem)})) {
 		this.attr({"fill":Mappt_Node_Color_Default})
-		selectNode_currentlySelected = null;
+
+		var selectionIndex = selectNode_currentlySelected.indexOf(this);
+		selectNode_currentlySelected.splice(selectionIndex, 1);
 	    }
+	    // else, we concat our value into the list
 	    else {
-		selectNode_currentlySelected.attr(
-		    {"fill":Mappt_Node_Color_Default});
-		selectNode_currentlySelected = this;
+		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
 		this.attr({"fill":Mappt_Node_Color_Selected});
 	    }
 	}
@@ -687,18 +693,21 @@ MapptEditor.prototype.exportJSON = function(filename) {
 }
 
 MapptEditor.prototype.setAttr = function(key, value) {
-    var elementID = grabFirstWhereSecond(this.paperPoints, selectNode_currentlySelected);
-    var element = this.pointInfoManager.getPointByID(elementID);
-
-    element[key] = value;
-    log(element);
+    _.map(selectNode_currentlySelected, function(elem) {
+	var elementID = grabFirstWhereSecond(this.paperPoints, elem);
+	log("elementID", elementID);
+	var element = this.pointInfoManager.getPointByID(elementID);
+	element[key] = value;
+    }.bind(this));
 }
 
 MapptEditor.prototype.getAttr = function(key) {
-    var elementID = grabFirstWhereSecond(this.paperPoints, selectNode_currentlySelected);
-    var element = this.pointInfoManager.getPointByID(elementID);
-
-    return element[key];
+    var valueList = _.map(selectNode_currentlySelected, function(elem) {
+	var elementID = grabFirstWhereSecond(this.paperPoints, elem);
+	var element = this.pointInfoManager.getPointByID(elementID);
+	return element[key];
+    }.bind(this));
+    return valueList;
 }
 
 MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
