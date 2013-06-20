@@ -365,7 +365,14 @@ MapptEditor.prototype.init = function() {
 			     function(e) {
 				 document.body.style.cursor = 'default';
 			     });
-    
+
+
+    //Image scroll wheel events (zoom)
+    $(this.context_image.node).bind('mousewheel', function(event, delta) {
+        scale = delta > 0 ? 1.1 : 0.9;
+        console.log(delta);
+    });
+
     //Image click and drag events
     var dragStart = function (clientX, clientY, e) {
 	var objectOffset = mapptEditor.contextObj.offset();
@@ -910,7 +917,7 @@ MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
     var yPosition = absoluteY -
 	objectOffset.top +
 	document.body.scrollTop +
-	this.currentView.y;    
+	this.currentView.y;   
     return [xPosition, yPosition];
 }
 
