@@ -65,26 +65,33 @@ function getRoute(source, target, routeTable, costFunc) {
 
     function traversePaths(connectionID,  //the place i'm going to traverse to
 			   partialPath) {//the current partial path of traversal
-	//log(partialPath, " -- ", connectionID);
+	log(partialPath, " -- ", connectionID);
 	//if we reached our target, return our partial path
 	if (connectionID == target) {
-	    //log("!!!!!!!!!!!!!!!!!!!!!!!Reached target!")
-	    return [[ partialPath.concat(connectionID) ]];
+	    log("Reached target!")
+	    return [ partialPath.concat(connectionID) ];
 	}
 	//if we reached a dead end, return an empty list
 	else if (_.some(partialPath, function(elem) { return (elem == connectionID) })) {
-	    //log("Dead end");
+	    log("Dead end");
 	    return [[]];
 	}
+
+	log("nodelinks", getNodeLinks(connectionID));
 
 	//simply perform a map reduce
 	return _.map(getNodeLinks(connectionID), function(elem) {
 	    return _.reduce(traversePaths(elem, partialPath.concat(connectionID)),
-			    function(a,b) {return a.concat(b);});
+			    function(a,b) {
+					   var val = a.concat(b);
+				log(a, "+", b, "=", val);
+					   return val;});
 	});
     }
     
-    var rawResults = traversePaths(source, [])[0];
+    var rawResults = traversePaths(source, []);
+
+    log("RawResults", rawResults);
 
     //take our raw results, and apply our weights using our given
     //costFunction between nodes. produces a list of 
