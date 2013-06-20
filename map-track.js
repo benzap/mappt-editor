@@ -58,6 +58,9 @@ var routeNode_currentlySelected = null;
 //Temporary for storing the selection box
 var paper_selectionBox = null;
 
+//Temporary for starting mouse click when zooming [x,y]
+var panningStart = [];
+
 
 function guid() {
     s4 = function() {
@@ -297,7 +300,7 @@ MapptEditor.prototype.setMap = function(imageURL) {
 		w : this.context_width,
 		h : this.context_height,
 	    };
-	    
+
 	    this.context_paper.setViewBox(
 		this.currentView.x, this.currentView.y, 
 		this.currentView.w, this.currentView.h
@@ -329,7 +332,9 @@ MapptEditor.prototype.init = function() {
     
     //Image click events
     this.context_image.click(function(e) {
-	if (mapptEditor.state == "addNode" && e.button == 0) {
+	//only track left button clicks for now
+	if (e.button != 0) return;
+	if (mapptEditor.state == "addNode") {
 
 	    var objectOffset = this.contextObj.offset();
 	    var xPosition = e.clientX -
@@ -364,83 +369,99 @@ MapptEditor.prototype.init = function() {
 			     });
     
     //Image click and drag events
-    var dragStart = function (clientX, clientY) {
-	if (mapptEditor.state != "selectNode") return;
-	
+    var dragStart = function (clientX, clientY, e) {
 	var objectOffset = mapptEditor.contextObj.offset();
-
 	var xPosition = clientX -
 	    objectOffset.left +
 	    document.body.scrollLeft;
-
+	    
 	var yPosition = clientY -
 	    objectOffset.top +
 	    document.body.scrollTop;
 
-	paper_selectionBox = mapptEditor.context_paper.rect(xPosition, yPosition, 0,0);
-	paper_selectionBox.attr({
-	    stroke: "#000000",
-	    'stroke-dasharray': "--",
-	    opacity: 0.5,
-	});
-
-	//resembles the point where the box was started
-	paper_selectionBox.startX = xPosition;
-	paper_selectionBox.startY = yPosition;
-	
-	document.body.style.cursor = 'none';	
+	//middle mouse button panning
+	if (e.button == 1) {
+	    panningStart = [xPosition, yPosition];
+	    document.body.style.cursor = "move";
+	    log(xPosition, yPosition);
+	}
+	//left click within selectNode selection box
+	else if (mapptEditor.state == "selectNode" && e.button == 0) {
+	    paper_selectionBox = mapptEditor.context_paper.rect(xPosition, yPosition, 0,0);
+	    paper_selectionBox.attr({
+		stroke: "#000000",
+		'stroke-dasharray': "--",
+		opacity: 0.5,
+	    });
+	    
+	    //resembles the point where the box was started
+	    paper_selectionBox.startX = xPosition;
+	    paper_selectionBox.startY = yPosition;
+	    
+	    document.body.style.cursor = 'none';
+	}//END else if (mapptEditor.state == "selectNode" && e.button == 0) {
     },
-    dragMove = function (dx, dy, clientX, clientY) {
-	if (mapptEditor.state != "selectNode") return;
-	//rectangle attributes
-	var width, height, x, y;
-
-	//the starting positions of our mouse pointer
-	var startX = paper_selectionBox.startX;
-	var startY = paper_selectionBox.startY;
-
-	var objectOffset = mapptEditor.contextObj.offset();
-
-	//current position of our mouse
-	var xPosition = clientX -
-	    objectOffset.left +
-	    document.body.scrollLeft;
-
-	var yPosition = clientY -
-	    objectOffset.top +
-	    document.body.scrollTop;
-
-	if (xPosition > startX) {
-	    width = xPosition - startX;
-	    x = startX;
-	} 
-	else {
-	    width = startX - xPosition;
-	    x = xPosition;
+    dragMove = function (dx, dy, clientX, clientY, e) {
+	if (e.button == 1) {
+	    
 	}
-	
-	if (yPosition > startY) {
-	    height = yPosition - startY;
-	    y = startY;
-	}
-	else {
-	    height = startY - yPosition;
-	    y = yPosition;
-	}
+	//left click within selectNode selection box
+	else if (mapptEditor.state == "selectNode" && e.button == 0) {
+	    //rectangle attributes0
+	    var width, height, x, y;
 
-	paper_selectionBox.attr({
-	    x: x,
-	    y: y,
-	    width: width,
-	    height: height,
-	});
+	    //the starting positions of our mouse pointer
+	    var startX = paper_selectionBox.startX;
+	    var startY = paper_selectionBox.startY;
+
+	    var objectOffset = mapptEditor.contextObj.offset();
+
+	    //current position of our mouse
+	    var xPosition = clientX -
+		objectOffset.left +
+		document.body.scrollLeft;
+
+	    var yPosition = clientY -
+		objectOffset.top +
+		document.body.scrollTop;
+
+	    if (xPosition > startX) {
+		width = xPosition - startX;
+		x = startX;
+	    } 
+	    else {
+		width = startX - xPosition;
+		x = xPosition;
+	    }
+	    
+	    if (yPosition > startY) {
+		height = yPosition - startY;
+		y = startY;
+	    }
+	    else {
+		height = startY - yPosition;
+		y = yPosition;
+	    }
+
+	    paper_selectionBox.attr({
+		x: x,
+		y: y,
+		width: width,
+		height: height,
+	    });
+	} //END else if (mapptEditor.state == "selectNode" && e.button == 0) {
     },
-    dragUp = function () {
-	if (mapptEditor.state != "selectNode") return;
-	// restoring state
-
-	paper_selectionBox.remove();
-	document.body.style.cursor = 'crosshair';
+    dragUp = function (e) {
+	//middle mouse button
+	if (e.button == 1) {
+	    
+	}
+	//left click within selectNode selection box
+	else if (mapptEditor.state == "selectNode" && e.button == 0) {
+	    // restoring state
+	    paper_selectionBox.remove();
+	    document.body.style.cursor = 'crosshair';
+	}
     };
 
     this.context_image.drag(dragMove, dragStart, dragUp);
@@ -599,8 +620,10 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    }
 	    //If the selection list has a copy of our value that was clicked, we remove it
 	    else if (_.some(selectNode_currentlySelected, 
-			    function(elem) { return (this == elem)})) {
-		this.attr({"fill":Mappt_Node_Color_Default})
+			    function(elem) { 
+				return (this == elem)}.bind(this))) {
+
+		this.attr({"fill":Mappt_Node_Color_Default});
 
 		var selectionIndex = selectNode_currentlySelected.indexOf(this);
 		selectNode_currentlySelected.splice(selectionIndex, 1);
