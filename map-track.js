@@ -458,6 +458,7 @@ MapptEditor.prototype.init = function() {
     dragUp = function (e) {
 	//middle mouse button
 	if (e.button == 1) {
+	    //we assign the new delta to our currentView
 	    mapptEditor.currentView.x = mapptEditor.currentView.x - panningStart.delta[0];
 	    mapptEditor.currentView.y = mapptEditor.currentView.y - panningStart.delta[1];
 	    document.body.style.cursor = 'crosshair';
@@ -778,7 +779,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 MapptEditor.prototype.mode = function(state) {
     if (this.state == state) return;
 
-    //perform any transition effects
+    //perform any transition effects for the previous state
     if (this.state == "addLink") {
 	if (addLink_currentlySelected) {
 	    addLink_currentlySelected.attr({"fill":Mappt_Node_Color_Default});
@@ -792,6 +793,9 @@ MapptEditor.prototype.mode = function(state) {
 	removeLink_currentlySelected = null;3
     }
     else if (this.state == "selectNode") {
+	_.map(selectNode_currentlySelected, function(elem) {
+	    elem.attr({"fill":Mappt_Node_Color_Default});
+	});
 	selectNode_currentlySelected = [];
     }
     else if (this.state == "routeNode") {
@@ -923,7 +927,7 @@ MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
 }
 
 //used to translate the screen for panning and zooming
-MapptEditor.prototype.translatePaper(x, y, s) {
+MapptEditor.prototype.translatePaper = function(x, y, s) {
     currentView.x = currentView.x + x;
     currentView.y = currentView.y + y;
     currentView.w = currentView.w * s;
