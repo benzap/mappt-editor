@@ -738,6 +738,12 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
     },
     dragMove = function (dx, dy) {
 	if (mapptEditor.state != "moveNode") return;
+	//fix the scaling
+	var scale = mapptEditor.getPaperScale();
+	dx = dx / scale;
+	dy = dy / scale;
+	
+
 	// move will be called with dx and dy
 	this.attr({cx: this.ox + dx, cy: this.oy + dy});
 
@@ -920,7 +926,7 @@ MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
     var objectOffset = this.contextObj.offset();
 
     //fix scaling
-    var scale = this.context_width / this.currentView.w
+    var scale = this.getPaperScale();
 
     //current position of our mouse
     var xPosition = (absoluteX -
@@ -966,6 +972,11 @@ MapptEditor.prototype.fitScreen = function() {
 	this.currentView.w,
 	this.currentView.h
     );
+}
+
+MapptEditor.prototype.getPaperScale = function() {
+    var scale = this.context_width / this.currentView.w;
+    return scale;
 }
 
 //for notifications
