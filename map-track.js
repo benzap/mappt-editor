@@ -36,13 +36,14 @@ var Mappt_keycodes = {
     "l" : 76,
     "s" : 83,
     "e" : 101,
+    "f" : 102,
 };
 //The radius of the node circles
 var Mappt_Node_Radius = 4;
 
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
-var Mappt_Node_Color_Selected = "#FFA52B";
+var Mappt_Node_Color_Selected = "#DD830B";
 var Mappt_Node_Outline_Default = "#282723"
 
 //Temporary for linking
@@ -58,7 +59,7 @@ var routeNode_currentlySelected = null;
 //Temporary for storing the selection box
 var paper_selectionBox = null;
 
-//Temporary for starting mouse click when zooming [x,y]
+//Temporary for starting mouse click when panning [x,y]
 var panningStart = [];
 
 
@@ -369,17 +370,48 @@ MapptEditor.prototype.init = function() {
 
     //Image scroll wheel events (zoom)
     $(this.context_image.node).bind('mousewheel', function(event, delta) {
-        scale = delta > 0 ? 1.1 : 0.9;
-	mapptEditor.translatePaper(0,0,scale);
+        var scaleDelta = delta > 0 ? 1.1 : 0.9;
+	var objectOffset = mapptEditor.contextObj.offset();
+	var oldScale = mapptEditor.getPaperScale();
+	var position = mapptEditor.getMousePosition(event.clientX, event.clientY);
+
+	//scaling should take into account the current window position and scale
+	//get the current position and translate our window to make scaling look more
+	// natural
+	var centerX = mapptEditor.currentView.w / 2;
+	var centerY = mapptEditor.currentView.h / 2;
+
+	//get the position of the mouse within the context holding the paper
+	var contextPositionX = event.clientX -
+	    objectOffset.left +
+	    document.body.scrollLeft;
+	
+	var contextPositionY = event.clientY -
+	    objectOffset.top +
+	    document.body.scrollTop;
+
+	var contextCenterX = this.context_width / 2;
+	var contextCenterY = this.context_height / 2;
+
+	var positionXdelta = (contextPositionX - contextCenterX);
+	var positionYdelta = (contextPositionY - contextCenterY);
+
+	log(mapptEditor.currentView.x, mapptEditor.currentView.y);
+	log(position, oldScale, scaleDelta);
+	log(positionXdelta, positionYdelta);
+
+	mapptEditor.translatePaper(0,//positionXdelta,
+				   0,//positionYdelta,
+				   scaleDelta);
     });
 
     //Image click and drag events
     var dragStart = function (clientX, clientY, e) {
-	var objectOffset = mapptEditor.contextObj.offset();
 	var position = mapptEditor.getMousePosition(clientX, clientY);
 	var xPosition = position[0];
 	var yPosition = position[1];
-
+	var scale = mapptEditor.getPaperScale();
+	
 	//middle mouse button panning
 	if (e.button == 1) {
 	    panningStart = [xPosition, yPosition];
@@ -391,7 +423,8 @@ MapptEditor.prototype.init = function() {
 	    paper_selectionBox = mapptEditor.context_paper.rect(xPosition, yPosition, 0,0);
 	    paper_selectionBox.attr({
 		stroke: "#000000",
-		'stroke-dasharray': "--",
+		'stroke-width' : 2 / scale,
+		'stroke-dasharray': ".",
 		opacity: 0.5,
 	    });
 	    
@@ -411,7 +444,7 @@ MapptEditor.prototype.init = function() {
 	var yPosition = position[1];
 	
 	//need to correct our change for scaling
-	var scale = mapptEditor.context_width / mapptEditor.currentView.w;
+	var scale = mapptEditor.getPaperScale();
 	//scaled version
 	dx = dx / scale;
 	dy = dy / scale;
@@ -513,9 +546,13 @@ MapptEditor.prototype.init = function() {
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Move Node'});
 	    this.mode("moveNode");
 	}
-	if (e.keyCode == Mappt_keycodes["7"]) {
+	else if (e.keyCode == Mappt_keycodes["7"]) {
 	    this.mode("routeNode");
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Route Nodes'});
+	}
+	else if (e.keyCode == Mappt_keycodes["f"]) {
+	    this.fitScreen();
+	    $("#notify-container").notify("create", {text: '<b>Fit Screen</b>'});
 	}
     }.bind(this));
     return this;
@@ -938,8 +975,6 @@ MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
 	objectOffset.top +
 	document.body.scrollTop) / scale +
 	this.currentView.y;
-
-    log(xPosition, yPosition, scale, this.context_width, this.currentView.w);
 
     return [xPosition, yPosition];
 }
