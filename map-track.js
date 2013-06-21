@@ -293,7 +293,9 @@ MapptEditor.prototype.setMap = function(imageURL) {
 		stroke: "#000000"});
 
 	    //The view decides on the current position within our paper
-	    // Allows for easier panning and zooming
+	    // Allows for easier panning and zooming functionality
+	    // the currentView is used by several functions order to ensure proper
+	    // translations
 	    this.currentView = {
 		x : 0.0,
 		y : 0.0,
@@ -335,8 +337,6 @@ MapptEditor.prototype.init = function() {
 	//only track left button clicks for now
 	if (e.button != 0) return;
 	if (mapptEditor.state == "addNode") {
-
-	    var objectOffset = this.contextObj.offset();
 	    var position = this.getMousePosition(e.clientX, e.clientY);
 
 	    var xPosition = position[0];
@@ -370,8 +370,7 @@ MapptEditor.prototype.init = function() {
     //Image scroll wheel events (zoom)
     $(this.context_image.node).bind('mousewheel', function(event, delta) {
         scale = delta > 0 ? 1.1 : 0.9;
-	
-        console.log(event);
+	mapptEditor.translatePaper(0,0,scale);
     });
 
     //Image click and drag events
@@ -384,6 +383,7 @@ MapptEditor.prototype.init = function() {
 	//middle mouse button panning
 	if (e.button == 1) {
 	    panningStart = [xPosition, yPosition];
+	    panningStart["delta"] = [0,0];
 	    document.body.style.cursor = "move";
 	}
 	//left click within selectNode selection box
@@ -409,6 +409,12 @@ MapptEditor.prototype.init = function() {
 	var position = mapptEditor.getMousePosition(clientX, clientY);
 	var xPosition = position[0];
 	var yPosition = position[1];
+	
+	//need to correct our change for scaling
+	var scale = mapptEditor.context_width / mapptEditor.currentView.w;
+	//scaled version
+	dx = dx / scale;
+	dy = dy / scale;
 
 	panningStart["delta"] = [dx,dy];
 
@@ -913,46 +919,52 @@ MapptEditor.prototype.importJSON = function(routeTable) {
 MapptEditor.prototype.getMousePosition = function(absoluteX, absoluteY) {
     var objectOffset = this.contextObj.offset();
 
+    //fix scaling
+    var scale = this.context_width / this.currentView.w
+
     //current position of our mouse
-    var xPosition = absoluteX -
+    var xPosition = (absoluteX -
 	objectOffset.left +
-	document.body.scrollLeft +
+	document.body.scrollLeft) / scale +
 	this.currentView.x;
 
-    var yPosition = absoluteY -
+    var yPosition = (absoluteY -
 	objectOffset.top +
-	document.body.scrollTop +
+	document.body.scrollTop) / scale +
 	this.currentView.y;
+
+    log(xPosition, yPosition, scale, this.context_width, this.currentView.w);
+
     return [xPosition, yPosition];
 }
 
 //used to translate the screen for panning and zooming
 MapptEditor.prototype.translatePaper = function(x, y, s) {
-    currentView.x = currentView.x + x;
-    currentView.y = currentView.y + y;
-    currentView.w = currentView.w * s;
-    currentView.h = currentView.h * s;
-
+    this.currentView.x = this.currentView.x - x;
+    this.currentView.y = this.currentView.y - y;
+    this.currentView.w = this.currentView.w / s;
+    this.currentView.h = this.currentView.h / s;
     this.context_paper.setViewBox(
-	currentView.x,
-	currentView.y,
-	currentView.w,
-	currentView.h
+	this.currentView.x,
+	this.currentView.y,
+	this.currentView.w,
+	this.currentView.h
     );
+    return this;
 }
 
 //used to fit the current image to the full size of the paper
-MapptEditor.prototype.fitScreen() {
-    currentView.x = 0;
-    currentView.y = 0;
-    currentView.w = this.context_width;
-    currentView.h = this.context_height;
+MapptEditor.prototype.fitScreen = function() {
+    this.currentView.x = 0;
+    this.currentView.y = 0;
+    this.currentView.w = this.context_width;
+    this.currentView.h = this.context_height;
     
     this.context_paper.setViewBox(
-	currentView.x,
-	currentView.y,
-	currentView.w,
-	currentView.h
+	this.currentView.x,
+	this.currentView.y,
+	this.currentView.w,
+	this.currentView.h
     );
 }
 
@@ -964,5 +976,5 @@ $("#notify-container").notify({
 //mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
 mappt = new MapptEditor("mappt-editor-main", 1024, 768)
     .setMap("floorPlans_svg/test.svg")
-    .init();
-
+    .init()
+    .translatePaper(200, 100, 1.0);
