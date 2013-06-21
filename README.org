@@ -63,3 +63,31 @@
     - [X] Add setAttr command, which modifies variable
   - Iteration 3 [0/1]
     - [ ] Routing function getRoute(room1, room2). Returns lists of routes with a total score
+
+* Meeting
+** Story
+- 1. Joe is trying to find a department 7/10
+- 2. Jack is trying to find a specific room by number 9/10
+- 3. Jill is trying to find a building 5/10
+
+
+
+** Problem
+ - google maps only gets you to the campus
+ - cons :
+  + closed directions
+  + buildings
+  + no room layouts
+  + may not work well if you lose connection while navigating
+** FDS
+*** Implementation
+- Reuse google maps?
+ + not always accurate
+ + may not be able to implement full building layouts
+- Open wiki, where anyone can edit a map route
+*** Navigation
+- show a route from where you are to the building
+- then the next step would show more information on more specifics within the build (trying to find a specific room)
+- Subwaylike navigation UI
+- for getting routes, include a 'targetFunc' which can be used to designate what a 'target' is.
+"return true if you are currently at a node that resembles stairs going to the third floor"
