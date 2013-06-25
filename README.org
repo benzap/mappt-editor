@@ -36,6 +36,7 @@
      - UUID:String
      - Bros:Array{PointInfo.UUID}
      - Type:[DOOR, WALK]
+     - FloorNumber:Integer
  - AreaLayoutManager, used to store all of the AreaLayout objects
    + Attributes ::
      - AreaLayoutList:Array(AreaLayout)
@@ -61,8 +62,88 @@
   - Iteration 2 [2/2]
     - [X] State to click on node and assign to variable
     - [X] Add setAttr command, which modifies variable
-  - Iteration 3 [0/1]
-    - [ ] Routing function getRoute(room1, room2). Returns lists of routes with a total score
+  - Iteration 3 [1/1]
+    - [X] Routing function getRoute(room1, room2). Returns lists of routes with a total score
+  - Iteration 4
+    - [X] Panning and Zooming
+    - [ ] Convert previous importSVG command back over to background SVG element. Consider using viewBox svg element
+    - [ ] Ability to intuitively add and edit information for each node displayed on the screen
+    - [ ] Ability to properly save and load into HTML5 local storage
+    - [ ] Add a very basic toolbar and properties panel for each tool, to modify how they work.
+      - Add Node :: change node type, change default node properties
+      - Remove Node :: na
+      - Add Link :: allow a chain link
+      - Remove Link :: na
+      - Select Node :: Provide information on currently selected nodes, and allow editing
+      - Move Node :: na
+      - Route Node :: na
+  - Iteration 5
+    - [ ] Begin routing out a map, and iron out any bugs.
+
+    - [ ] After having at least two maps with full nodes (aerial.svg and shuniah_1st.svg) begin working on the web application, 
+          which is a single page web application sporting raphael, and a simple svg element.
+    - [ ] Follow the FDS, and produce a prototype
+
+
+* Technical
+** Node Types
+  - Hall Nodes
+    - Represent hallways to traverse. Never going to be an end point
+    - Cost: 10
+  - Walk Nodes
+    - Represent other walk nodes, such as outside nodes
+    - Cost: 15
+  - Doors Nodes
+    - Usually links to an area node, and has a higher cost to prevent strange traversals
+    - Cost: 20
+  - Area Nodes (Rooms, Departments, Buildings, General Locations)
+    - Tagging system (Area nodes tagged as 'department' could be grouped for searching)
+    - Carry out the very important role of searching
+    - Cost: 20
+  - Elevation (Stairs / Elevator) Nodes
+    - Carry important information about the maps it links to
+    - Includes information on the next floor using attributes
+      - mapUp_url :: the next map that it points to
+      - mapUp_data :: the next map node points and links
+      - mapUp_links :: the nodes that this particular node connects to
+      - mapUp_elevation :: the floor number for the map
+      - mapDown_url :: the previous map that it points to
+      - mapDown_data :: the previous map node points and links
+      - mapDown_links :: the previous that this particular node connects to
+      - mapDown_elevation :: the floor number for the map
+    - Cost: 30
+  - Entrance Node
+    - Represents the entrance to a building. This usually links to an area node that represents a building.
+    - Cost: 25
+  - Start Node
+    - Represents points on the map where a person might start his search
+    - Holds a higher priority when it comes to showing search results for someone
+      trying to determine where they currently are
+    - Cost: 40
+* Use Cases
+** Jack is standing outside, and he's trying to find out where a particular room is on campus.
+*** Jack starts the app, and clicks on the "Where are you?" button
+  - Upon starting, the application would just show an aerial view of the confederation college campus
+*** He starts typing in his parking spot (R3, R4, etc) and close results begin to populate the search results, which are right below the search bar
+  - The context before any search terms have been entered might include a series of common starting locations to make it easier to start off
+  - Could include categories, where each category could be clicked to provide a drop down of things relating to that category.
+*** He clicks on where his current location might be, and the search context slides back down
+  - The application shows an aerial view with faint outlines for each building on campus
+  - Shows a faint X appears over the spot where Jack is currently standing
+*** The application begins to nudge the "Where do you want to go?" button, and Jack proceeds to push the button
+*** A new context pops up on the right side of the screen, and he proceeds to search for the place he would like to go
+  - Would include categories much like in the other button, but they target likely locations.
+*** The aerial view then shows a path between Jack's current location, to the place he would like to go
+  - While displaying this information, the application will nudge Jack, and encourage him to proceed to scroll the screen
+  - This could either be done by making the page scrollable and nudging the page down a tad bit, or producing some other interesting alternatives
+   -- This needs a lot of thought, I think something cool could be thought up to resolve this.
+*** Each time Jack scrolls down, we can show more specific information about each location that the person is passing through.
+  - For example, Jack is outside in the parking lot, and he wants to go to the Dental Clinic.
+  - The action cards would consist of an aerial view with a path from the parking lot to the shuniah building,
+    then it would show for the second slide, a birds eye view of the shuniah building, and a path from the shuniah entrance to the dental clinic
+  - Each time you scroll, it provides adequate information on more specifics within each building
+** Joe is standing outside, and he's trying to find out where a particular department is
+** Jill is trying to find a particular building on campus
 
 * Meeting
 ** Story

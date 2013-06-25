@@ -39,7 +39,7 @@ var Mappt_keycodes = {
     "f" : 102,
 };
 //The radius of the node circles
-var Mappt_Node_Radius = 4;
+var Mappt_Node_Radius = 3;
 
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
@@ -1021,6 +1021,6 @@ $("#notify-container").notify({
 
 //mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
 mappt = new MapptEditor("mappt-editor-main", 1024, 768)
-    .setMap("floorPlans_svg/test.svg")
+    .setMap("floorPlans_svg/Dorion_1.svg")
     .init()
     .translatePaper(200, 100, 1.0);
