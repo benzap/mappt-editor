@@ -302,6 +302,12 @@ MapptEditor = function (context_id, context_width, context_height) {
     // moveNode
     // routeNode
     this.state = "addNode";
+
+    //Callback handlers
+    //our callback handler for selecting nodes
+    this.callback_click_select = $.Callbacks();
+
+
 }
 
 //sets the currently displayed image within the editor
@@ -745,6 +751,10 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    if (_.isEmpty(selectNode_currentlySelected)) {
 		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
 		this.attr({"fill":Mappt_Node_Color_Selected});
+		//fire our callback for our extensions. pass the id, and the action to take
+		//var theID = grabFirstWhereSecond(mapptEditor.paperPoints, 
+
+		//mapptEditor.callback_click_select.fire(
 	    }
 	    //If the selection list has a copy of our value that was clicked, we remove it
 	    else if (_.some(selectNode_currentlySelected, 

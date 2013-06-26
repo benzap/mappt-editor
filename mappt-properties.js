@@ -31,7 +31,7 @@ MapptEditor_Properties = function(parent, context_id) {
 
     //Includes all of the currently active properties
     this.activeProperties = [];
-
+    this.currentlySelected_buffer = [];
 }
 
 MapptEditor_Properties.prototype.init = function() {
@@ -42,6 +42,17 @@ MapptEditor_Properties.prototype.init = function() {
 	}
     }.bind(this));
 
+    $(window).click(function(e) {
+	var mapptEditor = this.parent;
+	//we only need to catch clicks from the select node state
+	if (mapptEditor.state != "selectNode") return;
+
+	//check to see if the buffer size has changed
+	// we're assuming this event willbe called after the other click methods
+	
+
+
+    }.bind(this));
     return this;
 }
 
@@ -67,7 +78,6 @@ MapptEditor_Properties.prototype.updateActiveProperties = function() {
 	    //by default, we get the input DOM element's value
 	    var ourValueObj = $(newValueObj).find("input")[0];
 	    var ourValue = $(ourValueObj).val();
-	    console.log(ourValue);
 
 	    this.activeProperties[i][key] = ourValue;
 	    j += 1;
