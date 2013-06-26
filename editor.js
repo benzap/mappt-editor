@@ -15,6 +15,6 @@ $( function() {
 	.init();
 
     mappt_properties.appendProperties(larray);
-
+    mappt_properties.appendProperties([testObject3]);
 
 });
