@@ -35,16 +35,22 @@ MapptEditor_Properties.prototype.init = function() {
 
 //goes through the given object, and constructs a form to display onto the screen
 MapptEditor_Properties.prototype.appendProperties = function(obj) {
-    var tableObj = this.createNewTable();
-    for (key in obj) {
-	var rowObj = this.appendNewRow(tableObj);
-	this.appendColumn(rowObj, key, obj[key]);
+    log(obj);
+    var objectList = obj;
+
+    for (var i=0; i < objectList.length; i++) {
+	var iObj = objectList[i];
+	var tableObj = this.appendNewTable();
+	for (key in iObj) {
+	    var rowObj = this.appendNewRow(tableObj);
+	    this.appendColumn(rowObj, key, iObj[key]);
+	}
     }
 }
 
 //creates a new table at the top of the context's DOM and stores this
 //table as a table obj. returns the table object.
-MapptEditor_Properties.prototype.createNewTable = function() {
+MapptEditor_Properties.prototype.appendNewTable = function() {
     var tableObj = document.createElement("table");
     $(this.contextObj).append(tableObj);
     return tableObj;
@@ -86,10 +92,9 @@ MapptEditor_Properties.prototype.appendColumn = function(rowObj, propertyName, p
 	columnTextInput.type = "text";
 	columnTextInput.value = propertyValue;
     }
-
 }
 
 testObject = {position:[23.1,24.5], room:"rm505", id: 0};
 testObject2 = {position:[10.1,0.01], room:"shuniah", id: 5};
 
-array = [testObject, testObject2]
+larray = [testObject, testObject2]
