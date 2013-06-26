@@ -197,12 +197,16 @@ AreaLayoutManager.prototype.getAllLayouts = function() {
 
 //Main Class that needs to be initialized
 MapptEditor = function (context_id, context_width, context_height) {
-    //The id of the DIV element to place our MapptEditor
+
+    //The id of the DIV element for our top-level container
     this.context_id = context_id;
     //The width of our Raphael paper
     this.context_width = context_width;
     //The height of our Raphael paper
     this.context_height = context_height;
+
+    this.context_id_background = this.context_id + "-back";
+    this.context_id_foreground = this.context_id + "-front";
 
     //The SVG width and height values
     this.context_svg_width = null;
@@ -210,10 +214,38 @@ MapptEditor = function (context_id, context_width, context_height) {
 
     //our current context
     this.contextObj = $("#" + context_id);
+    $(this.contextObj).css({
+	"position" : "relative",
+    });
 
     //check if the given ID exists
     (this.contextObj.length) || 
 	log("ERROR: Provided ID does not match any element within the DOM");
+
+    //create our background div and foreground divs
+    //the background div will hold our SVG image
+    this.contextObj_back = document.createElement("div");
+    this.contextObj_back.setAttribute("id", this.context_id_background);
+    $(this.contextObj_back).css({
+	"position" : "absolute",
+	"z-index" : 0,
+	"width" : "100%",
+	"height" : "100%",
+    })
+    $(this.contextObj).append(this.contextObj_back);
+    
+    //create our foreground div
+    //the foreground div will hold our raphael paper
+    this.contextObj_front = document.createElement("div");
+    this.contextObj_front.setAttribute("id", this.context_id_foreground);
+    $(this.contextObj_front).css({
+	"position" : "absolute",
+	"z-index" : 1,
+	"width" : "100%",
+	"height" : "100%",
+    })
+    $(this.contextObj).append(this.contextObj_front);
+
 
     //contains the image URL
     this.imageURL = null;
@@ -261,8 +293,11 @@ MapptEditor = function (context_id, context_width, context_height) {
 MapptEditor.prototype.setMap = function(imageURL) {
     this.imageURL = imageURL;
 
-    //TODO: clear out old image data.
-    
+    //TODO: clear out old image data.  
+
+    //TODO: check to see if there is a copy of the path routes within
+    //local storage, or on the site itself
+
     jQuery.ajax({
 	type: 'GET',
 	url: this.imageURL, //this is the svg file loaded as xml
@@ -274,15 +309,15 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	    this.context_svg_width = this.context_svg.getAttribute('width')
 	    this.context_svg_height = this.context_svg.getAttribute('height');
 
-	    
+	   
+	    //setup our paper in the front div container
+	    this.context_paper = ScaleRaphael(this.context_id_foreground,
+					      this.context_width,
+					      this.context_height); 
 
-	    this.context_paper = ScaleRaphael(this.context_id, this.context_width, this.context_height); 
-	    //$('#board').css('width', '100%');
-	    //paper.changeSize($('#board').width(), $('#board').width(), false, true);
+	    //setup our svg map in the back div container
+	    $(this.contextObj_back).append(this.context_svg);
 
-	    this.context_map = this.context_paper.importSVG(this.context_svg, {
-		//path: {fill: '#fff'}
-	    });
 
 	    //add a rectangle in front of the svg to allow clicks. It
 	    // is added infront because we have no way to make our
@@ -304,7 +339,7 @@ MapptEditor.prototype.setMap = function(imageURL) {
 		h : this.context_height,
 	    };
 
-	    this.context_paper.setViewBox(
+	    this.setViewBox(
 		this.currentView.x, this.currentView.y, 
 		this.currentView.w, this.currentView.h
 	    );
@@ -452,7 +487,7 @@ MapptEditor.prototype.init = function() {
 	panningStart["delta"] = [dx,dy];
 
 	if (e.button == 1) {
-	    mapptEditor.context_paper.setViewBox(
+	    mapptEditor.setViewBox(
 		mapptEditor.currentView.x-dx,
 		mapptEditor.currentView.y-dy,
 		mapptEditor.currentView.w,
@@ -985,12 +1020,31 @@ MapptEditor.prototype.translatePaper = function(x, y, s) {
     this.currentView.y = this.currentView.y - y;
     this.currentView.w = this.currentView.w / s;
     this.currentView.h = this.currentView.h / s;
-    this.context_paper.setViewBox(
+    this.setViewBox(
 	this.currentView.x,
 	this.currentView.y,
 	this.currentView.w,
 	this.currentView.h
     );
+
+    return this;
+}
+
+//Used to set the position of the paper an exact place on the screen
+MapptEditor.prototype.setViewBox = function(x,y,w,h) {    
+    this.context_paper.setViewBox(x, y, w, h);
+
+    var viewString = "";
+    viewString += String(x) + " ";
+    viewString += String(y) + " ";
+    viewString += String(w) + " ";
+    viewString += String(h);
+
+
+    //Now that we have a separate svg element, we need to also change
+    //the view of our svg
+    this.context_svg.setAttribute("viewBox", viewString);
+
     return this;
 }
 
@@ -1001,12 +1055,14 @@ MapptEditor.prototype.fitScreen = function() {
     this.currentView.w = this.context_width;
     this.currentView.h = this.context_height;
     
-    this.context_paper.setViewBox(
+    this.setViewBox(
 	this.currentView.x,
 	this.currentView.y,
 	this.currentView.w,
 	this.currentView.h
     );
+
+    return this;
 }
 
 MapptEditor.prototype.getPaperScale = function() {
