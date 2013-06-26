@@ -120,6 +120,11 @@
     - Holds a higher priority when it comes to showing search results for someone
       trying to determine where they currently are
     - Cost: 40
+** Editor
+*** Known Issues
+  - The svg size and the initialized paper for the svg must be the same size. 
+    If they aren't panning and zooming will cause the background image to distort 
+    due to incorrect scalings shared between them.
 * Use Cases
 ** Jack is standing outside, and he's trying to find out where a particular room is on campus.
 *** Jack starts the app, and clicks on the "Where are you?" button

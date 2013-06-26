@@ -287,7 +287,7 @@ MapptEditor = function (context_id, context_width, context_height) {
     
     //relation table, which contains pairs of (id, paper.circle)
     this.paperPoints = [];
-    
+
     //relation table, which contains pairs of (id, [paper.path])
     this.paperAreas = [];
     //relation table, which contains pairs of (id, id, paper.path)
@@ -446,10 +446,6 @@ MapptEditor.prototype.init = function() {
 	var positionXdelta = (contextPositionX - contextCenterX);
 	var positionYdelta = (contextPositionY - contextCenterY);
 
-	log(mapptEditor.currentView.x, mapptEditor.currentView.y);
-	log(position, oldScale, scaleDelta);
-	log(positionXdelta, positionYdelta);
-
 	mapptEditor.translatePaper(0,//positionXdelta,
 				   0,//positionYdelta,
 				   scaleDelta);
@@ -473,7 +469,7 @@ MapptEditor.prototype.init = function() {
 	    paper_selectionBox = mapptEditor.context_paper.rect(xPosition, yPosition, 0,0);
 	    paper_selectionBox.attr({
 		stroke: "#000000",
-		'stroke-width' : 2 / scale,
+		'stroke-width' : 5 / scale,
 		'stroke-dasharray': ".",
 		opacity: 0.5,
 	    });
@@ -551,10 +547,38 @@ MapptEditor.prototype.init = function() {
 	    mapptEditor.currentView.x = mapptEditor.currentView.x - panningStart.delta[0];
 	    mapptEditor.currentView.y = mapptEditor.currentView.y - panningStart.delta[1];
 	    document.body.style.cursor = 'crosshair';
-	    log(mapptEditor.currentView);
 	}
 	//left click within selectNode selection box
 	else if (mapptEditor.state == "selectNode" && e.button == 0) {
+	    //determining what elements were selected
+	    var width = paper_selectionBox.attr("width");
+	    var height = paper_selectionBox.attr("height");
+	    var startX = paper_selectionBox.attr("x");
+	    var startY = paper_selectionBox.attr("y");
+	    var endX = startX + width;
+	    var endY = startY + height;
+	    
+
+	    var collidedPoints = _.filter(mapptEditor.pointInfoManager.getAllPoints(), function(elem){
+		var xPosition = elem.position[0];
+		var yPosition = elem.position[1];
+
+		// if it's within the X bounds of our selection bos
+		if (xPosition < startX || xPosition > endX) {
+		    return false;
+		}
+		// if it's within the Y bounds of our selection box
+		if (yPosition < startY || yPosition > endY) {
+		    return false;
+		}
+		//it has collided.
+		return true;
+	    });
+
+	    selectNode_currentlySelected = _.map(collidedPoints, function(elem) {
+		return grabSecondWhereFirst(mapptEditor.paperPoints, elem.id);
+	    });
+
 	    // restoring state
 	    paper_selectionBox.remove();
 	    document.body.style.cursor = 'crosshair';
@@ -765,7 +789,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		
 		var routeList = getRoute(startNode_ID, endNode_ID, routeTable)[0];
 
-		log(routeList);
 		var lastCase;
 		_.reduce(routeList.data, function(elem1, elem2) {
 
@@ -867,7 +890,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	if (mapptEditor.state != "moveNode") return;
 	// restoring state
 	this.attr({opacity: 1});
-	log(dataPoint);
     };
     paperPoint.drag(dragMove, dragStart, dragUp);
 

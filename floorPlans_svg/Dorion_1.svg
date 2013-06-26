@@ -10,38 +10,41 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="792pt"
-   height="612pt"
+   width="1024"
+   height="768"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="Dorion_1.svg">
   <defs
      id="defs2987" />
   <sodipodi:namedview
-     inkscape:document-units="in"
+     inkscape:document-units="px"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="312.01775"
-     inkscape:cy="430.51136"
+     inkscape:cx="511.01775"
+     inkscape:cy="400.51136"
      inkscape:current-layer="layer3"
      id="namedview2989"
      showgrid="false"
-     inkscape:window-width="1600"
-     inkscape:window-height="837"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1680"
+     inkscape:window-height="1026"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:object-paths="true"
      inkscape:snap-intersection-paths="true"
      inkscape:snap-nodes="false"
      inkscape:snap-grids="false"
      inkscape:snap-to-guides="false"
-     inkscape:snap-global="false" />
+     inkscape:snap-global="false"
+     units="px"
+     showborder="true"
+     borderlayer="false" />
   <metadata
      id="metadata2991">
     <rdf:RDF>
@@ -59,7 +62,8 @@
      inkscape:groupmode="layer"
      id="layer1"
      style="opacity:0.36538463;display:none"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(0,3)">
     <image
        y="16.994827"
        x="191.87462"
@@ -73,7 +77,8 @@
      id="layer3"
      inkscape:label="Rooms"
      style="opacity:0.85416667;display:inline"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(0,3)">
     <path
        id="path3883"
        style="fill:none;stroke:#55c0cc;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;marker-start:none;display:inline"
@@ -86,7 +91,8 @@
      id="layer2"
      inkscape:label="Boundary"
      style="display:inline"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(0,3)">
     <path
        style="fill:none;stroke:#46b7c1;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 346.93562,85.092556 5.90223,0 m 22.16933,0 106.24003,0 m 14.10776,0 68.66734,0 0,-26.05616 27.06386,0 m 12.38027,0 35.98917,0 0,76.441004 17.27481,0 0,16.55502 m 0,6.47805 0,2.01539 -16.69898,0 0,26.20012 m 0,25.76825 0,55.99915 m 0,12.23632 0,120.20384 m 8.34949,0 56.43102,0.14395 m 36.27709,0 66.7959,0 0,105.0164 m 0,6.3341 0,148.92319 -67.37173,0 -2.01539,0 m -33.11004,0 -3.45496,0 0,32.96609 m 0,7.05387 0,35.98918 -45.49032,0 0,-76.00914 -113.43787,0 0,20.15394 -3.38298,0 m -6.62201,0 -29.72705,0 0,-20.72976 -8.13356,0 m -5.83024,0 -5.61431,0 m -34.11774,0 -69.53108,0 0,-166.98976 -59.31016,0 0,-8.34949 m 0,-20.87372 0,-4.82255 m 0,-6.33409 0,-7.9896 60.46181,0 0,-30.42002 m 0,-5.4469 0,-11.9267 -10.94071,0 m -20.94569,0 -42.8991,0 m -10.43686,0 -21.30559,0 0,-13.81984 -14.97149,0 0,39.73204 -11.51654,0 m -25.33638,0 -7.80946,-0.005 0,-78.30727 0,-40.45183 3.05889,0 m 5.90223,0 9.06927,0 0,-7.40636 m 0,-11.80796 0,-1.83227 -18.79214,0 0,-28.19659 0.31634,-39.75053 0.29442,-36.89941 c 0,0 3.12732,-9.38769 6.70552,-12.43348 3.28892,-2.79955 4.64555,-2.76772 13.58317,-4.29035 m 100.67777,-82.819241 0,5.758267 4.46265,0 m -4.46265,-18.714369 0,-7.341791 -60.60577,0 0,156.740374 -60.65511,0"
@@ -99,7 +105,8 @@
      id="layer5"
      inkscape:label="Stairs"
      style="display:inline"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(0,3)">
     <g
        id="g3927"
        transform="matrix(0.69647973,0,0,1.0266967,194.97965,10.134782)" />
@@ -145,7 +152,8 @@
      id="layer4"
      inkscape:label="Labels"
      style="opacity:0.51709403;display:inline"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(0,3)">
     <text
        xml:space="preserve"
        style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
