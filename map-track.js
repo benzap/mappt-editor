@@ -21,10 +21,10 @@ Class Structures:
 - MapptEditor
 
 */
+//*****************************************
+//** MapptEditor Configuration Variables **
+//*****************************************
 
-//MapptEditor Configuration Variables
-var Mappt_Toolbar_Padding = 50;
-var Mappt_List_Padding = 100;
 var Mappt_keycodes = {
     "1" : 49,
     "2" : 50,
@@ -38,8 +38,21 @@ var Mappt_keycodes = {
     "e" : 101,
     "f" : 102,
 };
+
+
+
 //The radius of the node circles
 var Mappt_Node_Radius = 3;
+
+var Mappt_states = [
+    "addNode",
+    "removeNode",
+    "addLink",
+    "removeLink",
+    "selectNode",
+    "moveNode",
+    "routeNode",
+]
 
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
@@ -216,6 +229,7 @@ MapptEditor = function (context_id, context_width, context_height) {
     this.contextObj = $("#" + context_id);
     $(this.contextObj).css({
 	"position" : "relative",
+	"overflow" : "hidden",
     });
 
     //check if the given ID exists
@@ -231,6 +245,7 @@ MapptEditor = function (context_id, context_width, context_height) {
 	"z-index" : 0,
 	"width" : "100%",
 	"height" : "100%",
+	"overflow" : "hidden",
     })
     $(this.contextObj).append(this.contextObj_back);
     
@@ -1070,13 +1085,4 @@ MapptEditor.prototype.getPaperScale = function() {
     return scale;
 }
 
-//for notifications
-$("#notify-container").notify({
-    speed: 500,
-});
 
-//mappt = new MapptEditor("mappt-editor-main", 1024, 768, "img/floor.png");
-mappt = new MapptEditor("mappt-editor-main", 1024, 768)
-    .setMap("floorPlans_svg/Dorion_1.svg")
-    .init()
-    .translatePaper(200, 100, 1.0);
