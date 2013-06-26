@@ -576,8 +576,11 @@ MapptEditor.prototype.init = function() {
 	    });
 
 	    selectNode_currentlySelected = _.map(collidedPoints, function(elem) {
-		return grabSecondWhereFirst(mapptEditor.paperPoints, elem.id);
+		var paperNode = grabSecondWhereFirst(mapptEditor.paperPoints, elem.id);
+		return paperNode;
 	    });
+
+
 
 	    // restoring state
 	    paper_selectionBox.remove();
