@@ -11,7 +11,10 @@ $( function() {
     mappt_toolbar = new MapptEditor_Toolbar(mappt, "mappt-editor-toolbar")
 	.init();
 
-    //mappt_properties = new MapptEditor_Properties(mappt, "mappt-editor-properties")
-	//.init();
+    mappt_properties = new MapptEditor_Properties(mappt, "mappt-editor-properties")
+	.init();
+
+    mappt_properties.appendProperties(testObject);
+
 
 });
