@@ -37,6 +37,7 @@ var Mappt_keycodes = {
     "s" : 83,
     "e" : 101,
     "f" : 102,
+    "return" : 13,
 };
 
 
@@ -53,6 +54,16 @@ var Mappt_states = [
     "moveNode",
     "routeNode",
 ]
+
+var Mappt_node_types = [
+    "DOOR", //doors and doorways
+    "HALL", //hallways in buildings
+    "WALK", //misc. walking areas
+    "AREA", //rooms
+    "ELEVATION", //elevators and stairs
+    "ENTRANCE", //entrance into new map
+    "START", //typical starting areas
+];
 
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
@@ -120,14 +131,23 @@ function grabSecondWhereFirst(pairList, first) {
 }
 
 //Class structure used to represent points on the map
+//Not all information for each node type will need to be filled
+//Right off the bat
+//Depends on what the node type is
 PointInfoElement = function(xPosition, yPosition, type) {
     this.position = [xPosition, yPosition];
     this.id = PointInfoElement.increment;
-    PointInfoElement.increment += 1;
-    this.uuid = guid();
-    this.bros = [];
+    PointInfoElement.increment += 1; //local id
+    this.uuid = guid(); //global id
     this.type = type;
-    this.room = "";
+    this.tags = []; //Department, Room, Stairs, ... etc
+    this.descriptors = ""; //
+    this.mapUp_url = "";
+    this.mapUp_links = [];
+    this.mapUp_elevation = "";
+    this.mapDown_url = "";
+    this.mapDown_links = [];
+    this.mapDown_elevation = "";
 }
 //Static Incrementer
 PointInfoElement.increment = 0;
@@ -307,6 +327,9 @@ MapptEditor = function (context_id, context_width, context_height) {
     //our callback handler for selecting nodes
     this.callback_click_select = $.Callbacks();
 
+    //Used to track when the mouse is within the
+    //editor area or not
+    this.bContextHovered = false;
 
 }
 
@@ -419,10 +442,12 @@ MapptEditor.prototype.init = function() {
     $(this.contextObj).hover(function(e) {
 	document.body.style.cursor = 'crosshair';
 	document.body.style.overflow="hidden";
+	mapptEditor.bContextHovered = true;
     },
 			     function(e) {
 				 document.body.style.cursor = 'default';
 				 document.body.style.overflow="";
+				 mapptEditor.bContextHovered = false;
 			     });
 
 
@@ -593,7 +618,22 @@ MapptEditor.prototype.init = function() {
 	    // restoring state
 	    paper_selectionBox.remove();
 	    document.body.style.cursor = 'crosshair';
-	    mapptEditor.callback_click_select.fire();
+
+	    //removing highlighting on appropriate nodes,
+	    _.map(mapptEditor.paperPoints, function(elem) {
+		elem[1].attr({
+		    "fill" : Mappt_Node_Color_Default,
+		});
+	    });
+	    
+	    //add highlighting to appropriate nodes
+	    _.map(selectNode_currentlySelected, function(elem) {
+		elem.attr({
+		    "fill" : Mappt_Node_Color_Selected,
+		});
+	    });
+
+
 	}
     };
 
@@ -601,9 +641,14 @@ MapptEditor.prototype.init = function() {
 
     //END Events
 
-    //upon focusing, binds global event keys to control our editor
+    
     
     $(window).keypress(function(e) {
+	//if the mouse isn't within the context window, return
+	if (!(this.bContextHovered)) {
+	    return;
+	}
+
 	if (e.keyCode == Mappt_keycodes["1"]) {
 	    this.mode("addNode");
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Add Node'});
@@ -749,30 +794,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		removeLink_currentlySelected = null;
 	    }
 	}
+	//clicking on nodes, provides us with the ability to edit
 	else if (mapptEditor.state == "selectNode") {
-	    //If the selection list is empty
-	    if (_.isEmpty(selectNode_currentlySelected)) {
-		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
-		this.attr({"fill":Mappt_Node_Color_Selected});
-	    }
-	    //If the selection list has a copy of our value that was clicked, we remove it
-	    else if (_.some(selectNode_currentlySelected, 
-			    function(elem) { 
-				return (this == elem)}.bind(this))) {
-
-		this.attr({"fill":Mappt_Node_Color_Default});
-
-		var selectionIndex = selectNode_currentlySelected.indexOf(this);
-		selectNode_currentlySelected.splice(selectionIndex, 1);
-	    }
-	    // else, we concat our value into the list
-	    else {
-		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
-		this.attr({"fill":Mappt_Node_Color_Selected});
-	    }
-
-	    //fire our callback
-	    mapptEditor.callback_click_select.fire();
+	    mapptEditor.callback_click_select.fire(this);
 	}
 	else if (mapptEditor.state == "routeNode") {
 	    //first node selection

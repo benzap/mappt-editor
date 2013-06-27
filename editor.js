@@ -14,7 +14,4 @@ $( function() {
     mappt_properties = new MapptEditor_Properties(mappt, "mappt-editor-properties")
 	.init();
 
-    mappt_properties.appendProperties(larray);
-    mappt_properties.appendProperties([testObject3]);
-
 });

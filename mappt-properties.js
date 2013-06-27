@@ -15,6 +15,7 @@ Mappt_p_table_class = "mappt-properties-table";
 Mappt_p_row_class = "mappt-properties-row";
 Mappt_p_column_name_class = "mappt-properties-column-name";
 Mappt_p_column_value_class = "mappt-properties-column-value";
+Mappt_p_input_class = "mappt-properties-input";
 
 MapptEditor_Properties = function(parent, context_id) {
     //the MapptEditor parent we are referring to
@@ -37,9 +38,15 @@ MapptEditor_Properties = function(parent, context_id) {
 MapptEditor_Properties.prototype.init = function() {
 
     $(window).keypress(function(e) {
-	if (e.keyCode == Mappt_keycodes["1"]) {
+	if (e.keyCode == Mappt_keycodes["return"]) {
 	    this.updateActiveProperties();
+	    $("#notify-container").notify("create", {text: '<b>Updated Node</b>'});
+	    $("." + Mappt_p_input_class).blur();
 	}
+    }.bind(this));
+
+    $(this.contextObj).mouseleave(function(e) {
+	$("." + Mappt_p_input_class).blur();
     }.bind(this));
 
     //bind our function to the Callback that fires in our
@@ -50,17 +57,17 @@ MapptEditor_Properties.prototype.init = function() {
 }
 
 //callback that is called whenever a node is clicked while in selectNode mode
-MapptEditor_Properties.prototype.callback_selectnode_click = function() {
+MapptEditor_Properties.prototype.callback_selectnode_click = function(paperPoint) {
     //get all of the point elements resembling the paper.circle's
-    var pointList = _.map(selectNode_currentlySelected, function(elem) {
-5	var elementID = grabFirstWhereSecond(this.parent.paperPoints, elem);
-	return this.parent.pointInfoManager.getPointByID(elementID);
-    }.bind(this));
+
+    var elementID = grabFirstWhereSecond(this.parent.paperPoints, paperPoint);
+    var pointElement = this.parent.pointInfoManager.getPointByID(elementID);
     
     //clear our previous batch of properties shown
     this.clearProperties();
-    //show our new batch of points and properties on the screen
-    this.appendProperties(pointList);
+
+    //show our single point properties on the screen
+    this.appendProperties(pointElement);
 
 }
 
@@ -68,49 +75,29 @@ MapptEditor_Properties.prototype.callback_selectnode_click = function() {
 //properties stored and return them. These new properties can then be
 //applied to our PointInfoElement objects using an _.extend()
 MapptEditor_Properties.prototype.updateActiveProperties = function() {
-    //list of our mappt property tables
-    var propertyTables = $("." + Mappt_p_table_class);
-    for (var i = 0; i < this.activeProperties.length; i++) {
-	//grab inside of our table body
-	var currentTable = propertyTables[i];
-	var rowLists = $(currentTable).find("." + Mappt_p_row_class);
-	var currentObject = this.activeProperties[i];
-	var j = 0;
-	for (key in currentObject) {
-	    //this is inside of our table column that contains our input
-	    var newValueObj = $(rowLists[j]).find("." + Mappt_p_column_value_class)[0];
-	    
-	    //by default, we get the input DOM element's value
-	    var ourValueObj = $(newValueObj).find("input")[0];
-	    var ourValue = $(ourValueObj).val();
-
-	    //get the key for the current object
-	    var newKeyObj = $(rowLists[j]).find("." + Mappt_p_column_name_class)[0];
-	    var ourKey = newKeyObj.innerHTML;
-
-	    this.activeProperties[i][ourKey] = ourValue;
-	    j += 1;
-	}
+    //grab the property table
+    var propertyTable = $("." + Mappt_p_table_class).find("tr");
+    for (var i = 0; i < propertyTable.length; i++) {
+	var property = propertyTable[i];
+	//grab the key from the first column in the row
+	var key = $(property).find("." + Mappt_p_column_name_class).text();
+	//grab the value from the input in the second column of the row
+	var value = $(property).find("." + Mappt_p_column_value_class).find("input").val();
+	this.activeProperties[key] = value;
     }
-    log(this.activeProperties);
     return this.activeProperties;
 }
 
 //goes through the given object, and constructs a form to display onto the screen
 MapptEditor_Properties.prototype.appendProperties = function(obj) {
-    var objectList = obj;
-
-    for (var i=0; i < objectList.length; i++) {
-	var iObj = objectList[i];
-	var tableObj = this.appendNewTable();
-	for (key in iObj) {
-	    var rowObj = this.appendNewRow(tableObj);
-	    this.appendColumn(rowObj, key, iObj[key]);
-	}
+    var tableObj = this.appendNewTable();
+    for (key in obj) {
+	var rowObj = this.appendNewRow(tableObj);
+	this.appendColumn(rowObj, key, obj[key]);
     }
-
+    
     //throw all of the appended properties into our active properties
-    this.activeProperties = this.activeProperties.concat(obj);
+    this.activeProperties = obj;
 }
 
 //creates a new table at the top of the context's DOM and stores this
@@ -120,6 +107,7 @@ MapptEditor_Properties.prototype.appendNewTable = function() {
     //our identifier for each table
     $(tableObj).addClass(Mappt_p_table_class);
     $(this.contextObj).append(tableObj);
+
     return tableObj;
 }
 
@@ -157,14 +145,10 @@ MapptEditor_Properties.prototype.appendColumn = function(rowObj, propertyName, p
 	//create a text field with the field filled with the current value
 	var columnTextInput = document.createElement("input");
 	$(columnPropertyValue).append(columnTextInput);
-	
+
 	//set it to the text input type
 	columnTextInput.type = "text";
 	columnTextInput.value = propertyValue;
+	$(columnTextInput).addClass(Mappt_p_input_class);
     }
 }
-
-testObject = {position:[23.1,24.5], room:"rm505", id: 0};
-testObject2 = {position:[10.1,0.01], room:"shuniah", id: 5};
-testObject3 = {position:[10.1,0.01], room:"shuniah", id: 5};
-larray = [testObject, testObject2]
