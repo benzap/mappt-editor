@@ -379,8 +379,6 @@ MapptEditor.prototype.setMap = function(imageName) {
 	    this.context_svg.setAttribute('height', this.context_height);
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
 	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
-
-	    log(this.context_svg_width, this.context_svg_height);
 	   
 	    //setup our paper in the front div container
 	    this.context_paper = ScaleRaphael(this.context_id_foreground,
@@ -643,11 +641,12 @@ MapptEditor.prototype.setMap = function(imageName) {
 }
 
 MapptEditor.prototype.init = function() {
-    //modify to allow SVG files to be loaded onto the screen
-    (this.imageURL) ||
-	log("ERROR: No Image was provided");
-
     var mapptEditor = this;
+
+    //setup our local storage if it doesn't exist
+    if (_.isNull(this.getLocalStorage())) {
+	this.initLocalStorage();
+    }
 
     //turn off everything in case we have already initialized before
     $("*").off(".mappt");
@@ -1210,6 +1209,12 @@ MapptEditor.prototype.getLocalStorage = function(ID) {
     return JSON.parse($.localStorage("Mappt-Structure-" + ID));
 }
 
+MapptEditor.prototype.clearLocalStorage = function(ID) {
+    var ID = ID;
+    if(_.isUndefined(ID)) ID = "CC";
+    return $.localStorage("Mappt-Structure-" + ID, null);
+}
+
 //Used to load a map's data from either local storage. If the file doesn't
 //exist in local storage, the server is checked for the file
 //the data should follow the convention of being the imageName + .json
@@ -1222,6 +1227,7 @@ MapptEditor.prototype.loadMapData = function(dataName) {
     for (filename in localStorage["Mappt-Listing"]) {
 	//found the file in our local storage, returning with it
 	if (dataName == filename) {
+	    log("loading map data from local...", dataName);
 	    this.importJSON(localStorage["Mappt-Listing"][filename]);
 	    return;
 	}
@@ -1231,6 +1237,7 @@ MapptEditor.prototype.loadMapData = function(dataName) {
     //we didn't find it in local storage, so we're going to check the server
 	jQuery.getJSON(dataURL, function(data) {
 	    this.importJSON(data);
+	    log("loading map data from remote...", dataURL);
 	}.bind(this));
     }
 
