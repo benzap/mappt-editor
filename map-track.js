@@ -363,6 +363,7 @@ MapptEditor.prototype.setMap = function(imageName) {
 
     //clear our current image from the background
     $(this.contextObj_back).empty();
+    this.clearData();
 
     jQuery.ajax({
 	type: 'GET',
@@ -645,6 +646,7 @@ MapptEditor.prototype.init = function() {
 
     //setup our local storage if it doesn't exist
     if (_.isNull(this.getLocalStorage())) {
+	log("Initializing Local Storage...");
 	this.initLocalStorage();
     }
 
@@ -1219,25 +1221,23 @@ MapptEditor.prototype.clearLocalStorage = function(ID) {
 //exist in local storage, the server is checked for the file
 //the data should follow the convention of being the imageName + .json
 // ex. Dorion_1.svg.json
-MapptEditor.prototype.loadMapData = function(dataName) {
-    //check local storage to see if it exists
-    var dataURL = Mappt_Data_Folder + dataName;
+MapptEditor.prototype.loadMapData = function() {
 
     var localStorage = this.getLocalStorage();
     for (filename in localStorage["Mappt-Listing"]) {
 	//found the file in our local storage, returning with it
-	if (dataName == filename) {
-	    log("loading map data from local...", dataName);
-	    this.importJSON(localStorage["Mappt-Listing"][filename]);
+	if (filename == this.dataName) {
+	    log("loading map data from local...", this.dataName);
+	    this.importJSON(localStorage["Mappt-Listing"][this.dataName]);
 	    return;
 	}
     }
     
-    if(UrlExists(dataURL)) {
+    if(UrlExists(this.dataURL)) {
     //we didn't find it in local storage, so we're going to check the server
-	jQuery.getJSON(dataURL, function(data) {
+	jQuery.getJSON(this.dataURL, function(data) {
 	    this.importJSON(data);
-	    log("loading map data from remote...", dataURL);
+	    log("loading map data from remote...", this.dataURL);
 	}.bind(this));
     }
 
@@ -1246,10 +1246,10 @@ MapptEditor.prototype.loadMapData = function(dataName) {
 //Saves the current map layout within local storage
 MapptEditor.prototype.saveMapData = function() {
     var data = JSON.parse(this.exportJSON());
-    
+    log("Saving map data locally...", this.dataName);
     var structData = this.getLocalStorage();
     //replace within our localstorage, the map data for our current open map
-    structData['Mappt-Listing'][this.imageName + ".json"] = data;
+    structData['Mappt-Listing'][this.dataName] = data;
     //replace our localstorage with the new map data
     this.setLocalStorage(structData);
 }
