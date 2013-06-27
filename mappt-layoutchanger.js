@@ -1,0 +1,4 @@
+/*
+  Provides a utility that includes a different context consisting of a
+  list of map layouts that can be swapped in and out of the editor.
+ */

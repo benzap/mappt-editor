@@ -5,7 +5,8 @@ $( function() {
     });
 
     mappt = new MapptEditor("mappt-editor-main", 1024, 768)
-	.setMap("Dorion_1.svg");
+	.setMap("Dorion_1.svg")
+	.init();
 
 
     mappt_toolbar = new MapptEditor_Toolbar(mappt, "mappt-editor-toolbar")

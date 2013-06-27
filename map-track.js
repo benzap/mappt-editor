@@ -348,8 +348,13 @@ MapptEditor = function (context_id, context_width, context_height) {
 
 //sets the currently displayed image within the editor
 MapptEditor.prototype.setMap = function(imageName) {
+    var mapptEditor = this;
     this.imageURL = Mappt_Layout_Folder + imageName;
     this.imageName = imageName;
+
+    //include a template for what our data url should look like
+    this.dataName = this.imageName + ".json";
+    this.dataURL = Mappt_Data_Folder + this.dataName;
 
     if (!UrlExists(this.imageURL)) {
 	log("MapptEditor.setMap --> Given image URL does not exist: ", this.imageURL);
@@ -419,26 +424,6 @@ MapptEditor.prototype.setMap = function(imageName) {
 	async: false,
     });
 
-    //try reinitializing everything
-    this.init();
-
-    return this;
-}
-
-MapptEditor.prototype.init = function() {
-    //modify to allow SVG files to be loaded onto the screen
-    (this.imageURL) ||
-	log("ERROR: No Image was provided");
-
-    var mapptEditor = this;
-
-    this.contextObj.css(
-	{
-	    width: this.context_width, 
-	    height: this.context_height,
-	    position: "relative",
-	});
-    
     //Image click events
     this.context_image.click(function(e) {
 	//only track left button clicks for now
@@ -464,19 +449,6 @@ MapptEditor.prototype.init = function() {
 	
 	}
     }.bind(this));
-    
-    //Image hover events
-    $(this.contextObj).hover(function(e) {
-	document.body.style.cursor = 'crosshair';
-	document.body.style.overflow="hidden";
-	mapptEditor.bContextHovered = true;
-    },
-			     function(e) {
-				 document.body.style.cursor = 'default';
-				 document.body.style.overflow="";
-				 mapptEditor.bContextHovered = false;
-			     });
-
 
     //Image scroll wheel events (zoom)
     $(this.context_image.node).bind('mousewheel', function(event, delta) {
@@ -659,18 +631,48 @@ MapptEditor.prototype.init = function() {
 		    "fill" : Mappt_Node_Color_Selected,
 		});
 	    });
-
-
 	}
     };
 
-    this.context_image.drag(dragMove, dragStart, dragUp);
+    this.context_image.drag(dragMove, dragStart, dragUp);    
 
-    //END Events
+    //try importing data if it exists
+    this.loadMapData(this.dataName);
+
+    return this;
+}
+
+MapptEditor.prototype.init = function() {
+    //modify to allow SVG files to be loaded onto the screen
+    (this.imageURL) ||
+	log("ERROR: No Image was provided");
+
+    var mapptEditor = this;
+
+    //turn off everything in case we have already initialized before
+    $("*").off(".mappt");
+
+    this.contextObj.css(
+	{
+	    width: this.context_width, 
+	    height: this.context_height,
+	    position: "relative",
+	});
+    
+    //Image hover events
+    $(this.contextObj).hover(function(e) {
+	document.body.style.cursor = 'crosshair';
+	document.body.style.overflow="hidden";
+	mapptEditor.bContextHovered = true;
+    },
+			     function(e) {
+				 document.body.style.cursor = 'default';
+				 document.body.style.overflow="";
+				 mapptEditor.bContextHovered = false;
+			     });
 
     
-    
-    $(window).keypress(function(e) {
+    $(window).on("keypress .mappt", function(e) {
 	//if the mouse isn't within the context window, return
 	if (!(this.bContextHovered)) {
 	    return;
