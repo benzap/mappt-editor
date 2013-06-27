@@ -63,6 +63,11 @@ var Mappt_node_types = [
     "START", //typical starting areas
 ];
 
+//Directory partial paths
+//partial path for the maps
+var Mappt_Layout_Folder = "./floorPlans_svg/";
+var Mappt_Data_Folder = "./floorPlans_data/";
+
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
 var Mappt_Node_Color_Selected = "#DD830B";
@@ -84,6 +89,13 @@ var paper_selectionBox = null;
 //Temporary for starting mouse click when panning [x,y]
 var panningStart = [];
 
+function UrlExists(url)
+{
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status!=404;
+}
 
 function guid() {
     s4 = function() {
@@ -280,8 +292,11 @@ MapptEditor = function (context_id, context_width, context_height) {
     $(this.contextObj).append(this.contextObj_front);
 
 
-    //contains the image URL
+    //contains the image URL full path
     this.imageURL = null;
+    //contains the name of the image
+    this.imageName = null;
+
 
     //get the offset of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
@@ -332,13 +347,17 @@ MapptEditor = function (context_id, context_width, context_height) {
 }
 
 //sets the currently displayed image within the editor
-MapptEditor.prototype.setMap = function(imageURL) {
-    this.imageURL = imageURL;
+MapptEditor.prototype.setMap = function(imageName) {
+    this.imageURL = Mappt_Layout_Folder + imageName;
+    this.imageName = imageName;
 
-    //TODO: clear out old image data.  
+    if (!UrlExists(this.imageURL)) {
+	log("MapptEditor.setMap --> Given image URL does not exist: ", this.imageURL);
+	return -1;
+    }
 
-    //TODO: check to see if there is a copy of the path routes within
-    //local storage, or on the site itself
+    //clear our current image from the background
+    $(this.contextObj_back).empty();
 
     jQuery.ajax({
 	type: 'GET',
@@ -347,10 +366,16 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	success: function(svgXML) {
 	    this.context_svg = svgXML.getElementsByTagName('svg')[0];
 
+	    //regex to find a number in a string
+	    var r = /\d+/;
+	    
 	    //the svg width and height
-	    this.context_svg_width = this.context_svg.getAttribute('width')
-	    this.context_svg_height = this.context_svg.getAttribute('height');
+	    this.context_svg.setAttribute('width', this.context_width);
+	    this.context_svg.setAttribute('height', this.context_height);
+	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
+	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
 
+	    log(this.context_svg_width, this.context_svg_height);
 	   
 	    //setup our paper in the front div container
 	    this.context_paper = ScaleRaphael(this.context_id_foreground,
@@ -393,6 +418,10 @@ MapptEditor.prototype.setMap = function(imageURL) {
 	},
 	async: false,
     });
+
+    //try reinitializing everything
+    this.init();
+
     return this;
 }
 
@@ -665,7 +694,8 @@ MapptEditor.prototype.init = function() {
 	}
 	else if (e.keyCode == Mappt_keycodes["e"]) {
 	    $("#notify-container").notify("create", {text: '<b>Exported to Console</b>'});
-	    this.exportJSON(this.imageURL + ".js");
+	    var jsonData = this.exportJSON();
+	    log(jsonData);
 	}
 	else if (e.keyCode == Mappt_keycodes["5"]) {
 	    $("#notify-container").notify("create", {text: '<b>Mode: </b>Select Node'});
@@ -817,7 +847,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		routeNode_currentlySelected.attr(
 		    {"fill":Mappt_Node_Color_Default});
 
-		routeTable = mapptEditor.exportJSON();
+		routeTable = JSON.parse(mapptEditor.exportJSON());
 		//get the IDs for both of our nodes we are traversing
 		var startNode_ID = grabFirstWhereSecond(mapptEditor.paperPoints,
 							routeNode_currentlySelected);
@@ -979,9 +1009,6 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	return elemDEEP;
     });
 
-    //check local storage
-
-
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
 	"LinkInfoList" : dataPaintLinks,
@@ -989,13 +1016,11 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	"Context_Height" : this.context_height,
 	"SVG_Width" : this.context_svg_width,
 	"SVG_Height" : this.context_svg_height,
-	"SVG_Filename" : this.imageURL,
+	"SVG_Filename" : this.imageName,
     };
 
     json_data_s = JSON.stringify(json_data);
-    //json_data_s = JSON.stringify(json_data, undefined, 2);
-    log(json_data_s);
-    return JSON.parse(json_data_s);
+    return json_data_s;
 }
 
 MapptEditor.prototype.setAttr = function(key, value) {
@@ -1038,21 +1063,10 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
     this.paperLinks.push([nodeID1, nodeID2, pathObject]);
 }
 
+//imports the given routetable onto the screen to
+//overlay the current image
 MapptEditor.prototype.importJSON = function(routeTable) {
-    //remove our nodes from paper.
-    _.map(this.paperPoints, function(elem) {
-	elem[1].remove();
-    });
-    this.paperPoints = [];
-    
-    //remove our links from the paper.
-    _.map(this.paperLinks, function(elem) {
-	elem[2].remove();
-    });
-    this.paperLinks = [];
-    //Clear all of the point data out of the point manager
-    this.pointInfoManager.clear();
-
+    this.clearData();
     var import_points = routeTable.PointInfoList;
     var import_links = routeTable.LinkInfoList;
 
@@ -1068,6 +1082,24 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     _.map(import_links, function(elem) {
 	this.addLink(elem[0], elem[1]);
     }.bind(this));
+}
+
+//Clears all of the points and links on the screen
+//deletes all backend data as well
+MapptEditor.prototype.clearData = function() {
+    //remove our nodes from paper.
+    _.map(this.paperPoints, function(elem) {
+	elem[1].remove();
+    });
+    this.paperPoints = [];
+    
+    //remove our links from the paper.
+    _.map(this.paperLinks, function(elem) {
+	elem[2].remove();
+    });
+    this.paperLinks = [];
+    //Clear all of the point data out of the point manager
+    this.pointInfoManager.clear();    
 }
 
 //returns an array with the x and y position of the mouse on the
@@ -1113,12 +1145,13 @@ MapptEditor.prototype.translatePaper = function(x, y, s) {
 MapptEditor.prototype.setViewBox = function(x,y,w,h) {    
     this.context_paper.setViewBox(x, y, w, h);
 
+    //fix for our background SVG image if it isn't the same size as
+    //our raphael paper. Calculate the ratio of the raphael paper
     var viewString = "";
-    viewString += String(x) + " ";
-    viewString += String(y) + " ";
-    viewString += String(w) + " ";
-    viewString += String(h);
-
+    viewString += String(x * this.context_svg_width / this.context_width) + " ";
+    viewString += String(y * this.context_svg_height / this.context_height) + " ";
+    viewString += String(w * this.context_svg_width / this.context_width) + " ";
+    viewString += String(h * this.context_svg_height / this.context_height);
 
     //Now that we have a separate svg element, we need to also change
     //the view of our svg
@@ -1162,6 +1195,12 @@ MapptEditor.prototype.initLocalStorage = function(ID) {
     return struct;
 }
 
+MapptEditor.prototype.setLocalStorage = function(struct, ID) {
+    var ID = ID;
+    if(_.isUndefined(ID)) ID = "CC";
+    $.localStorage("Mappt-Structure-" + ID, JSON.stringify(struct));
+}
+
 //grab the local storage structure that resembles our entire map
 MapptEditor.prototype.getLocalStorage = function(ID) {
     var ID = ID;
@@ -1169,13 +1208,39 @@ MapptEditor.prototype.getLocalStorage = function(ID) {
     return JSON.parse($.localStorage("Mappt-Structure-" + ID));
 }
 
-//Used to load a map from either local storage. If the file doesn't
+//Used to load a map's data from either local storage. If the file doesn't
 //exist in local storage, the server is checked for the file
-MapptEditor.prototype.loadMap = function(isLocal) {
+//the data should follow the convention of being the imageName + .json
+// ex. Dorion_1.svg.json
+MapptEditor.prototype.loadMapData = function(dataName) {
+    //check local storage to see if it exists
+    var dataURL = Mappt_Data_Folder + dataName;
+
+    var localStorage = this.getLocalStorage();
+    for (filename in localStorage["Mappt-Listing"]) {
+	//found the file in our local storage, returning with it
+	if (dataName == filename) {
+	    this.importJSON(localStorage["Mappt-Listing"][filename]);
+	    return;
+	}
+    }
     
+    if(UrlExists(dataURL)) {
+    //we didn't find it in local storage, so we're going to check the server
+	jQuery.getJSON(dataURL, function(data) {
+	    this.importJSON(data);
+	}.bind(this));
+    }
+
 }
 
 //Saves the current map layout within local storage
-MapptEditor.prototype.saveMap = function() {
+MapptEditor.prototype.saveMapData = function() {
+    var data = JSON.parse(this.exportJSON());
     
+    var structData = this.getLocalStorage();
+    //replace within our localstorage, the map data for our current open map
+    structData['Mappt-Listing'][this.imageName + ".json"] = data;
+    //replace our localstorage with the new map data
+    this.setLocalStorage(structData);
 }

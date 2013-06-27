@@ -5,8 +5,8 @@ $( function() {
     });
 
     mappt = new MapptEditor("mappt-editor-main", 1024, 768)
-	.setMap("floorPlans_svg/Dorion_1.svg")
-	.init();
+	.setMap("Dorion_1.svg");
+
 
     mappt_toolbar = new MapptEditor_Toolbar(mappt, "mappt-editor-toolbar")
 	.init();
