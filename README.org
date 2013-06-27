@@ -64,19 +64,19 @@
     - [X] Add setAttr command, which modifies variable
   - Iteration 3 [1/1]
     - [X] Routing function getRoute(room1, room2). Returns lists of routes with a total score
-  - Iteration 4 [2/5]
+  - Iteration 4 [3/5]
     - [X] Panning and Zooming
     - [X] Convert previous importSVG command back over to background
       SVG element. Consider using viewBox svg element
-    - [ ] Add a very basic toolbar and properties panel for each tool, to modify how they work.
+    - [-] Add a very basic toolbar and properties panel for each tool, to modify how they work.
       - Add Node :: change node type, change default node properties
       - Remove Node :: na
-      - Add Link :: allow a chain link
+      - [ ] Add Link :: allow a chain link
       - Remove Link :: na
-      - Select Node :: Provide information on currently selected nodes, and allow editing
+      - [X] Select Node :: Provide information on currently selected nodes, and allow editing
       - Move Node :: na
       - Route Node :: na
-    - [ ] Ability to intuitively add and edit information for each node displayed on the screen
+    - [X] Ability to intuitively add and edit information for each node displayed on the screen
     - [ ] Ability to properly save and load into HTML5 local storage
   - Iteration 5 [0/3]
     - [ ] Begin routing out a map, and iron out any bugs.
@@ -85,7 +85,24 @@
     - [ ] Follow the FDS, and produce a prototype
 
 
+
+
 * Technical
+** Storage
+*** JSON Structure
+    - Mappt-Structure :: Top-level of our JSON, has a -ID suffex
+         (ex. Mappt-Structure-CC) for "Confederation College" where
+         the ID is "CC"
+      - Mappt-Listing :: Includes the node lists and links
+	- {filename.svg.json} :: the file export from the editor
+	  - PointInfoList :: Contains a list of all of the nodes on the map
+	  - LinkInfoList :: Contains a list of id pairs, which is the link between each node
+          - Context_Width :: The map editor size used for editing
+	  - Context_Height :: ...
+	  - SVG_Width :: The width of the SVG editted
+	  - SVG_Height :: The height of the SVG editted
+	  - SVG_Filename :: The SVG filename
+	- ...
 ** Node Types
   - Hall Nodes
     - Represent hallways to traverse. Never going to be an end point

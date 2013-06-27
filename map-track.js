@@ -1,4 +1,4 @@
-/*
+/*  
   MpptEditor is a drop-in editor to produce layouts and points on a
 map. This information can be used to provide data for path traversal
 applications.
@@ -39,8 +39,6 @@ var Mappt_keycodes = {
     "f" : 102,
     "return" : 13,
 };
-
-
 
 //The radius of the node circles
 var Mappt_Node_Radius = 3;
@@ -981,6 +979,9 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	return elemDEEP;
     });
 
+    //check local storage
+
+
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
 	"LinkInfoList" : dataPaintLinks,
@@ -988,6 +989,7 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	"Context_Height" : this.context_height,
 	"SVG_Width" : this.context_svg_width,
 	"SVG_Height" : this.context_svg_height,
+	"SVG_Filename" : this.imageURL,
     };
 
     json_data_s = JSON.stringify(json_data);
@@ -1147,4 +1149,33 @@ MapptEditor.prototype.getPaperScale = function() {
     return scale;
 }
 
+//Used to reinitialize localstorage, and produce the base tree from
+//which to work from
+//The provided ID is the name of the mappt structure we are working on
+MapptEditor.prototype.initLocalStorage = function(ID) {
+    //Unique descriptor
+    var ID = ID;
+    if(_.isUndefined(ID)) ID = "CC";
+    var struct = {};
+    struct["Mappt-Listing"] = {};
+    $.localStorage("Mappt-Structure-" + ID, JSON.stringify(struct));
+    return struct;
+}
 
+//grab the local storage structure that resembles our entire map
+MapptEditor.prototype.getLocalStorage = function(ID) {
+    var ID = ID;
+    if(_.isUndefined(ID)) ID = "CC";
+    return JSON.parse($.localStorage("Mappt-Structure-" + ID));
+}
+
+//Used to load a map from either local storage. If the file doesn't
+//exist in local storage, the server is checked for the file
+MapptEditor.prototype.loadMap = function(isLocal) {
+    
+}
+
+//Saves the current map layout within local storage
+MapptEditor.prototype.saveMap = function() {
+    
+}
