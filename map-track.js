@@ -416,11 +416,13 @@ MapptEditor.prototype.init = function() {
     }.bind(this));
     
     //Image hover events
-    this.context_image.hover(function(e) {
+    $(this.contextObj).hover(function(e) {
 	document.body.style.cursor = 'crosshair';
+	document.body.style.overflow="hidden";
     },
 			     function(e) {
 				 document.body.style.cursor = 'default';
+				 document.body.style.overflow="";
 			     });
 
 
@@ -591,6 +593,7 @@ MapptEditor.prototype.init = function() {
 	    // restoring state
 	    paper_selectionBox.remove();
 	    document.body.style.cursor = 'crosshair';
+	    mapptEditor.callback_click_select.fire();
 	}
     };
 
@@ -751,10 +754,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    if (_.isEmpty(selectNode_currentlySelected)) {
 		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
 		this.attr({"fill":Mappt_Node_Color_Selected});
-		//fire our callback for our extensions. pass the id, and the action to take
-		//var theID = grabFirstWhereSecond(mapptEditor.paperPoints, 
-
-		//mapptEditor.callback_click_select.fire(
 	    }
 	    //If the selection list has a copy of our value that was clicked, we remove it
 	    else if (_.some(selectNode_currentlySelected, 
@@ -771,6 +770,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		selectNode_currentlySelected = selectNode_currentlySelected.concat(this);
 		this.attr({"fill":Mappt_Node_Color_Selected});
 	    }
+
+	    //fire our callback
+	    mapptEditor.callback_click_select.fire();
 	}
 	else if (mapptEditor.state == "routeNode") {
 	    //first node selection
@@ -836,7 +838,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	}
     },
 		     function(e) {
-			 
+			 document.body.style.cursor = 'crosshair';
     });
 		     
     //create the data point
@@ -903,6 +905,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	if (mapptEditor.state != "moveNode") return;
 	// restoring state
 	this.attr({opacity: 1});
+	document.body.style.cursor = 'move';
     };
     paperPoint.drag(dragMove, dragStart, dragUp);
 

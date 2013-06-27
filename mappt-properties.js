@@ -42,18 +42,26 @@ MapptEditor_Properties.prototype.init = function() {
 	}
     }.bind(this));
 
-    $(window).click(function(e) {
-	var mapptEditor = this.parent;
-	//we only need to catch clicks from the select node state
-	if (mapptEditor.state != "selectNode") return;
+    //bind our function to the Callback that fires in our
+    // selectNode.click event
+    this.parent.callback_click_select.add(this.callback_selectnode_click.bind(this));
 
-	//check to see if the buffer size has changed
-	// we're assuming this event willbe called after the other click methods
-	
-
-
-    }.bind(this));
     return this;
+}
+
+//callback that is called whenever a node is clicked while in selectNode mode
+MapptEditor_Properties.prototype.callback_selectnode_click = function() {
+    //get all of the point elements resembling the paper.circle's
+    var pointList = _.map(selectNode_currentlySelected, function(elem) {
+5	var elementID = grabFirstWhereSecond(this.parent.paperPoints, elem);
+	return this.parent.pointInfoManager.getPointByID(elementID);
+    }.bind(this));
+    
+    //clear our previous batch of properties shown
+    this.clearProperties();
+    //show our new batch of points and properties on the screen
+    this.appendProperties(pointList);
+
 }
 
 //after the active properties have been changed, update our active
@@ -69,9 +77,6 @@ MapptEditor_Properties.prototype.updateActiveProperties = function() {
 	var currentObject = this.activeProperties[i];
 	var j = 0;
 	for (key in currentObject) {
-	    if (key != $(rowLists[j]).find("." + Mappt_p_column_name_class)[0].innerHTML) {
-		log("Error: In updateActiveProperties, keys don't match up");
-	    }
 	    //this is inside of our table column that contains our input
 	    var newValueObj = $(rowLists[j]).find("." + Mappt_p_column_value_class)[0];
 	    
@@ -79,7 +84,11 @@ MapptEditor_Properties.prototype.updateActiveProperties = function() {
 	    var ourValueObj = $(newValueObj).find("input")[0];
 	    var ourValue = $(ourValueObj).val();
 
-	    this.activeProperties[i][key] = ourValue;
+	    //get the key for the current object
+	    var newKeyObj = $(rowLists[j]).find("." + Mappt_p_column_name_class)[0];
+	    var ourKey = newKeyObj.innerHTML;
+
+	    this.activeProperties[i][ourKey] = ourValue;
 	    j += 1;
 	}
     }
