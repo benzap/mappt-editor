@@ -38,6 +38,14 @@ var Mappt_keycodes = {
     "e" : 101,
     "f" : 102,
     "return" : 13,
+    "=" : 61,
+    "-" : 45,
+    "i" : 105,
+    "j" : 106,
+    "k" : 107,
+    "l" : 108,
+    "u" : 117,
+    "o" : 111,
 };
 
 //The radius of the node circles
@@ -719,6 +727,26 @@ MapptEditor.prototype.init = function() {
 	else if (e.keyCode == Mappt_keycodes["s"]) {
 	    this.saveMapData();
 	    $("#notify-container").notify("create", {text: '<b>Saved to Local...</b>'});
+	}
+	else if (e.keyCode == Mappt_keycodes["="] ||
+		 e.keyCode == Mappt_keycodes["u"]) {
+	    this.translatePaper(0,0,1.1);
+	}
+	else if (e.keyCode == Mappt_keycodes["-"] ||
+		 e.keyCode == Mappt_keycodes["o"]) {
+	    this.translatePaper(0,0,0.9);
+	}
+	else if (e.keyCode == Mappt_keycodes["i"]) {
+	    this.translatePaper(0,100 / this.getPaperScale(), 1);
+	}
+	else if (e.keyCode == Mappt_keycodes["k"]) {
+	    this.translatePaper(0,-100 / this.getPaperScale(), 1);
+	}
+	else if (e.keyCode == Mappt_keycodes["j"]) {
+	    this.translatePaper(100 / this.getPaperScale(), 0, 1);
+	}
+	else if (e.keyCode == Mappt_keycodes["l"]) {
+	    this.translatePaper(-100 / this.getPaperScale(), 0, 1);
 	}
     }.bind(this));
     return this;
