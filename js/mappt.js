@@ -34,7 +34,7 @@ var Mappt_keycodes = {
     "6" : 54,
     "7" : 55,
     "l" : 76,
-    "s" : 83,
+    "s" : 115,
     "e" : 101,
     "f" : 102,
     "return" : 13,
@@ -716,6 +716,10 @@ MapptEditor.prototype.init = function() {
 	    this.fitScreen();
 	    $("#notify-container").notify("create", {text: '<b>Fit Screen</b>'});
 	}
+	else if (e.keyCode == Mappt_keycodes["s"]) {
+	    this.saveMapData();
+	    $("#notify-container").notify("create", {text: '<b>Saved to Local...</b>'});
+	}
     }.bind(this));
     return this;
 }
@@ -1024,6 +1028,11 @@ MapptEditor.prototype.exportJSON = function(filename) {
 
     json_data_s = JSON.stringify(json_data);
     return json_data_s;
+}
+
+MapptEditor.prototype.displayJSON = function() {
+    var json_data = this.exportJSON();
+    log(json_data);
 }
 
 MapptEditor.prototype.setAttr = function(key, value) {
