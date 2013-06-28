@@ -11,6 +11,7 @@
 
  */
 
+//css .class properties to style the properties table
 Mappt_p_table_class = "mappt-properties-table";
 Mappt_p_row_class = "mappt-properties-row";
 Mappt_p_column_name_class = "mappt-properties-column-name";
@@ -59,11 +60,6 @@ function sanitizeInput(theString) {
     else return theArray;
 }
 
-log(sanitizeInput("hello"));
-log(sanitizeInput("hello,world"));
-log(sanitizeInput("10.5"))
-log(sanitizeInput("10.5,12.5"));
-log(sanitizeInput("10.0,hello"));
 MapptEditor_Properties = function(parent, context_id) {
     //the MapptEditor parent we are referring to
     this.parent = parent;

@@ -9,6 +9,7 @@
 
  */
 
+//css .class properties to style the layout changer
 Mappt_c_ul_class = "mappt-layout-changer-ul";
 Mappt_c_li_class = "mappt-layout-changer-li";
 
@@ -34,7 +35,7 @@ MapptEditor_LayoutChanger.prototype.init = function(mapList) {
 
 MapptEditor_LayoutChanger.prototype.setMapList = function(mapList) {
     var listContainer = this.createList();
-    for (var i = 0; i <= mapList.length; i++) {
+    for (var i = 0; i < mapList.length; i++) {
 	this.appendMap(listContainer, mapList[i]);
     }
 }
