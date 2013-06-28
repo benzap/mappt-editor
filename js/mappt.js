@@ -41,7 +41,7 @@ var Mappt_keycodes = {
 };
 
 //The radius of the node circles
-var Mappt_Node_Radius = 3;
+var Mappt_Node_Radius = 2;
 
 var Mappt_states = [
     "addNode",

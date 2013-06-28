@@ -31,6 +31,8 @@ MapptEditor_LayoutChanger.prototype.init = function(mapList) {
     if (!_.isUndefined(mapList)) {
 	this.setMapList(mapList);
     }
+    $("." + Mappt_c_li_class + ":first-child").addClass("selected");
+
 }
 
 MapptEditor_LayoutChanger.prototype.setMapList = function(mapList) {
@@ -53,6 +55,8 @@ MapptEditor_LayoutChanger.prototype.appendMap = function(listContainer, mapName)
     $(listElement).text(mapName);
     var mapptEditor = this.parent;
     $(listElement).click(function(e) {
+	$(listContainer).children().removeClass("selected");
+	$(listElement).addClass("selected");
 	mapptEditor.setMap($(this).text());
     });
     $(listContainer).append(listElement);

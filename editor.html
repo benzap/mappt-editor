@@ -3,35 +3,29 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link type="text/css" rel="stylesheet" href="ui.notify.css" />    
+    <link type="text/css" rel="stylesheet" href="editor.css" />    
     <title>Map Editor</title>
   </head>
 
   <body>
 
     <div class="container">
-      <div class="sidebar" style="float:right; margin: 30px 20px;">
-	   <div id="mappt-editor-properties" 
-		style="border : 1px solid black; 
-		       position : relative; 
-		       min-width : 400px;
-		       min-height : 100px;">
-	   </div>
-	   <div id="mappt-editor-layout-changer" 
-		style="border : 1px solid black; 
-		       position : relative; 
-		       min-width : 400px;
-		       min-height : 100px;">
-	   </div>
-      </div>
+      <div id="mappt-editor-toolbar"></div>
       <div class="main-container">
-	<div id="mappt-editor-toolbar" style="margin: auto auto; width:1024px;"></div>
-	<div id="mappt-editor-main" style="border:1px solid black; margin: auto auto;"></div>
+	<div id="mappt-editor-main"></div>
       </div>
+      <div class="sidebar">
+	<h1>Map Selector</h1>
+	<div id="mappt-editor-layout-changer" class="sidebar-element"></div>	
+	<h1>Properties</h1>
+	<div id="mappt-editor-properties" class="sidebar-element"></div>
+      </div>
+      
     </div><!-- container -->
-
+    
     <div id="notify-container" style="display:none">
       
-      <div id="basic-template" style="font-size:16px; text-align:center;">
+      <div id="basic-template">
 	<p>#{text}</p>
       </div>
       
