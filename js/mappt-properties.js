@@ -17,6 +17,53 @@ Mappt_p_column_name_class = "mappt-properties-column-name";
 Mappt_p_column_value_class = "mappt-properties-column-value";
 Mappt_p_input_class = "mappt-properties-input";
 
+//function takes in a string, and converts it into
+// a meaningul javascript object
+// "10.0,12.0" --> Array([10.0, 12.0])
+// "10.0" --> 10.0
+// "hello,world" --> ["hello", "world"]
+function sanitizeInput(theString) {
+    //regex to check if the string is an integer
+    r_hasInteger = /^-?\d+$/;
+
+    //regex to check if the string is a float (no exp)
+    r_hasFloat = /^-?\d*\.?\d*$/;
+
+    //regex to check if the string has any commas
+    r_hasComma = /,/;
+    
+    var theArray;
+    if (r_hasComma.test(theString)) {
+	theArray = theString.split(",");
+    }
+    else if (!theString.length) {
+	return "";
+    }
+    else {
+	theArray = [ theString ];
+    }
+    for (var i = 0; i < theArray.length; i++) {
+	//remove any whitespace (s.strip())
+	theArray[i] = theArray[i].replace(/\s+/g,'');
+
+	if (r_hasInteger.test(theArray[i])) {
+	    theArray[i] = parseInt(theArray[i]);
+	}
+	else if (r_hasFloat.test(theArray[i])) {
+	    theArray[i] = parseFloat(theArray[i]);
+	}
+    }
+    if (theArray.length == 1) {
+	return theArray[0];
+    }
+    else return theArray;
+}
+
+log(sanitizeInput("hello"));
+log(sanitizeInput("hello,world"));
+log(sanitizeInput("10.5"))
+log(sanitizeInput("10.5,12.5"));
+log(sanitizeInput("10.0,hello"));
 MapptEditor_Properties = function(parent, context_id) {
     //the MapptEditor parent we are referring to
     this.parent = parent;
@@ -83,7 +130,8 @@ MapptEditor_Properties.prototype.updateActiveProperties = function() {
 	var key = $(property).find("." + Mappt_p_column_name_class).text();
 	//grab the value from the input in the second column of the row
 	var value = $(property).find("." + Mappt_p_column_value_class).find("input").val();
-	this.activeProperties[key] = value;
+	
+	this.activeProperties[key] = sanitizeInput(value);
     }
     return this.activeProperties;
 }
