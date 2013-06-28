@@ -377,6 +377,7 @@ MapptEditor.prototype.setMap = function(imageName) {
 	type: 'GET',
 	url: this.imageURL, //this is the svg file loaded as xml
 	dataType: 'xml',
+	cache: false,
 	success: function(svgXML) {
 	    this.context_svg = svgXML.getElementsByTagName('svg')[0];
 
