@@ -6,7 +6,7 @@ $( function() {
 
     mappt = new MapptEditor("mappt-editor-main", 1024, 768)
 	.init()
-	.setMap("Dorion_1.svg");
+	.setMap("Aerial.svg");
 
     mappt_toolbar = new MapptEditor_Toolbar(mappt, "mappt-editor-toolbar")
 	.init();
@@ -15,6 +15,14 @@ $( function() {
 	.init();
 
     mappt_layout = new MapptEditor_LayoutChanger(mappt, "mappt-editor-layout-changer")
-	.init(["Dorion_1.svg", "test.svg"]);
+	.init(
+	    [
+		"Aerial.svg",
+		"Dorion_1.svg",
+		"Dorion_2.svg",
+		"Mcintyre_1.svg",
+		"Shuniah_1.svg",
+		"Shuniah_2.svg",
+	    ]);
 
 });
