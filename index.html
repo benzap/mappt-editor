@@ -3,10 +3,126 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link type="text/css" rel="stylesheet" href="ui.notify.css" />    
-    <link type="text/css" rel="stylesheet" href="editor.css" />    
-    <title>Editor Index</title>
+    <link type="text/css" rel="stylesheet" href="index.css" />
+    <title>Editor Start Page</title>
   </head>
   <body>
-    <h1>hello</h1>
+    <div class="sidebar">
+      <h1>Table of Contents</h1>
+      <ul>
+	<li><a href="">Introduction</a></li>
+	<li><a href="">Description</a></li>
+	<li><a href="">The Collaboration</a></li>
+	<li><a href="">Getting Started</a></li>
+	<li><a href="">How to Edit Maps</a></li>
+	<li><a href="">Dealing with Node Types</a></li>
+	<li><a href="">How to Export your Work</a></li>
+	<li><a href="">Some Useful Keyboard Shortcuts</a></li>
+      </ul>
+    </div><!-- sidebar -->
+    <div class="main-container">
+      <div class="header">
+	<h1>Mappt Editor</h1>
+      </div>
+      <div class="container">
+	<div class="content">
+	  <h1 id="index-introduction">Introduction</h1>
+	  <p>
+	    Mappt Editor is a tool I wrote to help develop map routes
+	    over the SVG maps that we have created. The tool is still
+	    in development. Expect bugs and constant frustration.
+	  </p>
+	  <h1 id="index-description">Description</h1>
+	</div>
+	<div class="box-main">
+	  <div class="box-float">
+	    <h2>What it <i>can do</i></h2>
+	    <p>The tool is used to plot nodes on a map. The nodes are
+	      then given different characteristics based on
+	      information provided by the user. For example, a node
+	      placed on a door would be given the characteristics of
+	      type <b>DOOR</b>, and then might include a description on
+	      where the door leads.
+	    </p>
+	    <p>A few things that this editor is capable of:</p>
+	    <ul>
+	      <li>Add and remove nodes from the map</li>
+	      <li>Add and remove links from the map</li>
+	      <li>Zoom and Pan the map</li>
+	      <li>Export the resulting map layout to the console</li>
+	      <li>Import JSON for a given layout</li>
+	      <li>Locally save a map node layout</li>
+	      <li>Locally load a map node layout, with a remote fallback</li>
+	      <li>Edit node descriptions</li>
+	      <li>Edit groups of node descriptions</li>
+	    </ul>
+
+	  </div>
+	  <div class="box-float">
+	    <h2>What it <i>can't do</i></h2>
+	    <p>
+	      A few things that this editor is not capable of yet:
+	    </p>
+	    <ul>
+	      <li>This editor cannot properly save any of the map
+		layouts <b>remotely</b>, but I have worked out a
+		workaround described in <a href="">The
+		  Collaboration</a>.</li>
+	      <li>
+		This editor is not meant for commercial use as of yet,
+		and possibly includes a few bugs. If you find a bug,
+		please let me know.
+	      </li>
+	      <li>
+		This editor is not <i>Full-featured</i>, you're going
+		to get frustrated with some of the lacking features,
+		and I understand. However, I want feedback on what you
+		would consider a good feature, and in time, I might
+		even be able to implement them.
+	      </li>
+	    </ul>
+	  </div>
+	</div>
+	<div class="content">
+	  <h1>The Collaboration</h1>
+	  <p>
+	    Since our map making collaboration, i've been trying to
+	    think of easier ways for us to stay connected, and work on
+	    things together in a more efficient manner.
+	  </p>
+	  <p>
+	    One of the ways I was thinking of making our process
+	    faster, is to share one single network drive, that we can
+	    all access. This drive will appear on your computer, and
+	    will allow you to add, remove and edit files as though it were
+	    on your computer.
+	  </p>
+	  <p>The basic process that we will carry out for this collaboration:</p>
+	  <ul>
+	    <li>Get assigned a map, and edit it for any imperfections.</li>
+	    <li>While within the editor, choose the map layout you
+	    were assigned, and perform node layouts</li>
+	    <li>When a portion of designated amount of work has been
+	    finished, export the resulting JSON and copy the results
+	    to a file named <i>mapLayoutName</i>.svg.json and place it
+	    within remote folder under ./floorplans_data/</li>
+	    <li>Repeat</li>
+	  </ul>
+	  The full explanation on how to setup the remote drive can be
+	  found in the next section <a href="">Getting Started</a>
+
+	</div>
+	<div class="content">
+	  <h1>Getting Started</h1>
+	  
+	</div>
+	  <h1>How to Edit Maps</h1>
+	  <h1>Dealing with Node Types</h1>
+	  <h1>How to Export your Work</h1>
+	  <h1>Some Useful Keyboard Shortcuts</h1>
+
+	</div><!-- content -->
+      </div><!-- main-container -->
+    </div><!-- container -->
   </body>
 </html>
