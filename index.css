@@ -4,6 +4,31 @@ body {
     font-size: 18px;
 }
 
+a {
+    color: #854f22;
+    font-decoration: none;
+}
+
+a:link {
+    color: #854f22;
+    text-decoration:none;
+}
+
+a:visited {
+    color: #854f22;
+    text-decoration:none;
+}
+
+a:hover {
+    color: white;
+    text-decoration:underline;
+}
+
+a:active {
+    color: #854f22;
+    text-decoration:underline;
+}
+
 .header h1 {
     text-align: center;
     font-size: 30px;
@@ -27,7 +52,7 @@ body {
 .sidebar ul {
     text-align:left;
     list-style-type: none;
-    font-size: 30px;
+    font-size: 20px;
     padding-left: 15px;
 }
 
@@ -76,6 +101,10 @@ body {
 
 }
 
+.container h2 {
+
+}
+
 .container li {
     padding: 5px;
 }
@@ -101,4 +130,3 @@ body {
 .content {
     padding: 0 10px 10px 10px;
 }
-

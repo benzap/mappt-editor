@@ -10,14 +10,14 @@
     <div class="sidebar">
       <h1>Table of Contents</h1>
       <ul>
-	<li><a href="">Introduction</a></li>
-	<li><a href="">Description</a></li>
-	<li><a href="">The Collaboration</a></li>
-	<li><a href="">Getting Started</a></li>
-	<li><a href="">How to Edit Maps</a></li>
-	<li><a href="">Dealing with Node Types</a></li>
-	<li><a href="">How to Export your Work</a></li>
-	<li><a href="">Some Useful Keyboard Shortcuts</a></li>
+	<li><a href="#index-introduction">Introduction</a></li>
+	<li><a href="#index-description">Description</a></li>
+	<li><a href="#index-collaboration">The Collaboration</a></li>
+	<li><a href="#index-gettingstarted">Getting Started</a></li>
+	<li><a href="#index-howtoedit">How to Edit Maps</a></li>
+	<li><a href="#index-dealingwithnodes">Dealing with Node Types</a></li>
+	<li><a href="#index-howtoexport">How to Export your Work</a></li>
+	<li><a href="#index-keyboardshortcuts">Some Useful Keyboard Shortcuts</a></li>
       </ul>
     </div><!-- sidebar -->
     <div class="main-container">
@@ -84,7 +84,7 @@
 	  </div>
 	</div>
 	<div class="content">
-	  <h1>The Collaboration</h1>
+	  <h1 id="index-collaboration">The Collaboration</h1>
 	  <p>
 	    Since our map making collaboration, i've been trying to
 	    think of easier ways for us to stay connected, and work on
@@ -113,14 +113,210 @@
 
 	</div>
 	<div class="content">
-	  <h1>Getting Started</h1>
-	  
-	</div>
-	  <h1>How to Edit Maps</h1>
-	  <h1>Dealing with Node Types</h1>
-	  <h1>How to Export your Work</h1>
-	  <h1>Some Useful Keyboard Shortcuts</h1>
+	  <h1 id="index-gettingstarted">Getting Started</h1>
+	  <p>Before we can start editting maps, we need to get
+	  everyone to install the remote drive service.
 
+	    The basic setup instructions are as follows:</p>
+
+	  <ul>
+	    <li>Download and
+	    install <a href="https://code.google.com/p/win-sshfs/downloads/list">win-sshfs</a></li>
+	    <li>Once the installation is complete, the win-sshfs
+	    manager should be in your taskbar. Open win-sshfs</li>
+	    <li><b>Add</b> a new drive</li>
+	    <li><i>Drive Name</i> should be <b>Mappt-Remote-Folder</b>, or whatever you prefer</li>
+	    <li>For <i>Host</i>, enter the same ip address as this webpage <i>(192.168.1.*)</i></li>
+	    <li>Under the option <i>directory</i>,
+	    enter <i>./Projects/mappt-editor/</i></li>
+	    <li>Under <i>Username</i>, enter <i>benzap</i>.
+	    <li>the <i>Password</i> field will require my intervention.</li>
+ 	    <li>Click on <b>Save</b> to save the changes we just made</li>
+	    <li>Then to connect the drive, click <b>Mount</b></li>
+	    <li>Check your network drives folder under <b>My
+	    Computer</b> and ensure that the process was
+	    successful</li>
+	  </ul>
+	</div>
+	<div class="content">
+	  <h1 id="index-howtoedit">How to Edit Maps</h1>
+	  <i>Not Completed</i>
+	  <h2>Changing Maps</h2>
+	  <p>To change to a given map, click on a desired map listed
+	  within the <b>Map Selector</b> list.</p> If you had been
+	  previously working on another map, it is desirable to save
+	  the map before proceeding to view another map.
+
+	  <h2>Panning and Zooming</h2>
+	  <p>The map can be panned by pushing in the mouse scroll
+	    wheel, and dragging the mouse.
+
+	    An alternative to using the mouse, are the <b>I,J,K,L</b>
+	    keys for moving the map.</p>
+
+	  <h2>Adding Nodes</h2> 
+	  <p>
+	    Nodes can be added to the map by setting the mode
+	    to <b>Add Node</b> at the top of the screen and clicking
+	    anywhere on the map where you would like to place a
+	    node.
+	  </p>
+	  
+	  <h2>Removing Nodes</h2>
+	  <p>
+	    To remove a node from the map, must change the mode
+	    to <b>Remove Node</b> and click on the corresponding node
+	    that you would like to remove. Upon removing the node, all
+	    existing links that relate to that node will be lost.
+	  </p>
+	  <h2>Adding Links</h2>
+	  <p>
+	    To perform a link between two nodes, you must change the
+	    mode to <b>Add Link</b> and click on the two corresponding
+	    nodes to form the link.
+	  </p>
+	  <h2>Removing Links</h2>
+	  <p>To remove links between two nodes, change the mode
+	  to <b>Remove Link</b> and click on the two nodes that form a
+	  link. The resulting link between those two nodes will then
+	  be removed.
+	  </p>
+	  <h2>Editing Nodes</h2>
+	  <h3>Single Node Editting</h3>
+	  <p>Editing nodes is done within the <b>Select Node</b> mode,
+	    and requires you to click on single nodes. Upon clicking on
+	    a single node, the data contained for that particular node
+	    will be displayed within the <i>Properties</i> area on the
+	    right sidebar. From there, the corresponding attribute that
+	    you would like to change can be edited. When a change has
+	    been made to the appropriate attributes, simply
+	    press <b>ENTER</b> and the attribute will be saved for the
+	    given node.</p>
+	  
+	  <h3>Multiple Node Editing</h3>
+	  <p>Multiple Node editing requires a bit more know how. In
+	    order to edit the same property for several nodes, you must
+	    be within the <b>Select Node</b> mode. While in this mode,
+	    you also have the ability to drag a selection box over
+	    several nodes. The nodes that are affected will change
+	    color.</p>
+	  
+	  <p>At this point, you need to open up the Chrome Developer
+	    Console, (Ctrl+Shift+j) and use the console
+	    command <i>mappt.setAttr(name, value)</i> where name
+	    refers to the name of the attribute, and value refers to
+	    the value you would like to give it.</p>
+	  
+	  <p>ex. mappt.setAttr("type", "WALK")</p>
+	  <h2>Moving Nodes</h2>
+	  <p>Moving nodes requires you to change to the mode <b>Move
+	      Node</b>, and click and dragging a node will move it.
+	    
+	  <h2>Checking Map Routes</h2>
+	  <p>
+	    You can check map routes by switching to the mode <b>Route
+	      Node</b> and clicking between the two nodes that you would
+	    like to the check to route for. The route shown should be
+	    the fastest route based on euclidean distance.
+	  </p>
+	  <h2>Saving The Map Locally</h2>
+	  <p>Saving the map locally should be a useful feature, and
+	    can be done by clicking on the button in the top left corner
+	    labelled <b>Save Map Locally</b>
+	  </p>
+	  <p>
+	    Note: that these changes are only stored on your system
+	    using your current browser. If you wish to make the work
+	    you've done available between you and your coworkers, you
+	    must export your work to the remote drive. This is
+	    explained further in the
+	    section <a href="#index-howtoexport">How to Export your
+	    work</a>
+	  </p>
+	  <h2>Clearing local work</h2>
+	  <p>Sometimes in order to view the new remote changes that
+	    someone has made, you must clear your local storage. This is
+	    due to the loading of local storage taken precedence over
+	    the remote changes. </p>
+	  <p>To fix this problem, you can choose to clear your local
+	    storage to force the remote changes to be loaded onto your
+	    system. It is recommended you export any relevant changes
+	    that you've made before you perform this action. For further
+	    details on how to export your work, please go to the
+	    section <a href="#index-howtoexport">How to Export your
+	      work</a>.
+	  </p>
+	</div>
+	<div class="content">
+	  <h1 id="index-dealingwithnodes">Dealing with Nodes</h1>
+	  <i>Not Completed</i>
+	  <h2>Introduction</h2> 
+	  <p>After all of the nodes have been placed down with all of
+	    the correct links, a great deal of time will be spent on
+	    describing links. The type of information that should be
+	    provided is based on the type of node it is.
+	  </p>
+	  <p>
+	    For example, a <b>door</b> node might not require any relevant
+	    information (not always true), but an <b>area</b> node might need such attributes
+	    like:
+	    
+	    <ul>
+	      <li>The room name</li>
+	      <li>A tag for relevant groups (cafeteria, classroom)</li>
+	      <li>A descriptor, which has a list of tag-values (department=human resources, building=shuniah)
+	    </ul>
+	    
+	    Some of the information for the nodes might not be known,
+	    which means we might even have to go on a field trip to
+	    work out how to describe certain nodes on the
+	    confederation college campus.
+	  </p>
+	  <h2>Determining what type a node should be</h2>
+	  <p>
+	    There are several types of nodes, each of which should be
+	    used in specific situations. Some of them will be trickier
+	    than others to setup, and some of them might even be
+	    disputed over what node type it should be. This will all
+	    be worked out in greater detail once we get our baseline
+	    maps developed. For now, we're only going to be focusing
+	    our attention on <b>HALL</b> nodes, <b>WALK</b>
+	    nodes, <b>AREA</b> nodes and <b>DOOR</b> nodes. I will
+	    provide full details on all node types, but the
+	    information provided on each node type should be taken
+	    lightly, because they are subject to change.
+	  </p>
+	  
+	  <p>The type of nodes that have currently been thought up are:</p>
+
+	  <ul>
+	    <li>Hall Nodes</li>
+	    <li>Walk Nodes</li>
+	    <li>Door Nodes</li>
+	    <li>Area Nodes</li>
+	    <li>Elevation Nodes</li>
+	    <li>Entrance Nodes</li>
+	    <li>Start Nodes</li>
+	  </ul>
+
+	  <p>Further details on each type of node will be discussed at this point.</p>
+	  <h3>Hall Node</h3>
+	  <h3>Walk Node</h3>
+	  <h3>Door Node</h3>
+	  <h3>Area Node</h3>
+	  <h3>Elevation Node</h3>
+	  <h3>Entrance Node</h3>
+	  <h3>Start Node</h3>
+
+	</div>
+	<div class="content">
+	  <h1 id="index-howtoexport">How to Export your Work</h1>
+	  <i>Not Completed</i>
+	</div>
+	<div class="content">
+	  <h1 id="index-keyboardshortcuts">Some Useful Keyboard Shortcuts</h1>
+	  <i>Not Completed</i>
+	</div>
 	</div><!-- content -->
       </div><!-- main-container -->
     </div><!-- container -->
