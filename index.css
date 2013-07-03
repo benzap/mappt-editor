@@ -36,7 +36,7 @@ a:active {
 }
 
 .sidebar {
-    position: absolute;
+    position: relative;
     float:left;
     width: 20%;
     padding: 1.25% 0px 1.25% 1.25%;
@@ -88,7 +88,7 @@ a:active {
 .main-container {
     position: relative;
     float: right;
-    width: 70%;
+    width: 73.75%;
     margin: 1.25%;
     background-color: #17992c;
 }
@@ -142,3 +142,7 @@ a:active {
     padding: 0 10px 10px 10px;
 }
 
+.boldlink {
+    text-align: center;
+    font-size: 30px;
+}
