@@ -301,17 +301,152 @@
 
 	  <p>Further details on each type of node will be discussed at this point.</p>
 	  <h3>Hall Node</h3>
+	  <p>
+	    Hall nodes should be used in hallways. An example would be
+	    any long and straight corridors containing several door
+	    nodes.
+	  </p>
 	  <h3>Walk Node</h3>
+	  <p>
+	    Walk nodes are special nodes that represent areas that you
+	    wouldn't normally traverse, but still provide access to
+	    common areas within a building, or outside. An example
+	    would be a room <b>within</b> a room. The person will
+	    still require a means to get to this room, so a walk node
+	    would be used as a means of traversing to that room.
+	  </p>
+	  <p>
+	    Walk nodes can also be used outside to provide alternative
+	    routes between building entrances.
+	  </p>
 	  <h3>Door Node</h3>
+	  <p>
+	    Used to represent doors of a room. Doors can be linked
+	    with <i>Area Nodes</i> to provide a relation on what area
+	    the door enters. Full details on how this should be done
+	    will not be provided at this time.
+	  </p>
 	  <h3>Area Node</h3>
+	  <p>
+	    Area nodes are a more advanced topic, but are simply nodes
+	    placed in the center of a room. They shouldn't normally be
+	    traversed, but still hold a link to any doors or entrances
+	    that allow access to that area.
+	  </p>
 	  <h3>Elevation Node</h3>
+	  <p>
+	    Elevation nodes are used to represent elevators, stairs,
+	    or any other change in elevation performed between two
+	    maps.
+	  </p>
 	  <h3>Entrance Node</h3>
+	  <p>
+	    Used to represent the entrance ways of buildings seen from
+	    the aerial view. These particular nodes might include
+	    extra information on what building they end up entering.
+	  </p>
 	  <h3>Start Node</h3>
+	  <p>
+	    Start nodes are areas of the map that a typical person
+	    might start from. Some examples would be a parking lot, an
+	    entrance into the college from some side trail, or typical
+	    main entrances.
+	  </p>
+
+	  
 
 	</div>
 	<div class="content">
 	  <h1 id="index-howtoexport">How to Export your Work</h1>
-	  <i>Not Completed</i>
+	  <h2>Introduction</h2>
+	  <p>
+	    Throughout the map layout process, it is recommended that
+	    you export your work to the main server. By exporting your
+	    work and copying it to the main server, it allows others
+	    to see your progress and ensures that everyone is on the
+	    same page.
+	  </p>
+	  <h2>Working with the console</h2>
+	  <p>Before you can export your work, you must become familiar
+	  with the console. Within the Google Chrome browser, we are
+	  given a developer console, which can be used to debug, run
+	  javascript functions, and log information about our
+	  application. The part we are interested in is <b>Logging Information.</b>
+	  </p>
+	  <p>
+	    To access the developer console, either
+	    press <b>Ctrl+Shift+j</b> or click on the settings context
+	    in the top right corner and navigate
+	    to <b>Tools->Javascript Console</b>. You should be
+	    presented with a console, and might already include some
+	    logging information.
+	  </p>
+	  <p>
+	    Try playing around with the console a bit, there is a lot
+	    at your disposal. Try typing <b>mappt.translatePaper(100,
+	    100, 1.0)</b> and observe the changes made to your
+	    editor. The translate command is actually what is used for
+	    panning and zooming with the mouse and keyboard keys.
+	  </p>
+	  <h2>The mappt.exportJSON() command</h2>
+	  <p>
+	    Just like everything else, the export command could also
+	    be accessed through the console. Thankfully, there is a
+	    button and shortcut key (<b>e</b>) to call this function
+	    easily, and display the information within the developer
+	    console.
+	  </p>
+	  <p>
+	    The information that is spit out within the developer
+	    console is a representation of our points on the map
+	    layout, that is presented in a more human readable and
+	    portable data structure called <b>JSON</b>.
+	  </p>
+
+	  <h2>Step-By-Step</h2>
+	  <p>
+	    Before we can export, make sure you have followed
+	    the <a href="#index-gettingstarted">Getting Started</a> part
+	    of this page.
+	  </p>
+
+	  <ol>
+	    <li>
+	      While within the editor, click on the button <b>Export
+		JSON</b> or press the keyboard shortcut <b>e</b>
+	    </li>
+	    <li>
+	      Open the Javascript Developer Console by
+	      pressing <b>Ctrl+Shift+j</b> or navigating
+	      to <b>Tools->Javascript Console</b>
+	    </li>
+	    <li>
+	      Copy the data structure from the start of the left curly
+	      bracket, all the way to the last right curly
+	      bracket. <b>{ .... }</b>
+	    </li>
+	    <li>
+	      Open notepad, and paste the structure. Save the file
+	      as <i>filename.svg.json</i>, where <b>filename</b>
+	      refers to the exact name of the map you were working
+	      on. <b>NOTE:</b> Make sure that no .txt extension was
+	      included when you saved, this can be fixed by saving
+	      as <i>All Files (*)</i>
+	    </li>
+	    <li>
+	      Open up the remote drive that we previously mounted with
+	      win-ssh. This can be accessed through <b>My Computer</b>
+	      much like when you try and access Drive C:
+	    </li>
+	    <li>
+	      Copy or simply save the file within ./floorPlans_data/
+	    </li>
+	    <li>
+	      This file should now be accessible remotely by everyone
+	      else.
+	    </li>
+	  </ol>
+
 	</div>
 	<div class="content">
 	  <h1 id="index-keyboardshortcuts">Some Useful Keyboard Shortcuts</h1>
