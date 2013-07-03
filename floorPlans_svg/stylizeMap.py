@@ -1,11 +1,12 @@
-'''     
-
-This file is used to take in a map layout with the correctly names layers for
+'''This file is used to take in a map layout with the correctly names layers for
 the boundary and the rooms, and apply styling based on what is specified
 within the variables listed at the top of the page.
 
-This file also corrects for several other issues involved when using inkscape
-to develop the svg's, along with other formatting.
+This file also corrects for several other issues involved when using
+inkscape to develop the svg's, along with other formatting. One major
+requirement for this setup is that each each layer must consist of
+paths. To ensure that they are the same path, everything in a specific
+layer is selected and combined into a single path.
 
 Corrections:     
 
@@ -15,8 +16,6 @@ Formatting:
 
 - Labels opacity is decreased a bit.
 - We ensure that the Layout layer is not visible, and ensure that it is locked
-- Might even remove the image altogether
-
 
 '''
 from xml.dom import minidom
@@ -50,13 +49,17 @@ pathStyleData_boundary = {
 }
 
 #The label label
-label_Label = "Label" #...
+label_Label = "Labels" #...
 pathStyleData_label = {
 	"opacity" : "0.5",
 }
 
 #plan on deleting this...
 label_layout = "Layout"
+pathStyleData_layout = {
+        "opacity" : "0.3",
+        "display" : "none",
+}
 
 def addStyling(domObj, pathStyleData):
 	for item in domObj:
@@ -91,17 +94,20 @@ if __name__ == "__main__":
 			elif label == label_rooms:
 				addStyling(pathList, pathStyleData_rooms)
 			elif label == label_Label:
+                                # add styling to the group
+                                addStyling([group], { "opacity" : "1.0", "display" : "inline" })
 				textList = group.getElementsByTagName("text")
 				addStyling(textList, pathStyleData_label)
-			#remove our image
 			elif label == label_layout:
-				group.parentNode.removeChild(item)
+                                addStyling([group], pathStyleData_layout)
+                        else:
+                                print "Unexpected label '{}'".format(label)
 
 
 	#grab all of the paths
 	#itemList = xmldoc.getElementsByTagName('path')
 
-
+        
 
 
 	#addStyling(itemList, pathStyleData_rooms)
