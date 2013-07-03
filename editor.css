@@ -11,6 +11,18 @@ button {
     padding: 8px 2px;
 }
 
+#mappt-clearlocal {
+    color: red;
+}
+
+#mappt-export {
+    color: green;
+}
+
+#mappt-save {
+    color: purple;
+}
+
 .container {
     margin: auto auto;
     width: 100%;

@@ -1291,3 +1291,14 @@ MapptEditor.prototype.saveMapData = function() {
     //replace our localstorage with the new map data
     this.setLocalStorage(structData);
 }
+
+//helper function to show a prompt for clearing local data
+function prompt_clearLocal(mappt) {
+    var r = confirm("Are you sure you want to clear local storage? All local changes will be lost.");
+    if (r == true) {
+	mappt.clearLocalStorage();
+    }
+    else {
+	log("Nothing happened.");
+    }
+}
