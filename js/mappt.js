@@ -890,7 +890,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		var endNode_ID = grabFirstWhereSecond(mapptEditor.paperPoints,
 							this);
 		
-		var routeList = getRoute(startNode_ID, endNode_ID, routeTable)[0];
+		//var routeList = getRoute(startNode_ID, endNode_ID, routeTable)[0];
+		var routeList = getRoute_djikstra(startNode_ID, endNode_ID, routeTable);
+		log(routeList);
 
 		var lastCase;
 		_.reduce(routeList.data, function(elem1, elem2) {
