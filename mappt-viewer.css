@@ -1,0 +1,17 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+#mappt-viewer {
+    
+}
+
+#fixed-left {
+    width: 10%;
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 5%;
+    border: 1px solid black;
+}
