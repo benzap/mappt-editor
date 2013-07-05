@@ -42,7 +42,7 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"z-index" : 0,
 	"width" : "100%",
 	"height" : "100%",
-	"overflow" : "hidden",
+//	"overflow" : "hidden",
     })
     $(this.contextObj).append(this.contextObj_back);
     
@@ -55,6 +55,7 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"z-index" : 1,
 	"width" : "100%",
 	"height" : "100%",
+	"overflow" : "hidden",
     })
     $(this.contextObj).append(this.contextObj_front);
 
@@ -110,12 +111,53 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    //regex to find a number in a string
 	    var r = /\d+/;
 	    
+	    //doing something stupid
+	    this.context_svg.setAttribute("preserveAspectRatio", "xMinYMin");
+
 	    //the svg width and height
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
 	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
-	    this.context_svg.setAttribute('width', this.context_width);
-	    this.context_svg.setAttribute('height', this.context_height);
+	    
+
+	    //These are required in order to maintain the aspect ratio
+	    //of the drawn SVG when zooming into the image.
+
+	    //This effectively changes the SVG to main a fixed width
+	    //or height respective to the context, while fixing height
+	    //or width to new value to represent the canvas aspect
+	    //ratio when scaling. An offset is also provided in order
+	    //to ensure the SVG remains centered.
+	    this.context_svg_height_offset = 0;
+	    this.context_svg_width_offset = 0;
+	    this.context_height_aspect = 0;
+	    this.context_width_aspect = 0;
+	  
+	    //get the new svg size and offset based on the current context
+	    //aspect ratio
+	    var fixedSVGDim = this.correctAspect(this.context_width, this.context_height,
+						 this.context_svg_width, this.context_svg_height);
+
+	    
+	    this.context_height_aspect = fixedSVGDim.height;
+	    this.context_svg_height_offset = fixedSVGDim.height_offset;
+	    this.context_width_aspect = fixedSVGDim.width;
+	    this.context_svg_width_offset = fixedSVGDim.width_offset;
 	   
+	    //to simulate panning and zooming of our SVG, a DIV is
+	    //resized and translated behind the main paper context.
+	    //change our background context to reflect the changes.
+	    $(this.contextObj_back).css({
+		"width" : this.context_width_aspect,
+		"height" : this.context_height_aspect,
+		"top" : this.context_svg_height_offset,
+		"left" : this.context_svg_width_offset,
+	    });
+
+	    //changing our svg to fit the size of our DIV element
+	    this.context_svg.setAttribute('width', this.context_width_aspect);
+	    this.context_svg.setAttribute('height', this.context_height_aspect);
+
+
 	    //setup our paper in the front div container
 	    this.context_paper = Raphael(this.context_id_foreground,
 					 this.context_width,
@@ -173,7 +215,7 @@ MapptViewer.prototype.setViewBox = function(x,y,w,h) {
     this.context_paper.setViewBox(x, y, w, h);
 
     //fix for our background SVG image if it isn't the same size as
-    //our raphael paper. Calculate the ratio of the raphael paper
+    //our raphael paper.
     var viewString = "";
     viewString += String(xValue) + " ";
     viewString += String(yValue) + " ";
@@ -181,6 +223,13 @@ MapptViewer.prototype.setViewBox = function(x,y,w,h) {
     viewString += String(hValue);
 
     console.log(viewString);
+
+    //$(this.contextObj_back).css({
+	//"width" : wValue,
+	//"height" : hValue,
+	//"top" : xValue,
+	//"left" : yValue,
+    //});
 
     //Now that we have a separate svg element, we need to also change
     //the view of our svg
@@ -208,8 +257,8 @@ MapptViewer.prototype.translatePaper = function(x, y, s) {
 MapptViewer.prototype.fitScreen = function() {
     this.currentView.x = 0;
     this.currentView.y = 0;
-    this.currentView.w = this.context_svg_width;
-    this.currentView.h = this.context_svg_height;
+    this.currentView.w = this.context_width;
+    this.currentView.h = this.context_height;
     
     this.setViewBox(
 	this.currentView.x,
@@ -224,4 +273,54 @@ MapptViewer.prototype.fitScreen = function() {
 MapptViewer.prototype.getPaperScale = function() {
     var scale = this.context_width / this.currentView.w;
     return scale;
+}
+
+//since the svg might not fit within the context, we need to correct
+//for it.  this function finds out the differences in aspect between
+//the svg and the screen and gives the resulting width and height
+//required to fit the svg within the context without changing it's
+//aspect. An offset is also provided to make sure the svg will be
+//centered within the context.
+
+//provided are the width and height of the context and the width and
+//height of the svg. The return values are the changes in the width
+//and height of the svg and the offset to center it within the
+//context.
+MapptViewer.prototype.correctAspect = function(width, height, svgWidth, svgHeight) {
+    //temporaries
+    var newContextWidth;
+    var newContextHeight;
+    
+    //our corrected values
+    var width_aspect;
+    var height_aspect;
+    var svgWidth_offset;
+    var svgHeight_offset;
+
+    //if the svg is wider than the context
+    if ((width / height) < 
+	(svgWidth / svgHeight)) {
+	newContextWidth = width;
+	newContextHeight = svgHeight * newContextWidth / svgWidth;
+	svgHeight_offset = (height - newContextHeight) / 2;
+	svgWidth_offset = 0;
+	width_aspect = newContextWidth;
+	height_aspect = newContextHeight;
+    }
+    else {//if the svg is narrower than the context
+	newContextHeight = height;
+	newContextWidth = svgWidth * newContextHeight / svgHeight;
+	svgWidth_offset = (width - newContextWidth) / 2;
+	svgHeight_offset = 0;
+	height_aspect = newContextHeight;
+	width_aspect = newContextWidth;
+    }
+
+    console.log(width_aspect, height_aspect,
+		svgWidth_offset, svgHeight_offset);
+
+    return { width: width_aspect,
+	     height: height_aspect,
+	     width_offset: svgWidth_offset,
+	     height_offset: svgHeight_offset };
 }
