@@ -42,7 +42,7 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"z-index" : 0,
 	"width" : "100%",
 	"height" : "100%",
-//	"overflow" : "hidden",
+	"overflow" : "hidden",
     })
     $(this.contextObj).append(this.contextObj_back);
     
@@ -153,11 +153,6 @@ MapptViewer.prototype.setMap = function(imageName) {
 		"left" : this.context_svg_width_offset,
 	    });
 
-	    //changing our svg to fit the size of our DIV element
-	    this.context_svg.setAttribute('width', this.context_width_aspect);
-	    this.context_svg.setAttribute('height', this.context_height_aspect);
-
-
 	    //setup our paper in the front div container
 	    this.context_paper = Raphael(this.context_id_foreground,
 					 this.context_width,
@@ -165,10 +160,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    
 	    //setup our svg map in the back div container
 	    $(this.contextObj_back).append(this.context_svg);
-
-	    console.log(this.context_svg_width, this.context_svg_height);
-	    console.log(this.context_width, this.context_height);
-
+	    
 	    //add a rectangle in front of the svg to allow clicks. It
 	    // is added infront because we have no way to make our
 	    // links and nodes to appear infront of it.
@@ -188,12 +180,12 @@ MapptViewer.prototype.setMap = function(imageName) {
 		w : this.context_width,
 		h : this.context_height,
 	    };
-
+	    
 	    this.setViewBox(
 		this.currentView.x, this.currentView.y, 
 		this.currentView.w, this.currentView.h
 	    );
-	    
+	    	    
 
 	}.bind(this),
 	error: function (errObj, errString) {
@@ -207,33 +199,36 @@ MapptViewer.prototype.setMap = function(imageName) {
 
 //Used to set the position of the paper an exact place on the screen
 MapptViewer.prototype.setViewBox = function(x,y,w,h) {    
-    var xValue = x * this.context_svg_width / this.context_width;
-    var yValue = y * this.context_svg_height / this.context_height;    
-    var wValue = w * this.context_svg_width / this.context_width;
-    var hValue = h * this.context_svg_height / this.context_height;
-
     this.context_paper.setViewBox(x, y, w, h);
 
-    //fix for our background SVG image if it isn't the same size as
-    //our raphael paper.
-    var viewString = "";
-    viewString += String(xValue) + " ";
-    viewString += String(yValue) + " ";
-    viewString += String(wValue) + " ";
-    viewString += String(hValue);
+    //first, we're going to work out the width and height of our
+    //context with respect to how it would appear on the screen.
+    var context_width = this.context_width * this.context_width / w;
+    var context_height = this.context_height * this.context_height / h;
+    console.log("New context", context_width, context_height);
 
-    console.log(viewString);
+    //work out the new aspect with respect to our 
+    var newAspect = this.correctAspect(context_width, context_height, 
+				       this.context_svg_width, this.context_svg_height);
+    console.log("New Aspect", newAspect);
 
-    //$(this.contextObj_back).css({
-	//"width" : wValue,
-	//"height" : hValue,
-	//"top" : xValue,
-	//"left" : yValue,
-    //});
 
-    //Now that we have a separate svg element, we need to also change
-    //the view of our svg
-    this.context_svg.setAttribute("viewBox", viewString);
+    //apply our new translations to the aspect
+    newAspect.width_offset += x;
+    newAspect.height_offset += y;
+    
+    console.log("Changed Aspect", newAspect);
+
+    $(this.contextObj_back).css({
+	"width" : newAspect.width,
+	"height" : newAspect.height,
+	"top" : newAspect.width_offset,
+	"left" : newAspect.height_offset,
+    });
+
+    //change our svg to fit the new DOM element
+    this.context_svg.setAttribute("width", newAspect.width);
+    this.context_svg.setAttribute("height", newAspect.height);
 
     return this;
 }
@@ -315,9 +310,6 @@ MapptViewer.prototype.correctAspect = function(width, height, svgWidth, svgHeigh
 	height_aspect = newContextHeight;
 	width_aspect = newContextWidth;
     }
-
-    console.log(width_aspect, height_aspect,
-		svgWidth_offset, svgHeight_offset);
 
     return { width: width_aspect,
 	     height: height_aspect,
