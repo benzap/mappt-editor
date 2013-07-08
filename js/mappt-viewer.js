@@ -42,8 +42,8 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"z-index" : 0,
 	"width" : "100%",
 	"height" : "100%",
-	"overflow" : "hidden",
-    })
+	"overflow" : "hidden"
+    });
     $(this.contextObj).append(this.contextObj_back);
     
     //create our foreground div
@@ -56,7 +56,7 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"width" : "100%",
 	"height" : "100%",
 	"overflow" : "hidden",
-    })
+    });
     $(this.contextObj).append(this.contextObj_front);
 
 
@@ -81,7 +81,7 @@ MapptViewer = function(context_id, context_width, context_height) {
 	x : 0.0,
 	y : 0.0,
 	w : this.context_width,
-	h : this.context_height,
+	h : this.context_height
     };
 }
 
@@ -90,9 +90,9 @@ MapptViewer.prototype.init = function() {
     
     this.currentView = {
 	
-    }
+    };
     return this;
-}
+};
 
 MapptViewer.prototype.setMap = function(imageName) {
     this.imageName = imageName;
@@ -150,7 +150,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 		"width" : this.context_width_aspect,
 		"height" : this.context_height_aspect,
 		"top" : this.context_svg_height_offset,
-		"left" : this.context_svg_width_offset,
+		"left" : this.context_svg_width_offset
 	    });
 
 	    //setup our paper in the front div container
@@ -178,7 +178,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 		x : 0.0,
 		y : 0.0,
 		w : this.context_width,
-		h : this.context_height,
+		h : this.context_height
 	    };
 	    
 	    this.setViewBox(
@@ -191,11 +191,11 @@ MapptViewer.prototype.setMap = function(imageName) {
 	error: function (errObj, errString) {
 	    log("Error: ", errString);
 	},
-	async: false,
+	async: false
     });
 
     return this;
-}
+};
 
 //Used to set the position of the paper an exact place on the screen
 MapptViewer.prototype.setViewBox = function(x,y,w,h) {    
@@ -231,7 +231,7 @@ MapptViewer.prototype.setViewBox = function(x,y,w,h) {
     this.context_svg.setAttribute("height", newAspect.height);
 
     return this;
-}
+};
 
 //used to translate the screen for panning and zooming
 MapptViewer.prototype.translatePaper = function(x, y, s) {
@@ -247,7 +247,7 @@ MapptViewer.prototype.translatePaper = function(x, y, s) {
     );
 
     return this;
-}
+};
 
 MapptViewer.prototype.fitScreen = function() {
     this.currentView.x = 0;
@@ -263,12 +263,12 @@ MapptViewer.prototype.fitScreen = function() {
     );
 
     return this;
-}
+};
 
 MapptViewer.prototype.getPaperScale = function() {
     var scale = this.context_width / this.currentView.w;
     return scale;
-}
+};
 
 //since the svg might not fit within the context, we need to correct
 //for it.  this function finds out the differences in aspect between
@@ -315,4 +315,4 @@ MapptViewer.prototype.correctAspect = function(width, height, svgWidth, svgHeigh
 	     height: height_aspect,
 	     width_offset: svgWidth_offset,
 	     height_offset: svgHeight_offset };
-}
+};
