@@ -8,7 +8,7 @@
 }
 
 .mappt-panel-button {
-    background-color: red;
+    background-color: #AF562C;
 }
 
 .mappt-panel-button p {
@@ -16,6 +16,30 @@
     padding: 15px;
 }
 
+#mappt-panel-where > .mappt-panel-button {
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+}
+
+#mappt-panel-where > .mappt-panel-container {
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+}
+
+#mappt-panel-to > .mappt-panel-button {
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+}
+
+#mappt-panel-to > .mappt-panel-container {
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+}
+
 .mappt-panel-container {
-    background-color: green;
+    background-color: #245828;
 }
