@@ -48,6 +48,7 @@ Mappt_Panel.prototype.init = function() {
     //create our button
     this.contextObj_button = document.createElement("div");
     $(this.contextObj_button)
+	.addClass(Mappt_P_Class)
 	.addClass(Mappt_P_Button_Class)
 	.css({
 	    position: "relative",
@@ -60,6 +61,7 @@ Mappt_Panel.prototype.init = function() {
     //create our container
     this.contextObj_container = document.createElement("div");
     $(this.contextObj_container)
+	.addClass(Mappt_P_Class)
 	.addClass(Mappt_P_Container_Class)
 	.css({
 	    position: "relative",
@@ -87,14 +89,14 @@ Mappt_Panel.prototype.init = function() {
 	.addClass(Mappt_P_Class)
 	.css({
 	    position: "fixed",
+	    "z-index" : 2,
 	    bottom: 0,
 	})
 	.append(this.contextObj_button)
 	.append(this.contextObj_container);
     
     //bind our onclick event
-    $(this.contextObj).on("click", "." + Mappt_P_Button_Class, function() {
-	log("hello");
+    $(this.contextObj).on("click", "." + Mappt_P_Button_Class, function(e) {
 	this.toggleContext();
     }.bind(this));
 
