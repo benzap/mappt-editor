@@ -6,7 +6,10 @@ $(function() {
 	.init()
 	.setMap("Shuniah_1.svg");
 
-    mappt_panel_where = new Mappt_Panel_Where();
+    mappt_panel_where = new Mappt_Panel_Where("mappt-panel-where")
+	.init();
+    mappt_panel_to = new Mappt_Panel_To("mappt-panel-to")
+	.init();
     
 
 });

@@ -7,11 +7,6 @@
     
 }
 
-#fixed-left {
-    width: 10%;
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: 5%;
+.mappt-panel {
     border: 1px solid black;
 }
