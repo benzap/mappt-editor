@@ -19,15 +19,15 @@ Mappt_P_AnimationTime = 500;
 Mappt_P_Button_Class = "mappt-panel-button";
 
 //the button default height and width
-Mappt_P_Button_Width = "200px";
+Mappt_P_Button_Width = "250px";
 Mappt_P_Button_Height = "50px";
 
 /***************************
   Mappt Panel Container Style Settings
  ***************************/
 Mappt_P_Container_Class = "mappt-panel-container";
-Mappt_P_Container_Width = "250px";
-Mappt_P_Container_Height = "200px";
+Mappt_P_Container_Width = "450px";
+Mappt_P_Container_Height = "400px";
 
 //a common panel prototype that is inherited
 Mappt_Panel = function(context_id, align) {
@@ -180,6 +180,28 @@ Mappt_Panel.prototype.toggleContext = function(_bAnimate) {
 	this.displayContext(_bAnimate);
 	this.bDisplay = true;
     }
+    return this;
+}
+
+//$().append() into the container of the panel. Choose to remove the
+//resulting DIV afterwards
+Mappt_Panel.prototype.appendToContainer = function(container_id, _bDisplay) {
+    var bDisplay = _bDisplay;
+    if (_.isUndefined(bDisplay)) {
+	bDisplay = false;
+    }
+    
+    var container = $("#" + container_id);
+    $(container.length) || 
+	log("ERROR: container with that ID does not exist");
+
+    if (!bDisplay) {
+	$(container).css({
+	    //display: "none",
+	});
+    }
+
+    $(this.contextObj_container).append(container);
     return this;
 }
 
