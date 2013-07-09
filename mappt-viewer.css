@@ -7,6 +7,15 @@
     
 }
 
-.mappt-panel {
-    border: 1px solid black;
+.mappt-panel-button {
+    background-color: red;
+}
+
+.mappt-panel-button p {
+    text-align: center;
+    padding: 15px;
+}
+
+.mappt-panel-container {
+    background-color: green;
 }

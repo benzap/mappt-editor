@@ -9,6 +9,9 @@
 // for a panel
 Mappt_P_Class = "mappt-panel";
 
+//amount of time animating
+Mappt_P_AnimationTime = 500;
+
 /***************************
   Mappt Panel Button Style Settings
  ***************************/
@@ -28,8 +31,12 @@ Mappt_P_Container_Height = "200px";
 
 //a common panel prototype that is inherited
 Mappt_Panel = function(context_id, align) {
+    //the alignment of the panel --> "left", "right"
     this.align = align;
+    //the div ID representing this panel
     this.context_id = context_id;
+    //boolean which determines if the panel is showing
+    this.bDisplay = false;
 
     return this;
 };
@@ -38,13 +45,14 @@ Mappt_Panel.prototype.init = function() {
     this.contextObj = $("#" + this.context_id);
     (this.contextObj.length) || log("ERROR: context ID does not exist");
 
-    //create and append our button
+    //create our button
     this.contextObj_button = document.createElement("div");
     $(this.contextObj_button)
 	.addClass(Mappt_P_Button_Class)
 	.css({
 	    position: "relative",
 	    display: "inherited",
+	    float: this.align,
 	    width: Mappt_P_Button_Width,
 	    height: Mappt_P_Button_Height,
 	});
@@ -56,7 +64,8 @@ Mappt_Panel.prototype.init = function() {
 	.css({
 	    position: "relative",
 	    display: "inherited",
-	    width: Mappt_P_Container_Width,
+	    clear: this.align,
+	    width: 0, //Mappt_P_Container_Width,
 	    height: 0, //Mappt_P_Container_Height,
 	});
 
@@ -73,6 +82,7 @@ Mappt_Panel.prototype.init = function() {
     }
     
     //css styling for our main div
+    //and appending our button and container
     $(this.contextObj)
 	.addClass(Mappt_P_Class)
 	.css({
@@ -89,18 +99,80 @@ Mappt_Panel.prototype.setText = function(theText) {
     var textDOM = document.createElement("p");
     textDOM.innerHTML = theText;
     $(this.contextObj_button).append(textDOM);
+    return this;
 }
 
 Mappt_Panel.prototype.displayContext = function(_bAnimate) {
+    var bAnimate = _bAnimate;
+    if (_.isUndefined(_bAnimate)) {
+	bAnimate = true;
+    }
 
+    var animationTime;
+    if (bAnimate) {
+	animationTime = Mappt_P_AnimationTime;
+    }
+    else {
+	animationTime = 0;
+    }
+
+    $(this.contextObj_container)
+	.css({
+	    display: "inherited",
+	    width: Mappt_P_Container_Width,
+	})
+	.animate({
+	    height: Mappt_P_Container_Height,
+	}, animationTime);
+
+    this.bDisplay = true;
+    return this;
 }
 
 Mappt_Panel.prototype.hideContext = function(_bAnimate) {
+    var bAnimate = _bAnimate;
+    if (_.isUndefined(_bAnimate)) {
+	bAnimate = true;
+    }
 
+    var animationTime;
+    if (bAnimate) {
+	animationTime = Mappt_P_AnimationTime;
+    }
+    else {
+	animationTime = 0;
+    }
+
+    $(this.contextObj_container)
+	.css({
+	})
+	.animate({
+	    height: 0,
+	}, animationTime, function() {
+	    $(this).css({
+		display: "none",
+		width: 0,
+	    });
+	});
+    this.bDisplay = false;
+    return this;
 }
 
 Mappt_Panel.prototype.toggleContext = function(_bAnimate) {
+    var bAnimate = _bAnimate;
+    if (_.isUndefined(_bAnimate)) {
+	bAnimate = true;
+    }
 
+    if (this.bDisplay) {
+	this.hideContext(_bAnimate);
+	this.bDisplay = false;
+    }
+    else {
+	this.displayContext(_bAnimate);
+	this.bDisplay = true;
+    }
+    return this;
 }
 
 //Panel representing "where are you?" in the bottom left
