@@ -56,7 +56,7 @@ Mappt_Panel.prototype.init = function() {
 	    width: Mappt_P_Button_Width,
 	    height: Mappt_P_Button_Height,
 	});
-
+    
     //create our container
     this.contextObj_container = document.createElement("div");
     $(this.contextObj_container)
@@ -92,6 +92,12 @@ Mappt_Panel.prototype.init = function() {
 	.append(this.contextObj_button)
 	.append(this.contextObj_container);
     
+    //bind our onclick event
+    $(this.contextObj).on("click", "." + Mappt_P_Button_Class, function() {
+	log("hello");
+	this.toggleContext();
+    }.bind(this));
+
     return this;
 };
 
@@ -150,7 +156,7 @@ Mappt_Panel.prototype.hideContext = function(_bAnimate) {
 	    height: 0,
 	}, animationTime, function() {
 	    $(this).css({
-		display: "none",
+		//display: "none",
 		width: 0,
 	    });
 	});
