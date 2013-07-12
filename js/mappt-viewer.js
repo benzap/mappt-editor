@@ -111,8 +111,8 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    //regex to find a number in a string
 	    var r = /\d+/;
 	    
-	    //doing something stupid
-	    this.context_svg.setAttribute("preserveAspectRatio", "xMinYMin");
+	    //removing the aspect ratio preservation.
+	    this.context_svg.setAttribute("preserveAspectRatio", "none");
 
 	    //the svg width and height
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
@@ -137,6 +137,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    var fixedSVGDim = this.correctAspect(this.context_width, this.context_height,
 						 this.context_svg_width, this.context_svg_height);
 
+	    console.log("aspect", fixedSVGDim);
 	    
 	    this.context_height_aspect = fixedSVGDim.height;
 	    this.context_svg_height_offset = fixedSVGDim.height_offset;
@@ -181,11 +182,11 @@ MapptViewer.prototype.setMap = function(imageName) {
 		h : this.context_height
 	    };
 	    
-	    this.setViewBox(
+/*	    this.setViewBox(
 		this.currentView.x, this.currentView.y, 
 		this.currentView.w, this.currentView.h
 	    );
-	    	    
+*/	    	    
 
 	}.bind(this),
 	error: function (errObj, errString) {
