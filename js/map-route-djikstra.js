@@ -155,8 +155,8 @@ function getRoute_djikstra(source, target, routeTable, costFunc) {
 	openList.splice(openIndex, 1);
     } //END while (!_.isEmpty(openList)) {
 
-    log("All done!");
-    log("Closed List: ", closedList);
+    //log("All done!");
+    //log("Closed List: ", closedList);
 
     //grab our target node, and traverse backwards through the list to
     //our source

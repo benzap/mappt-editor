@@ -8,11 +8,11 @@
 }
 
 .mappt-panel-button {
-    background-color: #AF562C;
+    background-color: #00AEDB;
 }
 
 .mappt-panel-button:hover {
-    background-color: #BF673D;
+    background-color: #11BFEC;
 }
 
 .mappt-panel-button p {
@@ -45,5 +45,5 @@
 }
 
 .mappt-panel-container {
-    background-color: #245828;
+    background-color: #00B159;
 }

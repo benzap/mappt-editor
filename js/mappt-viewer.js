@@ -1,6 +1,14 @@
 var MapptViewer_Image_Path = "./floorPlans_svg/";
 var MapptViewer_Data_Path = "./floorPlans_data/";
 
+function UrlExists(url)
+{
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status!=404;
+}
+
 MapptViewer = function(context_id, context_width, context_height) {
 
     //The id of the DIV element for our top-level container
@@ -65,7 +73,6 @@ MapptViewer = function(context_id, context_width, context_height) {
     //contains the name of the image
     this.imageName = null;
 
-
     //get the offset of our context in order to draw on the paper correctly
     this.contextOffset = this.contextObj.offset();
 
@@ -83,6 +90,13 @@ MapptViewer = function(context_id, context_width, context_height) {
 	w : this.context_width,
 	h : this.context_height
     };
+
+    //contains the list of maps and their respective data for each map
+    // to consider traversal. From this, we can construct the routes
+    // for each map, and perform search queries.
+    this.mapData = null;
+
+
 }
 
 MapptViewer.prototype.init = function() {
@@ -100,7 +114,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 
     $(this.contextObj_back).empty();
 
-        jQuery.ajax({
+    jQuery.ajax({
 	type: 'GET',
 	url: this.imageURL, //this is the svg file loaded as xml
 	dataType: 'xml',
@@ -122,8 +136,8 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    //resized and translated behind the main paper context.
 	    //change our background context to reflect the changes.
 	    $(this.contextObj_back).css({
-		"width" : this.context_svg_width,
-		"height" : this.context_svg_height,
+		"width" : this.context_width,
+		"height" : this.context_height,
 		"top" : 0,
 		"left" : 0,
 		"overflow" : "hidden",
@@ -144,7 +158,9 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    this.context_image.attr({
 		fill: "#ffffff", 
 		'fill-opacity': 0.0,
-		stroke: "#000000"});
+		stroke: "#000000",
+	//	"stroke-opacity" : 0.0,
+	    });
 
 	    //The view decides on the current position within our paper
 	    // Allows for easier panning and zooming functionality
@@ -161,6 +177,8 @@ MapptViewer.prototype.setMap = function(imageName) {
 		this.currentView.x, this.currentView.y, 
 		this.currentView.w, this.currentView.h
 	    );
+
+	    this.fitScreen();
 	    	    
 
 	}.bind(this),
@@ -170,14 +188,68 @@ MapptViewer.prototype.setMap = function(imageName) {
 	async: false
     });
 
+    //set our data up within the viewer
+    this.dataURL = MapptViewer_Data_Path + this.imageName + ".json";
+
+    //make sure it's an async call
+    $.ajaxSetup({
+	async: false
+    });
+
+    if(UrlExists(this.dataURL)) {
+    //we didn't find it in local storage, so we're going to check the server
+	jQuery.getJSON(this.dataURL, function(data) {
+	    this.routeData = data;
+	    log("loading map data from remote...", this.dataURL);
+	}.bind(this));
+    }
+    else {
+	console.log(this.dataURL, " does not exist");
+    }
     return this;
 };
+
+//Used to set the data set for our maps within the mappt viewer
+MapptViewer.prototype.setData = function(data) {
+    //produce an object that stores our map data
+    this.mapData = {};
+    this.mapData = _.map(data, function(elem) {
+	var mapObject = {};
+	mapObject.name = elem.name;
+	mapObject.mapURL = MapptViewer_Image_Path + elem.mapURL;
+	mapObject.dataURL = MapptViewer_Data_Path + elem.dataURL;
+	mapObject.routeData = this.getJSON(mapObject.dataURL);
+	return mapObject;
+    }.bind(this));
+    console.log(this.mapData);
+    return this;
+}
+
+MapptViewer.prototype.getJSON = function(dataURL) {
+    //set our data up within the viewer
+    var theData;
+
+    //make sure it's an async call
+    $.ajaxSetup({
+	async: false
+    });
+
+    if(UrlExists(dataURL)) {
+    //we didn't find it in local storage, so we're going to check the server
+	jQuery.getJSON(dataURL, function(data) {
+	    theData = data;
+	    log("loading map data from remote...", dataURL);
+	}.bind(this));
+    }
+    else {
+	log(dataURL, " does not exist");
+    }
+    return theData;
+}
 
 //Used to set the position of the paper an exact place on the screen
 MapptViewer.prototype.setViewBox = function(x,y,w,h) {    
     this.context_paper.setViewBox(x, y, w, h);
-
-    console.log(x,y,w,h);
 
     //fix for our background SVG image if it isn't the same size as
     //our raphael paper. Calculate the ratio of the raphael paper
@@ -211,10 +283,14 @@ MapptViewer.prototype.translatePaper = function(x, y, s) {
 };
 
 MapptViewer.prototype.fitScreen = function() {
+    
+    var fixedAspect = this.correctAspect(this.context_width, this.context_height,
+					 this.context_svg_width, this.context_svg_height);
+
     this.currentView.x = 0;
     this.currentView.y = 0;
-    this.currentView.w = this.context_width;
-    this.currentView.h = this.context_height;
+    this.currentView.w = fixedAspect.width;
+    this.currentView.h = fixedAspect.height;
     
     this.setViewBox(
 	this.currentView.x,
@@ -231,3 +307,99 @@ MapptViewer.prototype.getPaperScale = function() {
     return scale;
 };
 
+MapptViewer.prototype.correctAspect = function(width, height,
+					       svgWidth, svgHeight) {
+    //temporaries
+    var newContextWidth;
+    var newContextHeight;
+    
+    //our corrected values
+    var width_aspect;
+    var height_aspect;
+    var svgWidth_offset;
+    var svgHeight_offset;
+
+    //if the svg is wider than the context
+    if ((width / height) < 
+       (svgWidth / svgHeight)) {
+       newContextWidth = svgWidth / width * svgWidth;
+       newContextHeight = svgHeight * newContextWidth / svgWidth;
+       svgHeight_offset = (svgWidth / width * height - newContextHeight) / 2;
+       svgWidth_offset = 0;
+       width_aspect = newContextWidth;
+       height_aspect = newContextHeight;
+    }
+    else {//if the svg is narrower than the context
+       newContextHeight = svgHeight / height * svgHeight;
+       newContextWidth = svgWidth * newContextHeight / svgHeight;
+       svgWidth_offset = (svgHeight / height * width - newContextWidth) / 2;
+       svgHeight_offset = 0;
+       height_aspect = newContextHeight;
+       width_aspect = newContextWidth;
+    }
+
+    return { width: width_aspect,
+            height: height_aspect,
+            width_offset: svgWidth_offset,
+            height_offset: svgHeight_offset };
+};
+
+//looks through the point list and finds all of the IDs with the given
+//attributes and descriptors 
+MapptViewer.prototype.getPoints = function(attr, desc) {
+    var pointList = _.filter(this.routeData.PointInfoList, function(elem) {
+	//check if our attributes match up
+	for (k in attr) {
+	    if (_.isUndefined(elem[k]) ||
+		elem[k] != attr[k]) {
+		return false;
+	    }
+	}
+	//check if our descriptors match up
+	return true;
+    });
+    return pointList;
+}
+
+//Gets the route between the starting ID and the ending ID provided
+MapptViewer.prototype.getMapRoute = function(startingID, endingID, routeData) {
+    //first, get the route between the two destinations
+    var theRoute = getRoute_djikstra(startingID, endingID, routeData);
+
+    return theRoute;
+}
+
+//pass a structure with theRoute.data --> list of points. This will
+//draw the route on the currently set map.
+MapptViewer.prototype.drawRoute = function(theRoute) {
+    //form our path on the map
+    var firstPoint = this.getPoints({id:theRoute.data[0]})[0];
+    var pathString = "M" + firstPoint.position[0] + " " + firstPoint.position[1];
+    _.map(theRoute.data, function(elem) {
+	//get our point positions
+	var elemPos = this.getPoints({id:elem})[0].position;
+	
+	//figure out the offset
+	pathString += "L" +  elemPos[0] + " " + elemPos[1];
+	
+    }.bind(this));
+
+    this.currentPath = this.context_paper.path(pathString);
+    this.currentPath.attr({
+	stroke: "#D11141",
+	"stroke-linecap": "round",
+	"stroke-linejoin" : "round",
+    });
+    return this;
+}
+
+//shortcut function to get and draw a route for the current map
+MapptViewer.prototype.showRoute = function(startingID, endingID) {
+    var theRoute = this.getMapRoute(startingID, endingID, this.routeData);
+    return this.drawRoute(theRoute);
+}
+
+//clears the route on the map
+MapptViewer.prototype.clearRoute = function() {
+    this.currentPath.remove();
+}
