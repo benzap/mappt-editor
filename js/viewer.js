@@ -2,7 +2,7 @@ $(function() {
     var windowWidth = $(window).width();
     var windowHeight = $(window).height();
     
-    var mappt_viewer = new MapptViewer("mappt-viewer", windowWidth, windowHeight)
+    mappt_viewer = new MapptViewer("mappt-viewer", windowWidth, windowHeight)
 	.init()
 	.setMap("Shuniah_1.svg");
 
