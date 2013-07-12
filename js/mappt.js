@@ -166,6 +166,8 @@ PointInfoElement = function(xPosition, yPosition, type) {
     this.mapDown_url = "";
     this.mapDown_links = [];
     this.mapDown_elevation = "";
+    this.mapEntrance_url = "";
+    this.mapEntrance_links = [];
 }
 //Static Incrementer
 PointInfoElement.increment = 0;
