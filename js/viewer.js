@@ -7,18 +7,18 @@ $(function() {
 	.setData(
 	    [
 		{
-		    mapURL: "Shuniah_1.svg", 
-		    dataURL: "Shuniah_1.svg.json",
+		    mapName: "Shuniah_1.svg", 
+		    dataName: "Shuniah_1.svg.json",
 		    name: "Shuniah - 1st Floor",
 		},
 		{
-		    mapURL: "Dorion_1.svg", 
-		    dataURL: "Dorion_1.svg.json",
+		    mapName: "Dorion_1.svg", 
+		    dataName: "Dorion_1.svg.json",
 		    name: "Dorion - 1st Floor",
 		},
 		{
-		    mapURL: "Aerial.svg",
-		    dataURL: "Aerial.svg.json",
+		    mapName: "Aerial.svg",
+		    dataName: "Aerial.svg.json",
 		    name: "Confederation College",
 		},
 	    ])

@@ -216,9 +216,9 @@ MapptViewer.prototype.setData = function(data) {
     this.mapData = _.map(data, function(elem) {
 	var mapObject = {};
 	mapObject.name = elem.name;
-	mapObject.mapURL = MapptViewer_Image_Path + elem.mapURL;
-	mapObject.dataURL = MapptViewer_Data_Path + elem.dataURL;
-	mapObject.routeData = this.getJSON(mapObject.dataURL);
+	mapObject.mapName = elem.mapURL;
+	mapObject.dataName = elem.dataURL;
+	mapObject.routeData = this.getJSON(MapptViewer_Data_Path + mapObject.dataName);
 	return mapObject;
     }.bind(this));
     console.log(this.mapData);
@@ -402,4 +402,32 @@ MapptViewer.prototype.showRoute = function(startingID, endingID) {
 //clears the route on the map
 MapptViewer.prototype.clearRoute = function() {
     this.currentPath.remove();
+}
+
+//create the search list and produce a hashtable that allows you to
+//easily traverse
+MapptViewer.prototype.createHashSearch = function() {
+    var searchList = {};
+    //
+    _.map(this.mapData, function(map) {
+	_.map(map, function(elem) {
+	    var mapData = elem.routeData;
+	    for (point in mapData.PointInfoList) {
+		//add a new attribute to describe what map it belongs to
+		point.mapURL = map.name;
+		var descriptors = point.descriptors;
+		//First we go through our descriptors
+		if (_.isEmpty(point.descriptors)) {
+		    break;
+		}
+		for (theDescriptor in descriptors) {
+		    theDescriptor = theDescriptor.split("=");
+		    if (!_.contains(searchList, theDescriptor[0])) {
+			searchList[theDescriptor[0]] = [];		    	
+		    }
+		    searchList.push(point);
+		}
+	    } //END for (point in ...
+	});//END _.map(map,...
+    });//END _.map(this.mapData,...
 }
