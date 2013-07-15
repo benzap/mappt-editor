@@ -387,7 +387,7 @@ MapptViewer.prototype.drawRoute = function(theRoute) {
     this.currentPath = this.context_paper.path(pathString);
     this.currentPath.attr({
 	stroke: "#D11141",
-	"stroke-linecap": "round",
+	"stroke-linecap": "butt",
 	"stroke-linejoin" : "round",
     });
     return this;
@@ -409,7 +409,7 @@ MapptViewer.prototype.clearRoute = function() {
 MapptViewer.prototype.createHashSearch = function() {
     var searchList = {};
     //
-    _.map(this.mapData, function(map) {
+    _.map(this.mapData, function(map) { //traverse our maps
 	_.map(map, function(elem) {
 	    var mapData = elem.routeData;
 	    for (point in mapData.PointInfoList) {

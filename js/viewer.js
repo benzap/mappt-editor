@@ -72,4 +72,6 @@ $(function() {
 
 	});
 
+console.log(mappt_viewer.mapData);
+
 });

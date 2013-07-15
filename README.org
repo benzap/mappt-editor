@@ -119,18 +119,25 @@
     - Cost: 20
   - Elevation (Stairs / Elevator) Nodes
     - Carry important information about the maps it links to
-    - Includes information on the next floor using attributes
+    - Includes information on the next floor  or entrance using attributes
+      - mapUp_name :: More specific name of the map it connects to
       - mapUp_url :: the next map that it points to
       - mapUp_data :: the next map node points and links
       - mapUp_links :: the nodes that this particular node connects to
       - mapUp_elevation :: the floor number for the map
+      - mapDown_name :: More specific name of the map it connects to
       - mapDown_url :: the previous map that it points to
       - mapDown_data :: the previous map node points and links
-      - mapDown_links :: the previous that this particular node connects to
+      - mapDown_links :: Nodes that this particular node connects to.
       - mapDown_elevation :: the floor number for the map
     - Cost: 30
   - Entrance Node
-    - Represents the entrance to a building. This usually links to an area node that represents a building.
+    - Represents the entrance to a building. This usually links to an
+      entrance node on the other side of the building.
+    - Includes information on where the entrance leads using the attributes
+    - mapEntrance_name :: More specific name of the map it connects to
+    - mapEntrance_url :: url of the map it connects to
+    - mapEntrance_links :: Nodes that this particular node connects to.
     - Cost: 25
   - Start Node
     - Represents points on the map where a person might start his search
