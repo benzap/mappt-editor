@@ -143,7 +143,6 @@ function grabSecondWhereFirst(pairList, first) {
 //Right off the bat
 //Depends on what the node type is
 PointInfoElement = function(xPosition, yPosition) {
-    this.position = [xPosition, yPosition];
     this.px = xPosition;
     this.py = yPosition;
     this.id = PointInfoElement.increment;
@@ -547,8 +546,8 @@ MapptEditor.prototype.setMap = function(imageName) {
 	    
 
 	    var collidedPoints = _.filter(mapptEditor.pointInfoManager.getAllPoints(), function(elem){
-		var xPosition = elem.position[0];
-		var yPosition = elem.position[1];
+		var xPosition = elem.px;
+		var yPosition = elem.py;
 
 		// if it's within the X bounds of our selection bos
 		if (xPosition < startX || xPosition > endX) {
@@ -748,13 +747,13 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    mapptEditor.paperPoints,
 		    addLink_currentlySelected);
 
-		var position1 = mapptEditor.pointInfoManager.getPointByID(position1_id).position;
-		var position2 = mapptEditor.pointInfoManager.getPointByID(position2_id).position;
+		var position1 = mapptEditor.pointInfoManager.getPointByID(position1_id);
+		var position2 = mapptEditor.pointInfoManager.getPointByID(position2_id);
 
-		var movetoString = "M " + position1[0].toString() + " " +
-		    position1[1].toString();
-		var lineString = "L " + position2[0].toString() + " " +
-		    position2[1].toString();
+		var movetoString = "M " + position1.px.toString() + " " +
+		    position1.py.toString();
+		var lineString = "L " + position2.px.toString() + " " +
+		    position2.py.toString();
 
 		var temp_paperPath = mapptEditor.context_paper.path(
 		    movetoString + lineString)
@@ -1061,7 +1060,7 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     var import_links = routeTable.LinkInfoList;
 
     _.map(import_points, function(elem) {
-	this.createPoint(elem.position[0], elem.position[1], elem);
+	this.createPoint(elem.px, elem.py, elem);
     }.bind(this));
 
     var maxIncrement = _.max(this.paperPoints, function(elem) {
