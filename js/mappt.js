@@ -290,8 +290,9 @@ MapptEditor = function (context_id, context_width, context_height) {
     //relation table, which contains pairs of (id, paper.circle)
     this.paperPoints = [];
 
-    //relation table, which stores entrance relations between maps
-    //{first: id, second: id, 
+    //relation table, which stores entrance relations between maps and
+    //gives the URL to the new map 
+    //{first: id, second: id, secondURL: url}
     this.paperEntrances = [];
 
     //relation table, which contains pairs of {first: id, second: id, path: paper.path}
@@ -994,9 +995,16 @@ MapptEditor.prototype.exportJSON = function(filename) {
 	return elemDEEP;
     });
 
+    var entranceLinks = _.map(this.paperEntrances, function(elem) {
+	var elemDEEP = {};
+	_.extend(elemDEEP, elem);
+	return elemDEEP;
+    });
+
     var json_data = {
 	"PointInfoList" : this.pointInfoManager.getAllPoints(),
 	"LinkInfoList" : dataPaintLinks,
+	"EntranceInfoList" : entranceLinks,
 	"Context_Width" : this.context_width,
 	"Context_Height" : this.context_height,
 	"SVG_Width" : this.context_svg_width,
@@ -1062,8 +1070,9 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2, attr) {
 //overlay the current image
 MapptEditor.prototype.importJSON = function(routeTable) {
     this.clearData();
-    var import_points = routeTable.PointInfoList;
-    var import_links = routeTable.LinkInfoList;
+    var import_points = routeTable.PointInfoList || [];
+    var import_links = routeTable.LinkInfoList || [];
+    var import_entrances = routeTable.EntranceInfoList || [];
 
     _.map(import_points, function(elem) {
 	this.createPoint(elem.px, elem.py, elem);
@@ -1077,6 +1086,9 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     _.map(import_links, function(elem) {
 	this.addLink(elem.first, elem.second, elem);
     }.bind(this));
+
+    //import entrance links
+    this.paperEntrances = import_entrances;
 }
 
 //Clears all of the points and links on the screen
@@ -1094,7 +1106,10 @@ MapptEditor.prototype.clearData = function() {
     });
     this.paperLinks = [];
     //Clear all of the point data out of the point manager
-    this.pointInfoManager.clear();    
+    this.pointInfoManager.clear();
+
+    //clear our entrance points
+    this.paperEntrances = [];
 }
 
 //returns an array with the x and y position of the mouse on the
@@ -1244,6 +1259,15 @@ MapptEditor.prototype.saveMapData = function() {
     structData['Mappt-Listing'][this.dataName] = data;
     //replace our localstorage with the new map data
     this.setLocalStorage(structData);
+}
+
+//populates the MapptEditor.paperEntrances with entrance to remote entrance links
+MapptEditor.prototype.addEntranceRelation = function(localID, remoteID, remoteMapURL) {
+    this.paperEntrances.push({
+	first: localID,
+	second: remoteID,
+	secondURL: remoteMapURL,
+    });
 }
 
 //helper function to show a prompt for clearing local data
