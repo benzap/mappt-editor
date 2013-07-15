@@ -154,20 +154,13 @@ function grabSecondWhereFirst(pairList, first) {
 //Depends on what the node type is
 PointInfoElement = function(xPosition, yPosition, type) {
     this.position = [xPosition, yPosition];
+    this.px = xPosition;
+    this.py = yPosition;
     this.id = PointInfoElement.increment;
     PointInfoElement.increment += 1; //local id
     this.uuid = guid(); //global id
     this.type = type;
-    this.tags = []; //Department, Room, Stairs, ... etc
     this.descriptors = ""; //
-    this.mapUp_url = "";
-    this.mapUp_links = [];
-    this.mapUp_elevation = "";
-    this.mapDown_url = "";
-    this.mapDown_links = [];
-    this.mapDown_elevation = "";
-    this.mapEntrance_url = "";
-    this.mapEntrance_links = [];
 }
 //Static Incrementer
 PointInfoElement.increment = 0;
@@ -210,42 +203,6 @@ PointInfoManager.prototype.getAllPoints = function() {
 
 PointInfoManager.prototype.clear = function() {
     this.PointInfoElementList = [];
-}
-
-//Used to represent areas within the map
-AreaLayoutElement = function(label) {
-    this.label = label;
-    this.uuid = guid();
-    this.doors = [];
-    this.vertexList = [] //[x,y]
-}
-
-//Used to manage the areas within the map
-AreaLayoutManager = function() {
-    this.AreaLayoutElementList = []
-}
-
-AreaLayoutManager.prototype.addLayout = function(elem) {
-    this.AreaLayoutElementList.push(elem);
-}
-
-AreaLayoutManager.prototype.removeLayout = function(uuid) {
-    var thePoint = _.find(this.AreaLayoutElementList, function(elem) {
-	return (elem.uuid == uuid);
-    });
-    var index = this.AreaLayoutElementList.indexOf(thePoint);
-    this.AreaLayoutElementList.splice(index,1);
-}
-
-AreaLayoutManager.prototype.getLayoutByUUID = function(uuid) {
-    var thePoint = _.find(this.AreaLayoutElementList, function(elem) {
-	return (elem.uuid == uuid);
-    });
-    return thePoint;
-}
-
-AreaLayoutManager.prototype.getAllLayouts = function() {
-    return this.AreaLayoutElementList;
 }
 
 //Main Class that needs to be initialized
@@ -324,8 +281,7 @@ MapptEditor = function (context_id, context_width, context_height) {
     //contains the svg for our paper
     this.context_svg = null;
 
-    //data managers used to contain the room layouts and nodes
-    this.areaLayoutManager = new AreaLayoutManager();
+    //data managers used to contain the nodes
     this.pointInfoManager = new PointInfoManager();
     
     //relation table, which contains pairs of (id, paper.circle)
