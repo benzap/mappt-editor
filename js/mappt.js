@@ -124,18 +124,18 @@ function log(t1, t2, t3, t4, t5, t6, t7, t8, t9){
 //the given second value
 function grabFirstWhereSecond(pairList, second) {
     var tuple = _.find(pairList, function(elem) {
-	return (elem[1] == second);
+	return (elem.second == second);
     });
-    return tuple[0];
+    return tuple.first;
 }
 
 //grabs the second value from a pair contained in a list of pairs with
 //the given first value
 function grabSecondWhereFirst(pairList, first) {
     var tuple = _.find(pairList, function(elem) {
-	return (elem[0] == first);
+	return (elem.first == first);
     });
-    return tuple[1];
+    return tuple.second;
 }
 
 //Class structure used to represent points on the map
@@ -723,7 +723,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    
 	    //remove any links that include the removed node
 	    mapptEditor.paperLinks = _.filter(mapptEditor.paperLinks, function(elem) {
-		if (tempID == elem[0] || tempID == elem[1]) {
+		if (tempID == elem.first || tempID == elem.second) {
 		    elem.path.remove();
 		    return false;
 		}
@@ -773,8 +773,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    removeLink_currentlySelected);
 
 		var linkTuple = _.find(mapptEditor.paperLinks, function(elem) {
-		    if (position1_id == elem[0] && position2_id == elem[1] ||
-			position1_id == elem[1] && position2_id == elem[0]) {
+		    if (position1_id == elem.first && position2_id == elem.second ||
+			position1_id == elem.second && position2_id == elem.first) {
 			return true;
 		    }
 		    return false;
@@ -833,8 +833,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    var secondID = elem2;
 
 		    var pathLink = _.find(mapptEditor.paperLinks, function(elem) {
-			if (elem[0] == firstID && elem[1] == secondID ||
-			    elem[1] == firstID && elem[0] == secondID) {
+			if (elem.first == firstID && elem.second == secondID ||
+			    elem.second == firstID && elem.first == secondID) {
 			    return true;
 			}
 			return false;});
@@ -899,27 +899,24 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	mapptEditor.pointInfoManager.getPointByID(dataPoint.id).py = this.oy+dy;
 	// fixing links
 	var relatedLinks = _.filter(mapptEditor.paperLinks, function(elem) {
-	    if (elem[0] == dataPoint.id || elem[1] == dataPoint.id) {
+	    if (elem.first == dataPoint.id || elem.second == dataPoint.id) {
 		return true;
 	    }
 	    return false;
 	});
 	
 	_.map(relatedLinks, function(elem) {
-	    var firstNode = mapptEditor.pointInfoManager.getPointByID(elem[0]);
-	    var secondNode = mapptEditor.pointInfoManager.getPointByID(elem[1]);
-	    
-	    var position1 = firstNode.position;
-	    var position2 = secondNode.position;
+	    var firstNode = mapptEditor.pointInfoManager.getPointByID(elem.first);
+	    var secondNode = mapptEditor.pointInfoManager.getPointByID(elem.second);
 
-	    var movetoString = "M " + position1[0].toString() + " " +
-		position1[1].toString();
+	    var movetoString = "M " + firstNode.px.toString() + " " +
+		firstNode.py.toString();
 	    
-	    var lineString = "L " + position2[0].toString() + " " +
-		position2[1].toString();
+	    var lineString = "L " + secondNode.px.toString() + " " +
+		secondNode.py.toString();
 	    
-	    elem[2].remove();
-	    elem[2] = mapptEditor.context_paper.path(
+	    elem.path.remove();
+	    elem.path = mapptEditor.context_paper.path(
 		movetoString + lineString)
 		.insertAfter(mapptEditor.context_image);
 	});
@@ -1063,7 +1060,7 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     PointInfoElement.increment = maxIncrement[0]+1;
     
     _.map(import_links, function(elem) {
-	this.addLink(elem[0], elem[1], elem);
+	this.addLink(elem.first, elem.second, elem);
     }.bind(this));
 }
 
