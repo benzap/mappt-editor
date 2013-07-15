@@ -124,8 +124,15 @@ function log(t1, t2, t3, t4, t5, t6, t7, t8, t9){
 //the given second value
 function grabFirstWhereSecond(pairList, second) {
     var tuple = _.find(pairList, function(elem) {
-	return (elem.second == second);
+	var chk = elem.second;
+	if (_.isUndefined(elem.second)) {
+	    chk = elem[1];
+	}
+	return (chk == second);
     });
+    if (_.isUndefined(tuple.first)) {
+	return tuple[0];
+    }
     return tuple.first;
 }
 
@@ -133,8 +140,15 @@ function grabFirstWhereSecond(pairList, second) {
 //the given first value
 function grabSecondWhereFirst(pairList, first) {
     var tuple = _.find(pairList, function(elem) {
+	var chk = elem.first;
+	if (_.isUndefined(elem.first)) {
+	    chk = elem[0];
+	}
 	return (elem.first == first);
     });
+    if (_.isUndefined(elem.second)) {
+	return tuple[1];
+    }
     return tuple.second;
 }
 
