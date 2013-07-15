@@ -24,14 +24,17 @@ def fixAttributes(filename):
     for link in jsonObj["LinkInfoList"]:
         if type(link) == list:
             link = {
-                0:link[0],
-                1:link[1],
                 "first":link[0],
                 "second":link[1],
             }
-            linkinfolist.append(link)
-    jsonObj["LinkInfoList"] = linkinfolist
+        elif type(link) == dict:
+            link = {
+                "first":link["first"],
+                "second":link["second"],
+            }
+        linkinfolist.append(link)
 
+    jsonObj["LinkInfoList"] = linkinfolist
     #place our new json object within the file
     fileoutput = open(filename, 'w')
     fileoutput.write(stringify(jsonObj))

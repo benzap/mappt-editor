@@ -1049,8 +1049,6 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2, attr) {
 
     this.paperLinks.push(
 	{
-	    0:nodeID1,
-	    1:nodeID2,
 	    first: nodeID1,
 	    second: nodeID2,
 	    path: pathObject,
