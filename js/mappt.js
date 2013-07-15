@@ -701,12 +701,14 @@ MapptEditor.prototype.init = function() {
 
 //if an ID is provided, an ID will not be generated
 MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
-    
+   
     //create the paper point
     var paperPoint = this.context_paper.circle(
 	xPosition, yPosition, Mappt_Node_Radius)
-	.attr({fill: Mappt_Node_Color_Default,
-	      stroke: Mappt_Node_Outline_Default});
+	.attr({
+	    fill: Mappt_Node_Color_Default,
+	    stroke: Mappt_Node_Outline_Default
+	});
     
     var mapptEditor = this;
     paperPoint.click(function(e) {
@@ -722,7 +724,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    //remove any links that include the removed node
 	    mapptEditor.paperLinks = _.filter(mapptEditor.paperLinks, function(elem) {
 		if (tempID == elem[0] || tempID == elem[1]) {
-		    elem[2].remove();
+		    elem.path.remove();
 		    return false;
 		}
 		return true;
@@ -747,23 +749,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    mapptEditor.paperPoints,
 		    addLink_currentlySelected);
 
-		var position1 = mapptEditor.pointInfoManager.getPointByID(position1_id);
-		var position2 = mapptEditor.pointInfoManager.getPointByID(position2_id);
+		this.addLink(position1_id, position2_id);
 
-		var movetoString = "M " + position1.px.toString() + " " +
-		    position1.py.toString();
-		var lineString = "L " + position2.px.toString() + " " +
-		    position2.py.toString();
-
-		var temp_paperPath = mapptEditor.context_paper.path(
-		    movetoString + lineString)
-		.insertAfter(mapptEditor.context_image);
-		
-
-		mapptEditor.paperLinks.push([
-		    position1_id, 
-		    position2_id, 
-		    temp_paperPath]);
 		addLink_currentlySelected = null;
 	    }
 	}
@@ -795,7 +782,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 
 		//remove the link if it exists
 		if (linkTuple) {
-		    linkTuple[2].remove();
+		    linkTuple.path.remove();
 		    var tupleIndex = mapptEditor.paperLinks.indexOf(linkTuple);
 		    mapptEditor.paperLinks.splice(tupleIndex, 1);
 		}
@@ -823,7 +810,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	    else {
 		//set the stroke of our previous route back
 		_.map(mapptEditor.paperLinks, function(elem) {
-		    elem[2].attr({stroke: Mappt_Node_Outline_Default});
+		    elem.path.attr({stroke: Mappt_Node_Outline_Default});
 		});
 		
 		routeNode_currentlySelected.attr(
@@ -838,7 +825,6 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		
 		//var routeList = getRoute(startNode_ID, endNode_ID, routeTable)[0];
 		var routeList = getRoute_djikstra(startNode_ID, endNode_ID, routeTable);
-		log(routeList);
 
 		var lastCase;
 		_.reduce(routeList.data, function(elem1, elem2) {
@@ -852,7 +838,7 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 			    return true;
 			}
 			return false;});
-		    var pathObject = pathLink[2]
+		    var pathObject = pathLink.path;
 
 		    pathObject.attr({stroke: "#FF7437"});
 		    return elem2;
@@ -909,7 +895,8 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 	this.attr({cx: this.ox + dx, cy: this.oy + dy});
 
 	// pushing changes to the data point
-	mapptEditor.pointInfoManager.getPointByID(dataPoint.id).position = [this.ox+dx, this.oy+dy];
+	mapptEditor.pointInfoManager.getPointByID(dataPoint.id).px = this.ox+dx;
+	mapptEditor.pointInfoManager.getPointByID(dataPoint.id).py = this.oy+dy;
 	// fixing links
 	var relatedLinks = _.filter(mapptEditor.paperLinks, function(elem) {
 	    if (elem[0] == dataPoint.id || elem[1] == dataPoint.id) {
@@ -975,7 +962,7 @@ MapptEditor.prototype.mode = function(state) {
 	routeNode_currentlySelected = null;
 	//set the stroke of our previous route back
 	_.map(this.paperLinks, function(elem) {
-	    elem[2].attr({stroke: Mappt_Node_Outline_Default});
+	    elem.path.attr({stroke: Mappt_Node_Outline_Default});
 	});
     }
     
@@ -986,10 +973,10 @@ MapptEditor.prototype.mode = function(state) {
 MapptEditor.prototype.exportJSON = function(filename) {
     var dataPaintLinks = _.map(this.paperLinks, function(elem) {
 	//fixes issues with deep copying
-	elemDEEP = _.map(elem, function(e) {
-	    return e;
-	});
-	elemDEEP.splice(2,1);
+	var elemDEEP = {};
+	_.extend(elemDEEP, elem);
+	delete elemDEEP[2];
+	delete elemDEEP["path"];
 	return elemDEEP;
     });
 
@@ -1030,18 +1017,23 @@ MapptEditor.prototype.getAttr = function(key) {
     return valueList;
 }
 
-MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
+MapptEditor.prototype.addLink = function(nodeID1, nodeID2, attr) {
     var firstNode = this.pointInfoManager.getPointByID(nodeID1);
     var secondNode = this.pointInfoManager.getPointByID(nodeID2);
     
-    var position1 = firstNode.position;
-    var position2 = secondNode.position;
+    var position1 = firstNode;
+    var position2 = secondNode;
     
-    var movetoString = "M " + position1[0].toString() + " " +
-	position1[1].toString();
+    position1.px = position1.position[0];
+    position1.py = position1.position[1];
+    position2.px = position2.position[0];
+    position2.py = position2.position[1];
+
+    var movetoString = "M " + position1.px.toString() + " " +
+	position1.py.toString();
     
-    var lineString = "L " + position2[0].toString() + " " +
-	position2[1].toString();
+    var lineString = "L " + position2.px.toString() + " " +
+	position2.py.toString();
     
     var pathObject = this.context_paper.path(
 	movetoString + lineString)
@@ -1049,7 +1041,14 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2) {
 
     pathObject.attr({stroke:Mappt_Node_Outline_Default});
 
-    this.paperLinks.push([nodeID1, nodeID2, pathObject]);
+    this.paperLinks.push(
+	{
+	    0:nodeID1,
+	    1:nodeID2,
+	    first: nodeID1,
+	    second: nodeID2,
+	    path: pathObject,
+	});
 }
 
 //imports the given routetable onto the screen to
@@ -1060,7 +1059,7 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     var import_links = routeTable.LinkInfoList;
 
     _.map(import_points, function(elem) {
-	this.createPoint(elem.px, elem.py, elem);
+	this.createPoint(elem[0], elem[1], elem);
     }.bind(this));
 
     var maxIncrement = _.max(this.paperPoints, function(elem) {
@@ -1069,7 +1068,7 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     PointInfoElement.increment = maxIncrement[0]+1;
     
     _.map(import_links, function(elem) {
-	this.addLink(elem[0], elem[1]);
+	this.addLink(elem[0], elem[1], elem);
     }.bind(this));
 }
 
@@ -1084,7 +1083,7 @@ MapptEditor.prototype.clearData = function() {
     
     //remove our links from the paper.
     _.map(this.paperLinks, function(elem) {
-	elem[2].remove();
+	elem.path.remove();
     });
     this.paperLinks = [];
     //Clear all of the point data out of the point manager
