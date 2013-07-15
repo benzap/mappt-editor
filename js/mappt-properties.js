@@ -33,9 +33,23 @@ function sanitizeInput(theString) {
     //regex to check if the string has any commas
     r_hasComma = /,/;
     
+    //regex to check if a string has equals signs
+    r_hasEquals = /=/;
+    
     var theArray;
-    if (r_hasComma.test(theString)) {
-	theArray = theString.split(",");
+    //check if our string has equals signs
+    //make it into a hashtable / object if it does
+    if (r_hasEquals.test(theString)) {
+	theValues = theString.split(",");
+	theArray = {};
+	for (var i = 0; i < theValues.length; i++) {
+	    var val = theValues[i].split("=");
+	    theArray[val[0]] = val[1];
+	}
+	return theArray;
+    }
+    else if (r_hasComma.test(theString)) {
+	theArray = theString.split(",");	
     }
     else if (!theString.length) {
 	return "";
@@ -192,6 +206,26 @@ MapptEditor_Properties.prototype.appendColumn = function(rowObj, propertyName, p
 
 	//set it to the text input type
 	columnTextInput.type = "text";
+
+	//change our property value for cases where we have an object
+	if (_.isObject(propertyValue) && !_.isArray(propertyValue)) {
+	    if (_.isEmpty(propertyValue)) {
+		propertyValue = "";
+	    }
+	    else {
+		var newPropertyValue = _.map(_.keys(propertyValue), function(elem) {
+		    return elem + "=" + propertyValue[elem];
+		});
+		console.log(newPropertyValue);
+		propertyValue = _.reduce(newPropertyValue, function(a,b) {
+		    a += "," + b;
+		    return a;
+		});
+	    }
+	    console.log(propertyValue);
+	}
+
+
 	columnTextInput.value = propertyValue;
 	$(columnTextInput).addClass(Mappt_p_input_class);
     }

@@ -61,16 +61,6 @@ var Mappt_states = [
     "routeNode",
 ]
 
-var Mappt_node_types = [
-    "DOOR", //doors and doorways
-    "HALL", //hallways in buildings
-    "WALK", //misc. walking areas
-    "AREA", //rooms
-    "ELEVATION", //elevators and stairs
-    "ENTRANCE", //entrance into new map
-    "START", //typical starting areas
-];
-
 //Directory partial paths
 //partial path for the maps
 var Mappt_Layout_Folder = "./floorPlans_svg/";
@@ -152,15 +142,14 @@ function grabSecondWhereFirst(pairList, first) {
 //Not all information for each node type will need to be filled
 //Right off the bat
 //Depends on what the node type is
-PointInfoElement = function(xPosition, yPosition, type) {
+PointInfoElement = function(xPosition, yPosition) {
     this.position = [xPosition, yPosition];
     this.px = xPosition;
     this.py = yPosition;
     this.id = PointInfoElement.increment;
     PointInfoElement.increment += 1; //local id
     this.uuid = guid(); //global id
-    this.type = type;
-    this.descriptors = ""; //
+    this.descriptors = {}; //
 }
 //Static Incrementer
 PointInfoElement.increment = 0;
