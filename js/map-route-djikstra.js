@@ -44,8 +44,8 @@ function getRoute_djikstra(source, target, routeTable, costFunc) {
 	    endPosition = endNode.position;
 
 	    var cost = Math.sqrt(
-		Math.pow(endPosition[0] - startPosition[0],2) + 
-		    Math.pow(endPosition[1] - startPosition[1],2));
+		Math.pow(endNode.px - currentNode.px,2) + 
+		    Math.pow(endNode.py - currentNode.py,2));
 	    return cost;
 	}
     }
@@ -72,7 +72,7 @@ function getRoute_djikstra(source, target, routeTable, costFunc) {
 	
 	//grab all of the connections for our current node
 	linkConnections = _.filter(linkList, function(elem) {
-	    if (elem[0] == current.node.id || elem[1] == current.node.id) {
+	    if (elem.first == current.node.id || elem.second == current.node.id) {
 		return true;
 	    }
 	    return false;
@@ -83,11 +83,11 @@ function getRoute_djikstra(source, target, routeTable, costFunc) {
 	    var currentConnection = linkConnections[i];
 	    //get the end node id
 	    var endNodeID;
-	    if (current.node.id == currentConnection[0]) {
-		endNodeID = currentConnection[1];
+	    if (current.node.id == currentConnection.first) {
+		endNodeID = currentConnection.second;
 	    }
 	    else {
-		endNodeID = currentConnection[0];
+		endNodeID = currentConnection.first;
 	    }
 
 	    //log("Looking at --> ", endNodeID);
