@@ -16,7 +16,7 @@ def fixAttributes(filename):
         if point.has_key("position"):
             point["px"] = point["position"][0]
             point["py"] = point["position"][1]
-
+            del point["position"]
         pointinfolist.append(point)
 
     jsonObj["PointInfoList"] = pointinfolist

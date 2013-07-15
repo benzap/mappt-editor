@@ -159,6 +159,7 @@ function grabSecondWhereFirst(pairList, first) {
 PointInfoElement = function(xPosition, yPosition) {
     this.px = xPosition;
     this.py = yPosition;
+    this.name = "";
     this.id = PointInfoElement.increment;
     PointInfoElement.increment += 1; //local id
     this.uuid = guid(); //global id
@@ -289,9 +290,11 @@ MapptEditor = function (context_id, context_width, context_height) {
     //relation table, which contains pairs of (id, paper.circle)
     this.paperPoints = [];
 
-    //relation table, which contains pairs of (id, [paper.path])
-    this.paperAreas = [];
-    //relation table, which contains pairs of (id, id, paper.path)
+    //relation table, which stores entrance relations between maps
+    //{first: id, second: id, 
+    this.paperEntrances = [];
+
+    //relation table, which contains pairs of {first: id, second: id, path: paper.path}
     this.paperLinks = [];
 
     //The state of the editor, used by events
