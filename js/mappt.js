@@ -1023,11 +1023,6 @@ MapptEditor.prototype.addLink = function(nodeID1, nodeID2, attr) {
     
     var position1 = firstNode;
     var position2 = secondNode;
-    
-    position1.px = position1.position[0];
-    position1.py = position1.position[1];
-    position2.px = position2.position[0];
-    position2.py = position2.position[1];
 
     var movetoString = "M " + position1.px.toString() + " " +
 	position1.py.toString();
@@ -1059,7 +1054,7 @@ MapptEditor.prototype.importJSON = function(routeTable) {
     var import_links = routeTable.LinkInfoList;
 
     _.map(import_points, function(elem) {
-	this.createPoint(elem[0], elem[1], elem);
+	this.createPoint(elem.px, elem.py, elem);
     }.bind(this));
 
     var maxIncrement = _.max(this.paperPoints, function(elem) {
