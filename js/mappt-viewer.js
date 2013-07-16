@@ -131,13 +131,34 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    //the svg width and height
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
 	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
-	   
+	
+	    var newWidth, newHeight;
+	    //make the width and height of our SVG change to fit well within our context
+	    if (this.context_width / this.context_height >  //context wider than svg
+		this.context_svg_width / this.context_svg_height) {
+		newWidth = this.context_width;
+		newHeight = this.context_svg_height / this.context_svg_width * newWidth;
+	    }
+	    else {
+		newHeight = this.context_height;
+		newWidth = this.context_svg_width / this.context_svg_height * newHeight;
+	    }
+
+	    this.context_svg_width = newWidth;
+	    this.context_svg_height = newHeight;
+	    this.context_svg.setAttribute("width", newWidth);
+	    this.context_svg.setAttribute("height", newHeight);
+
+	    console.log(newWidth, newHeight);
+
 	    //to simulate panning and zooming of our SVG, a DIV is
 	    //resized and translated behind the main paper context.
 	    //change our background context to reflect the changes.
 	    $(this.contextObj_back).css({
 		"width" : this.context_width,
 		"height" : this.context_height,
+		//"width" : newWidth,
+		//"height" : newHeight,
 		"top" : 0,
 		"left" : 0,
 		"overflow" : "hidden",
@@ -154,14 +175,17 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    //add a rectangle in front of the svg to allow clicks. It
 	    // is added infront because we have no way to make our
 	    // links and nodes to appear infront of it.
-	    this.context_image = this.context_paper.rect(0,0, this.context_svg_width, this.context_svg_height);
+	    /*
+	    this.context_image = this.context_paper.rect(0,0, 
+							 this.context_svg_width, 
+							 this.context_svg_height);
 	    this.context_image.attr({
 		fill: "#ffffff", 
 		'fill-opacity': 0.0,
 		stroke: "#000000",
 	//	"stroke-opacity" : 0.0,
 	    });
-
+	    */
 	    //The view decides on the current position within our paper
 	    // Allows for easier panning and zooming functionality
 	    // the currentView is used by several functions order to ensure proper
@@ -178,8 +202,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 		this.currentView.w, this.currentView.h
 	    );
 
-	    this.fitScreen();
-	    	    
+	    this.fitScreen();	    	    
 
 	}.bind(this),
 	error: function (errObj, errString) {
@@ -212,7 +235,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 //Used to set the data set for our maps within the mappt viewer
 MapptViewer.prototype.setData = function(data) {
     //produce an object that stores our map data
-    this.mapData = {};
+    this.mapData = [];
     this.mapData = _.map(data, function(elem) {
 	var mapObject = {};
 	mapObject.name = elem.name;
@@ -221,7 +244,6 @@ MapptViewer.prototype.setData = function(data) {
 	mapObject.routeData = this.getJSON(MapptViewer_Data_Path + mapObject.dataName);
 	return mapObject;
     }.bind(this));
-    console.log(this.mapData);
     return this;
 }
 
@@ -369,13 +391,13 @@ MapptViewer.prototype.getMapRoute = function(startingID, endingID, routeData) {
     return theRoute;
 }
 
-//pass a structure with theRoute.data --> list of points. This will
+//pass a list of IDs --> list of points. This will
 //draw the route on the currently set map.
-MapptViewer.prototype.drawRoute = function(theRoute) {
+MapptViewer.prototype.drawRoute = function(pathList) {
     //form our path on the map
-    var firstPoint = this.getPoints({id:theRoute.data[0]})[0];
+    var firstPoint = this.getPoints({id:pathList[0]})[0];
     var pathString = "M" + firstPoint.px + " " + firstPoint.py;
-    _.map(theRoute.data, function(elem) {
+    _.map(pathList, function(elem) {
 	//get our point positions
 	var elemPos = this.getPoints({id:elem})[0];
 	
@@ -396,7 +418,7 @@ MapptViewer.prototype.drawRoute = function(theRoute) {
 //shortcut function to get and draw a route for the current map
 MapptViewer.prototype.showRoute = function(startingID, endingID) {
     var theRoute = this.getMapRoute(startingID, endingID, this.routeData);
-    return this.drawRoute(theRoute);
+    return this.drawRoute(theRoute.data);
 }
 
 //clears the route on the map
@@ -409,25 +431,76 @@ MapptViewer.prototype.clearRoute = function() {
 MapptViewer.prototype.createHashSearch = function() {
     var searchList = {};
     //
-    _.map(this.mapData, function(map) { //traverse our maps
-	_.map(map, function(elem) {
-	    var mapData = elem.routeData;
-	    for (point in mapData.PointInfoList) {
-		//add a new attribute to describe what map it belongs to
-		point.mapURL = map.name;
-		var descriptors = point.descriptors;
-		//First we go through our descriptors
-		if (_.isEmpty(point.descriptors)) {
-		    break;
-		}
-		for (theDescriptor in descriptors) {
-		    theDescriptor = theDescriptor.split("=");
-		    if (!_.contains(searchList, theDescriptor[0])) {
-			searchList[theDescriptor[0]] = [];		    	
-		    }
-		    searchList.push(point);
-		}
-	    } //END for (point in ...
-	});//END _.map(map,...
-    });//END _.map(this.mapData,...
+    
+}
+
+//get the full route between two areas in two different maps. This
+//depends on the entrance info list having populated values to
+//traverse between the two maps.
+
+//The first version will allow traversal between two related maps
+//stored within the entrance info list.
+MapptViewer.prototype.getFullRoute = function(firstID, firstMapName,
+					      secondID, secondMapName) {
+    //get the map corresponding to our first point
+    var firstMap = _.find(this.mapData, function(elem) {
+	return elem.mapName == firstMapName;
+    });
+
+    //get the map corresponding to the second point
+    var secondMap = _.find(this.mapData, function(elem) {
+	return elem.mapName == secondMapName;
+    });
+
+    //grab our points
+    var firstPoint = _.find(firstMap.routeData.PointInfoList, function(elem) {
+	return elem.id == firstID;
+    });
+    var secondPoint = _.find(secondMap.routeData.PointInfoList, function(elem) {
+	return elem.id == secondID;
+    });    
+
+    //try and see if there is a relationship between the two maps through the entrance nodes
+    //we only traverse from the first node to the second node
+    var firstEntranceList = firstMap.routeData.EntranceInfoList;
+    var entranceRelations = _.filter(firstEntranceList, function(elem) {
+	return elem.secondURL == secondMapName;
+    });
+
+    //from our first to our first entrances, form least costs and grab the one with the least cost
+    var partialRouteList = _.map(entranceRelations, function(elem) {
+	var partial = this.getMapRoute(firstID, elem.first, firstMap.routeData);
+	//fill our partial route with more useful information
+	//the ID to the entrance of the building we want to enter
+	partial.first = elem.first;
+	//the ID to the node on the other side of the entrance within the other map
+	partial.second = elem.second;
+	return partial
+    }.bind(this));
+
+    //get our minimum least cost
+    var firstPartialRoute = _.min(partialRouteList, function(elem) {
+	return (elem.totalCost);
+    });
+
+    //now that we have a partial route, we can take it's second value
+    //and form the rest of the way to our destination
+    var secondPartialRoute = this.getMapRoute(firstPartialRoute.second, secondID, secondMap.routeData);
+
+    //form a better representation for our data
+    var fullRoute = [];
+    //our first path
+    fullRoute.push({
+	name: firstMap.name,
+	mapName: firstMap.mapName,
+	path: firstPartialRoute.data,
+    });
+    //our second path
+    fullRoute.push({
+	name: secondMap.name,
+	mapName: secondMap.mapName,
+	path: secondPartialRoute.data,
+    });    
+
+    return fullRoute;
 }

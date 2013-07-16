@@ -349,10 +349,11 @@ MapptEditor.prototype.setMap = function(imageName) {
 	    var r = /\d+/;
 	    
 	    //the svg width and height
-	    this.context_svg.setAttribute('width', this.context_width);
-	    this.context_svg.setAttribute('height', this.context_height);
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
 	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
+	    this.context_svg.setAttribute('width', this.context_width);
+	    this.context_svg.setAttribute('height', this.context_height);
+	    
 	   
 	    //setup our paper in the front div container
 	    this.context_paper = ScaleRaphael(this.context_id_foreground,

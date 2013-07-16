@@ -2,6 +2,8 @@ $(function() {
     var windowWidth = $(window).width();
     var windowHeight = $(window).height();
     
+    console.log(windowWidth, windowHeight);
+
     mappt_viewer = new MapptViewer("mappt-viewer", windowWidth, windowHeight)
 	.init()
 	.setData(
@@ -71,7 +73,4 @@ $(function() {
 	    }
 
 	});
-
-console.log(mappt_viewer.mapData);
-
 });
