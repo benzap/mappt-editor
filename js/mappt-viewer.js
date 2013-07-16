@@ -132,6 +132,10 @@ MapptViewer.prototype.setMap = function(imageName) {
 	    this.context_svg_width = this.context_svg.getAttribute('width').match(r)[0];
 	    this.context_svg_height = this.context_svg.getAttribute('height').match(r)[0];
 	
+	    //the original svg width and height
+	    this.svg_original_width = this.context_svg_width;
+	    this.svg_original_height = this.context_svg_height;
+
 	    var newWidth, newHeight;
 	    //make the width and height of our SVG change to fit well within our context
 	    if (this.context_width / this.context_height >  //context wider than svg
@@ -307,7 +311,7 @@ MapptViewer.prototype.translatePaper = function(x, y, s) {
 MapptViewer.prototype.fitScreen = function() {
     
     var fixedAspect = this.correctAspect(this.context_width, this.context_height,
-					 this.context_svg_width, this.context_svg_height);
+					 this.svg_original_width, this.svg_original_height);
 
     this.currentView.x = 0;
     this.currentView.y = 0;
