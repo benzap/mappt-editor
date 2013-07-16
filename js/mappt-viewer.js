@@ -216,8 +216,8 @@ MapptViewer.prototype.setData = function(data) {
     this.mapData = _.map(data, function(elem) {
 	var mapObject = {};
 	mapObject.name = elem.name;
-	mapObject.mapName = elem.mapURL;
-	mapObject.dataName = elem.dataURL;
+	mapObject.mapName = elem.mapName;
+	mapObject.dataName = elem.dataName;
 	mapObject.routeData = this.getJSON(MapptViewer_Data_Path + mapObject.dataName);
 	return mapObject;
     }.bind(this));
@@ -374,13 +374,13 @@ MapptViewer.prototype.getMapRoute = function(startingID, endingID, routeData) {
 MapptViewer.prototype.drawRoute = function(theRoute) {
     //form our path on the map
     var firstPoint = this.getPoints({id:theRoute.data[0]})[0];
-    var pathString = "M" + firstPoint.position[0] + " " + firstPoint.position[1];
+    var pathString = "M" + firstPoint.px + " " + firstPoint.py;
     _.map(theRoute.data, function(elem) {
 	//get our point positions
-	var elemPos = this.getPoints({id:elem})[0].position;
+	var elemPos = this.getPoints({id:elem})[0];
 	
 	//figure out the offset
-	pathString += "L" +  elemPos[0] + " " + elemPos[1];
+	pathString += "L" +  elemPos.px + " " + elemPos.py;
 	
     }.bind(this));
 
