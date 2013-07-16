@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="height=device-height, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script>
+      if(navigator.userAgent.match(/Android/i)){
+      window.scrollTo(0,1);
+      }
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="mappt-viewer.css" />    
+    <title>Mappt - Viewer</title>  
+  </head>
+  <body>
+
+    <div id="mappt-main">
+      <div id="mappt-panel-where"></div>
+      <div id="mappt-panel-where-container">
+	<select>
+	  <option value="101">Room1</option>
+	  <option value="133">Other Entrance</option>
+	  <option value="34">Main Entrance</option>
+	</select>
+      </div>
+      <div id="mappt-panel-to"></div>
+      <div id="mappt-panel-to-container">
+	<select>
+	  <option value="101">Room1</option>
+	  <option value="12">Mcintyre Entrance</option>
+	  <option value="41">Shuniah Entrance</option>
+	</select>
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="js/jquery.mousewheel.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="js/raphael-min.js"></script>
+    <script src="js/jquery.notify.min.js"></script>
+    <script src="js/jquery.storage.js"></script>
+    <script src="js/underscore-min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/map-route-djikstra.js"></script>
+    <script src="js/mappt-viewer.js"></script>
+    <script src="js/mappt-panel.js"></script>
+    <script src="js/viewer.js"></script>
+    <script src="js/mappt.js"></script>
+    <script src="js/mappt-main.js"></script>
+  </body>
+</html>
