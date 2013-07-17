@@ -211,11 +211,6 @@ MapptViewer.prototype.setMap = function(imageName) {
     //set our data up within the viewer
     this.dataURL = MapptViewer_Data_Path + this.imageName + ".json";
 
-    //make sure it's an async call
-    $.ajaxSetup({
-	async: false
-    });
-
     if(UrlExists(this.dataURL)) {
 	this.routeData = getJSON(this.dataURL);
     }

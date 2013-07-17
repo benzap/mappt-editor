@@ -1152,12 +1152,9 @@ MapptEditor.prototype.loadMapData = function() {
     
     if(UrlExists(this.dataURL)) {
     //we didn't find it in local storage, so we're going to check the server
-	jQuery.getJSON(this.dataURL, function(data) {
-	    this.importJSON(data);
-	    log("loading map data from remote...", this.dataURL);
-	}.bind(this));
+	var data = getJSON(this.dataURL);
+	this.importJSON(data);
     }
-
 }
 
 //Saves the current map layout within local storage
