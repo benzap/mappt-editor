@@ -96,7 +96,6 @@ MapptViewer.prototype.init = function() {
     var mapptViewer = this;
     
     this.currentView = {
-	
     };
     return this;
 };

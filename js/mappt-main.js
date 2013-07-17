@@ -158,9 +158,12 @@ Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_
     $(this.contextObj).append(newViewerObj);
     console.log(viewer_context_id);
     //instantiate our viewer
-    var mapptViewer = new MapptViewer(viewer_context_id, viewer_width, viewer_height);
+    var mapptViewer = new MapptViewer(viewer_context_id, viewer_width, viewer_height)
+	.init();
     return mapptViewer;
 }
+
+
 
 //create the search list and produce a hashtable that allows you to
 //easily traverse. The search is produced from the descriptors
