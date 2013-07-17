@@ -9,6 +9,11 @@ function UrlExists(url)
     return http.status!=404;
 }
 
+//DOM classes for the main context, front and back
+MapptViewer_Class = "mappt-viewer-main";
+MapptViewer_Class_Front = MapptViewer_Class + "-front";
+MapptViewer_Class_Back = MapptViewer_Class + "-back";
+
 MapptViewer = function(context_id, context_width, context_height) {
 
     //The id of the DIV element for our top-level container
@@ -28,6 +33,10 @@ MapptViewer = function(context_id, context_width, context_height) {
     //our current context
     this.contextObj = $("#" + context_id);
 
+    //check if the given ID exists
+    (this.contextObj.length) || 
+	log("ERROR: Provided ID does not match any element within the DOM");
+
     $(this.contextObj).css({
 	"position" : "relative",
 	"top" : "0px",
@@ -37,14 +46,15 @@ MapptViewer = function(context_id, context_width, context_height) {
 	"overflow" : "hidden",
     });
 
-    //check if the given ID exists
-    (this.contextObj.length) || 
-	log("ERROR: Provided ID does not match any element within the DOM");
+    //apply a special class to our container
+    $(this.contextObj).addClass(MapptViewer_Class);
+    
 
     //create our background div and foreground divs
     //the background div will hold our SVG image
     this.contextObj_back = document.createElement("div");
     this.contextObj_back.setAttribute("id", this.context_id_background);
+    $(this.contextObj_back).addClass(MapptViewer_Class_Back);
     $(this.contextObj_back).css({
 	"position" : "absolute",
 	"z-index" : 0,
@@ -58,6 +68,7 @@ MapptViewer = function(context_id, context_width, context_height) {
     //the foreground div will hold our raphael paper
     this.contextObj_front = document.createElement("div");
     this.contextObj_front.setAttribute("id", this.context_id_foreground);
+    $(this.contextObj_front).addClass(MapptViewer_Class_Front);
     $(this.contextObj_front).css({
 	"position" : "absolute",
 	"z-index" : 1,

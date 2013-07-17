@@ -11,13 +11,12 @@
   - mappt-panel.js
   - underscore.js
   - jquery
-  - jquery.ui
-  - jquery.localstorage
   - jquery.mousewheel
   - jquery.mobile
   
 */
 
+//Paths to the images and JSON data
 var Mappt_Main_Image_Path = "./floorPlans_svg/";
 var Mappt_Main_Data_Path = "./floorPlans_data/";
 
@@ -167,6 +166,7 @@ Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_
     //instantiate our viewer
     var mapptViewer = new MapptViewer(viewer_context_id, viewer_width, viewer_height)
 	.init();
+
     return mapptViewer;
 }
 
