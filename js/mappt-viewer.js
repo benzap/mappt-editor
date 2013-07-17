@@ -1,14 +1,6 @@
 var MapptViewer_Image_Path = "./floorPlans_svg/";
 var MapptViewer_Data_Path = "./floorPlans_data/";
 
-function UrlExists(url)
-{
-    var http = new XMLHttpRequest();
-    http.open('HEAD', url, false);
-    http.send();
-    return http.status!=404;
-}
-
 //DOM classes for the main context, front and back
 MapptViewer_Class = "mappt-viewer-main";
 MapptViewer_Class_Front = MapptViewer_Class + "-front";

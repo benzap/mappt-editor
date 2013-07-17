@@ -25,29 +25,6 @@ Class Structures:
 //** MapptEditor Configuration Variables **
 //*****************************************
 
-var Mappt_keycodes = {
-    "1" : 49,
-    "2" : 50,
-    "3" : 51,
-    "4" : 52,
-    "5" : 53,
-    "6" : 54,
-    "7" : 55,
-    "l" : 76,
-    "s" : 115,
-    "e" : 101,
-    "f" : 102,
-    "return" : 13,
-    "=" : 61,
-    "-" : 45,
-    "i" : 105,
-    "j" : 106,
-    "k" : 107,
-    "l" : 108,
-    "u" : 117,
-    "o" : 111,
-};
-
 //The radius of the node circles
 var Mappt_Node_Radius = 0.5;
 
@@ -60,11 +37,6 @@ var Mappt_states = [
     "moveNode",
     "routeNode",
 ]
-
-//Directory partial paths
-//partial path for the maps
-var Mappt_Layout_Folder = "./floorPlans_svg/";
-var Mappt_Data_Folder = "./floorPlans_data/";
 
 //Node Colors
 var Mappt_Node_Color_Default = "#F5CB5B";
@@ -86,71 +58,6 @@ var paper_selectionBox = null;
 
 //Temporary for starting mouse click when panning [x,y]
 var panningStart = [];
-
-function UrlExists(url)
-{
-    var http = new XMLHttpRequest();
-    http.open('HEAD', url, false);
-    http.send();
-    return http.status!=404;
-}
-
-function guid() {
-    s4 = function() {
-	return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);}
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-
-function log(t1, t2, t3, t4, t5, t6, t7, t8, t9){
-    if(typeof(console)=="object"){
-	var a = [t1,t2,t3,t4,t5,t6,t7,t8,t9]
-	a.each(function(i,v){
-            if(v!=undefined){
-		if(typeof v == "object")
-		    a[i] = ser(v)
-            }
-            else if(typeof v == "function"){
-            a[i] = "function(){...}"
-            }
-	})
-	    console.log(a.join("\t"));
-    }
-}
-
-//grabs the first value from a pair contained in a list of pairs with
-//the given second value
-function grabFirstWhereSecond(pairList, second) {
-    var tuple = _.find(pairList, function(elem) {
-	var chk = elem.second;
-	if (_.isUndefined(elem.second)) {
-	    chk = elem[1];
-	}
-	return (chk == second);
-    });
-    if (_.isUndefined(tuple.first)) {
-	return tuple[0];
-    }
-    return tuple.first;
-}
-
-//grabs the second value from a pair contained in a list of pairs with
-//the given first value
-function grabSecondWhereFirst(pairList, first) {
-    var tuple = _.find(pairList, function(elem) {
-	var chk = elem.first;
-	if (_.isUndefined(elem.first)) {
-	    chk = elem[0];
-	}
-	return (elem.first == first);
-    });
-    if (_.isUndefined(elem.second)) {
-	return tuple[1];
-    }
-    return tuple.second;
-}
 
 //Class structure used to represent points on the map
 //Not all information for each node type will need to be filled
