@@ -1,5 +1,8 @@
 $(function() {
-    mappt = new Mappt("mappt-main", 640, 480)
+    var windowWidth = $(window).width();
+    var windowHeight = $(window).height();
+
+    mappt = new Mappt("mappt-main", windowWidth, windowHeight)
 	.init()
 	.setData(
 	    [

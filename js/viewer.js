@@ -7,14 +7,6 @@ $(function() {
 	.setMap("Aerial.svg")
 	.showRoute(101, 138);
     
-/*    mappt_panel_where = new Mappt_Panel_Where("mappt-panel-where")
-	.init()
-	.appendToContainer("mappt-panel-where-container");
-
-    mappt_panel_to = new Mappt_Panel_To("mappt-panel-to")
-	.init()
-	.appendToContainer("mappt-panel-to-container");
-*/
     var whereRoute = null;
     var toRoute = null;
 

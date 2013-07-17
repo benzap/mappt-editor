@@ -152,6 +152,8 @@ Mappt.prototype.getJSON = function(dataURL) {
     return theData;
 }
 
+//creates a map viewer and returns its instance. The viewer is
+//appended within the mappt context.
 Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_height) {
     var newViewerObj = document.createElement("div");
     newViewerObj.setAttribute("id", viewer_context_id);
@@ -163,7 +165,14 @@ Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_
     return mapptViewer;
 }
 
-
+//provided viewer instance is removed from the DOM
+Mappt.prototype.removeViewer = function(mapptViewerObject) {
+    var theContext = mapptViewerObject.context_id;
+    console.log(theContext);
+    delete mapptViewerObject;
+    console.log(mapptViewerObject);
+    $("#" + theContext).remove();
+}
 
 //create the search list and produce a hashtable that allows you to
 //easily traverse. The search is produced from the descriptors
