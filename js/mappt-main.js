@@ -32,6 +32,11 @@ Mappt = function(context_id, context_width, context_height) {
     // to consider traversal. From this, we can construct the routes
     // for each map, and perform search queries.
     this.mapData = null;
+
+    //contains all of the current viewers that are active
+    this.viewerList = [];
+    
+
     return this;
 }
 
@@ -172,6 +177,7 @@ Mappt.prototype.removeViewer = function(mapptViewerObject) {
     delete mapptViewerObject;
     console.log(mapptViewerObject);
     $("#" + theContext).remove();
+    return this;
 }
 
 //create the search list and produce a hashtable that allows you to
@@ -187,4 +193,42 @@ Mappt.prototype.createSearchList = function() {
 	});//END _.map(elemMap.dataRoute.PointInfoList, ...
     });//END _.map(this.mapData, ...
     
+}
+
+//shows the full route, by creating viewers and showing the routing
+//information for each of them. The viewers are also stored within the
+//this.viewerList to allow them tobe cleared with the
+//this.clearFullRoute function.
+Mappt.prototype.showFullRoute = function(routeList) {
+    var numViews = routeList.length;
+    var viewerWidth = 640;
+    var viewerHeight = 480;
+
+    console.log(routeList);
+
+    _.map(routeList, function(elem) {
+	//develop an id, remove unwanted characters
+	var idString = elem.name
+	    .trim()
+	    .replace(/[_,.]|\s/g, "-")
+	    .toLowerCase();
+
+	console.log(idString);
+
+	//create our viewer
+	var viewerObj = this.createViewer(idString, viewerWidth, viewerHeight);
+	viewerObj.setMap(elem.mapName);
+	viewerObj.drawRoute(elem.path);
+
+	this.viewerList.push(viewerObj);
+    }.bind(this));
+    return this;
+}
+
+Mappt.prototype.clearFullRoute = function() {
+    _.map(this.viewerList, function(elem) {
+	this.removeViewer(elem);
+    }.bind(this))
+    this.viewerList = [];
+    return this;
 }
