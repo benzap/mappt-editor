@@ -37,6 +37,10 @@ Mappt = function(context_id, context_width, context_height) {
 
 Mappt.prototype.init = function() {
     var mappt = this;
+
+    this.contextObj = $("#" + this.context_id);
+    (this.contextObj.length) || log("Given ID doesn't exist");
+
     return this;
 }
 
@@ -148,10 +152,20 @@ Mappt.prototype.getJSON = function(dataURL) {
     return theData;
 }
 
+Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_height) {
+    var newViewerObj = document.createElement("div");
+    newViewerObj.setAttribute("id", viewer_context_id);
+    $(this.contextObj).append(newViewerObj);
+    console.log(viewer_context_id);
+    //instantiate our viewer
+    var mapptViewer = new MapptViewer(viewer_context_id, viewer_width, viewer_height);
+    return mapptViewer;
+}
+
 //create the search list and produce a hashtable that allows you to
 //easily traverse. The search is produced from the descriptors
 //describing the nodes.
-MapptViewer.prototype.createSearchList = function() {
+Mappt.prototype.createSearchList = function() {
     var searchList = {};
     //grab the map data for each map
     _.map(this.mapData, function(elemMap) {
