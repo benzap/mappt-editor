@@ -217,39 +217,13 @@ MapptViewer.prototype.setMap = function(imageName) {
     });
 
     if(UrlExists(this.dataURL)) {
-    //we didn't find it in local storage, so we're going to check the server
-	jQuery.getJSON(this.dataURL, function(data) {
-	    this.routeData = data;
-	    log("loading map data from remote...", this.dataURL);
-	}.bind(this));
+	this.routeData = getJSON(this.dataURL);
     }
     else {
 	console.log(this.dataURL, " does not exist");
     }
     return this;
 };
-
-MapptViewer.prototype.getJSON = function(dataURL) {
-    //set our data up within the viewer
-    var theData;
-
-    //make sure it's an async call
-    $.ajaxSetup({
-	async: false
-    });
-
-    if(UrlExists(dataURL)) {
-    //we didn't find it in local storage, so we're going to check the server
-	jQuery.getJSON(dataURL, function(data) {
-	    theData = data;
-	    log("loading map data from remote...", dataURL);
-	}.bind(this));
-    }
-    else {
-	log(dataURL, " does not exist");
-    }
-    return theData;
-}
 
 //Used to set the position of the paper an exact place on the screen
 MapptViewer.prototype.setViewBox = function(x,y,w,h) {    

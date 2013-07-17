@@ -49,7 +49,17 @@ Mappt.prototype.init = function() {
 }
 
 //Used to set the data set for our maps within the mappt application
-Mappt.prototype.setData = function(data) {
+Mappt.prototype.setData = function(data, bAsync) {
+
+    if (_.isUndefined(bAsync)) {
+	bAsync = false;
+    }
+
+    //make sure it's an async call
+    $.ajaxSetup({
+	async: bAsync
+    });
+
     //produce an object that stores our map data
     this.mapData = [];
     this.mapData = _.map(data, function(elem) {
@@ -57,7 +67,7 @@ Mappt.prototype.setData = function(data) {
 	mapObject.name = elem.name;
 	mapObject.mapName = elem.mapName;
 	mapObject.dataName = elem.dataName;
-	mapObject.routeData = this.getJSON(Mappt_Main_Data_Path + mapObject.dataName);
+	mapObject.routeData = getJSON(Mappt_Main_Data_Path + mapObject.dataName);
 	return mapObject;
     }.bind(this));
 
@@ -132,28 +142,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	path: secondPartialRoute.data,
     });    
     return fullRoute;
-}
-
-Mappt.prototype.getJSON = function(dataURL) {
-    //set our data up within the viewer
-    var theData;
-
-    //make sure it's an async call
-    $.ajaxSetup({
-	async: false
-    });
-
-    if(UrlExists(dataURL)) {
-    //we didn't find it in local storage, so we're going to check the server
-	jQuery.getJSON(dataURL, function(data) {
-	    theData = data;
-	    log("loading map data from remote...", dataURL);
-	}.bind(this));
-    }
-    else {
-	log(dataURL, " does not exist");
-    }
-    return theData;
 }
 
 //creates a map viewer and returns its instance. The viewer is

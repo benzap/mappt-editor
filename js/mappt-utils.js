@@ -74,13 +74,19 @@ function grabSecondWhereFirst(pairList, first) {
     return tuple.second;
 }
 
-//helper function to show a prompt for clearing local data
-function prompt_clearLocal(mappt) {
-    var r = confirm("Are you sure you want to clear local storage? All local changes will be lost.");
-    if (r == true) {
-	mappt.clearLocalStorage();
+function getJSON(dataURL) {
+    //set our data up within the viewer
+    var theData;
+
+    if(UrlExists(dataURL)) {
+    //we didn't find it in local storage, so we're going to check the server
+	jQuery.getJSON(dataURL, function(data) {
+	    theData = data;
+	    log("loading map data from remote...", dataURL);
+	}.bind(this));
     }
     else {
-	log("Nothing happened.");
+	log(dataURL, " does not exist");
     }
+    return theData;
 }

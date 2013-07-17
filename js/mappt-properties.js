@@ -216,16 +216,12 @@ MapptEditor_Properties.prototype.appendColumn = function(rowObj, propertyName, p
 		var newPropertyValue = _.map(_.keys(propertyValue), function(elem) {
 		    return elem + "=" + propertyValue[elem];
 		});
-		console.log(newPropertyValue);
 		propertyValue = _.reduce(newPropertyValue, function(a,b) {
 		    a += "," + b;
 		    return a;
 		});
 	    }
-	    console.log(propertyValue);
 	}
-
-
 	columnTextInput.value = propertyValue;
 	$(columnTextInput).addClass(Mappt_p_input_class);
     }

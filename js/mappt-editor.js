@@ -675,7 +675,9 @@ MapptEditor.prototype.createPoint = function(xPosition, yPosition, attr) {
 		    mapptEditor.paperPoints,
 		    addLink_currentlySelected);
 
-		this.addLink(position1_id, position2_id);
+		console.log(position1_id, position2_id);
+
+		mapptEditor.addLink(position1_id, position2_id);
 
 		addLink_currentlySelected = null;
 	    }
