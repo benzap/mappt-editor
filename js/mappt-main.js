@@ -16,10 +16,6 @@
   
 */
 
-//Paths to the images and JSON data
-var Mappt_Main_Image_Path = "./floorPlans_svg/";
-var Mappt_Main_Data_Path = "./floorPlans_data/";
-
 Mappt = function(context_id, context_width, context_height) {
     this.context_id = context_id;
 
@@ -34,8 +30,6 @@ Mappt = function(context_id, context_width, context_height) {
 
     //contains all of the current viewers that are active
     this.viewerList = [];
-    
-
     return this;
 }
 
@@ -67,7 +61,7 @@ Mappt.prototype.setData = function(data, bAsync) {
 	mapObject.name = elem.name;
 	mapObject.mapName = elem.mapName;
 	mapObject.dataName = elem.dataName;
-	mapObject.routeData = getJSON(Mappt_Main_Data_Path + mapObject.dataName);
+	mapObject.routeData = getJSON(Mappt_Data_Folder + mapObject.dataName);
 	return mapObject;
     }.bind(this));
 

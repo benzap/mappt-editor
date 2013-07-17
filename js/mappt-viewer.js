@@ -1,10 +1,7 @@
-var MapptViewer_Image_Path = "./floorPlans_svg/";
-var MapptViewer_Data_Path = "./floorPlans_data/";
-
 //DOM classes for the main context, front and back
-MapptViewer_Class = "mappt-viewer-main";
-MapptViewer_Class_Front = MapptViewer_Class + "-front";
-MapptViewer_Class_Back = MapptViewer_Class + "-back";
+var MapptViewer_Class = "mappt-viewer-main";
+var MapptViewer_Class_Front = MapptViewer_Class + "-front";
+var MapptViewer_Class_Back = MapptViewer_Class + "-back";
 
 MapptViewer = function(context_id, context_width, context_height) {
 
@@ -105,7 +102,7 @@ MapptViewer.prototype.init = function() {
 
 MapptViewer.prototype.setMap = function(imageName) {
     this.imageName = imageName;
-    this.imageURL = MapptViewer_Image_Path + this.imageName;
+    this.imageURL = Mappt_Layout_Folder + this.imageName;
 
     $(this.contextObj_back).empty();
 
@@ -209,7 +206,7 @@ MapptViewer.prototype.setMap = function(imageName) {
     });
 
     //set our data up within the viewer
-    this.dataURL = MapptViewer_Data_Path + this.imageName + ".json";
+    this.dataURL = Mappt_Data_Folder + this.imageName + ".json";
 
     if(UrlExists(this.dataURL)) {
 	this.routeData = getJSON(this.dataURL);

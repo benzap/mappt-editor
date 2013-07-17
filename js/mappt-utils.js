@@ -74,9 +74,17 @@ function grabSecondWhereFirst(pairList, first) {
     return tuple.second;
 }
 
-function getJSON(dataURL) {
+function getJSON(dataURL, bAsync) {
     //set our data up within the viewer
     var theData;
+    
+    if(_.isUndefined(bAsync)) {
+	bAsync = false;
+    }
+    
+    $.ajaxSetup({
+	async: bAsync
+    });
 
     if(UrlExists(dataURL)) {
     //we didn't find it in local storage, so we're going to check the server
