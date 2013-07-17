@@ -6,40 +6,5 @@ $(function() {
 	.init()
 	.setMap("Aerial.svg")
 	.showRoute(101, 138);
-    
-    var whereRoute = null;
-    var toRoute = null;
 
-    $("#mappt-panel-where-container")
-	.find("select")
-	.change(function() {
-	    var sel = $("#mappt-panel-where-container").find("select option:selected")[0];
-	    whereRoute = parseInt(sel.getAttribute("value"));
-
-	    if (_.isUndefined(toRoute) ||
-	       whereRoute == toRoute) {
-		return;
-	    }
-	    else {
-		mappt_viewer.clearRoute();
-		mappt_viewer.showRoute(whereRoute, toRoute);
-	    }
-	});
-
-    $("#mappt-panel-to-container")
-	.find("select")
-	.change(function() {
-	    var sel = $("#mappt-panel-to-container").find("select option:selected")[0];
-	    toRoute = parseInt(sel.getAttribute("value"));
-	    
-	    if (_.isUndefined(whereRoute) ||
-	       whereRoute == toRoute) {
-		return;
-	    }
-	    else {
-		mappt_viewer.clearRoute();
-		mappt_viewer.showRoute(whereRoute, toRoute);
-	    }
-
-	});
 });
