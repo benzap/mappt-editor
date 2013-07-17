@@ -68,13 +68,13 @@ Mappt.prototype.setData = function(data, bAsync) {
     return this;
 }
 
-//get the full route between two areas in two different maps. This
+//get the partial route between two areas in two different maps. This
 //depends on the entrance info list having populated values to
 //traverse between the two maps.
 
 //The first version will allow traversal between two related maps
 //stored within the entrance info list.
-Mappt.prototype.getFullRoute = function(firstID, firstMapName,
+Mappt.prototype.getPartialRoute = function(firstID, firstMapName,
 					secondID, secondMapName) {
     //get the map corresponding to our first point
     var firstMap = _.find(this.mapData, function(elem) {
@@ -122,20 +122,20 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
     var secondPartialRoute = getRoute_djikstra(firstPartialRoute.second, secondID, secondMap.routeData);
 
     //form a better representation for our data
-    var fullRoute = [];
+    var partialRoute = [];
     //our first path
-    fullRoute.push({
+    partialRoute.push({
 	name: firstMap.name,
 	mapName: firstMap.mapName,
 	path: firstPartialRoute.data,
     });
     //our second path
-    fullRoute.push({
+    partialRoute.push({
 	name: secondMap.name,
 	mapName: secondMap.mapName,
 	path: secondPartialRoute.data,
     });    
-    return fullRoute;
+    return partialRoute;
 }
 
 //creates a map viewer and returns its instance. The viewer is

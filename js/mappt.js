@@ -23,8 +23,5 @@ $(function() {
 		},
 	    ]);
 
-    mappt.showFullRoute(mappt.getFullRoute(133, "Aerial.svg", 539, "Shuniah_1.svg"))
-
-
-
+    mappt.showFullRoute(mappt.getPartialRoute(133, "Aerial.svg", 539, "Shuniah_1.svg"))
 });
