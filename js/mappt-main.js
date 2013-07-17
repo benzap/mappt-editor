@@ -183,8 +183,8 @@ Mappt.prototype.createSearchList = function() {
 //this.clearFullRoute function.
 Mappt.prototype.showFullRoute = function(routeList) {
     var numViews = routeList.length;
-    var viewerWidth = 640;
-    var viewerHeight = 480;
+    var viewerWidth = $(window).width();
+    var viewerHeight = $(window).height();
 
     console.log(routeList);
 
