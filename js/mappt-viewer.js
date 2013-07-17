@@ -290,28 +290,30 @@ MapptViewer.prototype.correctAspect = function(width, height,
     var svgHeight_offset;
 
     //if the svg is wider than the context
-    if ((width / height) < 
-       (svgWidth / svgHeight)) {
-       newContextWidth = svgWidth / width * svgWidth;
-       newContextHeight = svgHeight * newContextWidth / svgWidth;
-       svgHeight_offset = (svgWidth / width * height - newContextHeight) / 2;
+    if ((this.context_width / this.context_height) < 
+       (this.context_svg_width / this.context_svg_height)) {
+       newContextWidth = this.context_svg_width / this.context_width * this.svg_original_width;
+       newContextHeight = newContextWidth / this.svg_original_width * this.svg_original_height;
+       svgHeight_offset = (this.context_svg_width / this.context_width * this.context_height - newContextHeight) / 2;
        svgWidth_offset = 0;
-       width_aspect = newContextWidth;
-       height_aspect = newContextHeight;
     }
     else {//if the svg is narrower than the context
-       newContextHeight = svgHeight / height * svgHeight;
-       newContextWidth = svgWidth * newContextHeight / svgHeight;
-       svgWidth_offset = (svgHeight / height * width - newContextWidth) / 2;
+       newContextHeight = this.context_svg_height / this.context_height * this.svg_original_height;
+       newContextWidth = this.svg_original_width * newContextHeight / this.svg_original_height;
+       svgWidth_offset = (this.context_svg_height / this.context_height * this.context_width - newContextWidth) / 2;
        svgHeight_offset = 0;
-       height_aspect = newContextHeight;
-       width_aspect = newContextWidth;
+
     }
 
-    return { width: width_aspect,
-            height: height_aspect,
-            width_offset: svgWidth_offset,
-            height_offset: svgHeight_offset };
+    var correctedAspect = { 
+	width: newContextWidth,
+        height: newContextHeight,
+        width_offset: svgWidth_offset,
+        height_offset: svgHeight_offset 
+    };
+    
+    console.log(correctedAspect);
+    return correctedAspect;
 };
 
 //looks through the point list and finds all of the IDs with the given
