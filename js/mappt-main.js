@@ -145,7 +145,8 @@ Mappt.prototype.getPartialRoute = function(firstID, firstMapName,
 //find more than one way to get to the destination, and chooses the
 //best one.
 Mappt.prototype.getFullRoute = function(firstID, firstMapName,
-					secondID, secondMapName) {
+				secondID, secondMapName) {
+    var _this = this;
     //grab all of the entrancepointlinks for each map
     var entranceLinkList = []
     _.map(this.mapData, function(elemMap) {
@@ -232,8 +233,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	    return b;
 	});
 
-	console.log("Path Segments", pathSegments);
-
 	var numSegments = pathSegments.length;
 	var sizeList = _.map(pathSegments, function(elem) {
 	    return elem.length;
@@ -241,35 +240,80 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 
 	var pathList = [];
 
-	console.log(sizeList);
 	var _i = 0;
-	while (_.every(sizeList) && _i <= 10) {
+	while (_.some(sizeList) && _i <= 10) {
 	    var index = _.indexOf(sizeList, 0) - 1;
-	    if (index = -2) {
+	    if (index == -2) {
 		index = numSegments - 1;
 	    }
 	    var path = [];
 	    for (var i = 0; i < numSegments; i++) {
-		path.push(pathSegments[i][sizeList[i]]);
+		var sizeIndex = sizeList[i] || 1;
+		var pathLink = pathSegments[i][sizeIndex-1];
+		path.push(pathLink);
 	    }
-
 	    sizeList[index] -= 1; _i += 1;
 	    pathList.push(path);
-	    console.log(sizeList);
 	}
 	
 	return pathList;
 	
     }
-    
-    //populateTraversal(entrancePathList[0]);
-    
+        
     //get the full paths made between the maps.
-    /*var entranceFullPath = _.map(entrancePathList, function(elemPath) {
-	return _.reduce(populateTraversal(elemPath), function(a,b) {
-	    return a.concat(b);
+    var entranceFullPath = _.map(entrancePathList, function(elemPath) {
+	return populateTraversal(elemPath);
+    });
+
+    var entranceFullPath = _.reduce(entranceFullPath, function(a,b) {
+	return a.concat(b);
+    });
+
+    //from our set of paths, form lists of traversals
+    var pathListing = _.map(entranceFullPath, function(elemPath) {
+	var thePath = [];
+	//tack on our starting point using our partial pathrouting function
+
+	
+	var pathSize = elemPath.length;
+	    
+	//we tack the actual firstID and secondID within our path
+	//into the full path. 
+	
+	//Tack it onto the front
+	elemPath[0].first = firstID;
+	//Tack it onto the back
+	elemPath[pathSize-1].second = secondID;
+	
+	//we apply the same principle to each of the elements,
+	//transitioning the first and second between them to produce a
+	//link.
+	var fixedPath = [];
+	//reduce our path down from it's partial paths
+	_.reduce(elemPath, function(a,b) {
+	    fixedPath.push({
+		first: a.first,
+		second: b.first,
+		firstURL: a.firstURL,
+		secondURL: b.firstURL,
+	    });
+			    
+	    return b;
 	});
-    });*/
+	
+	fixedPath.push(elemPath[pathSize-1]);
+	   
+	var pathRoutes = _.map(fixedPath, function(elem) {
+	    return _this.getPartialRoute(elem.first, elem.firstURL,
+					 elem.second, elem.secondURL);
+	});
+
+	console.log("pathRoute?", pathRoutes);
+
+	return thePath;
+    });
+
+    console.log(pathListing);
 }
 
 
