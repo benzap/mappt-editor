@@ -128,15 +128,83 @@ Mappt.prototype.getPartialRoute = function(firstID, firstMapName,
 	name: firstMap.name,
 	mapName: firstMap.mapName,
 	path: firstPartialRoute.data,
+	totalCost: firstPartialRoute.totalCost,
     });
     //our second path
     partialRoute.push({
 	name: secondMap.name,
 	mapName: secondMap.mapName,
 	path: secondPartialRoute.data,
+	totalCost: secondPartialRoute.totalCost,
     });    
     return partialRoute;
 }
+
+//This function expands on the partial route and finds the best way to
+//get between more than one map. It traverses through the map data to
+//find more than one way to get to the destination, and chooses the
+//best one.
+Mappt.prototype.getFullRoute = function(firstID, firstMapName,
+					secondID, secondMapName) {
+    //grab all of the entrancepointlinks for each map
+    var entranceLinkList = []
+    _.map(this.mapData, function(elemMap) {
+	_.map(elemMap.routeData.EntranceInfoList, function(elemEntrance) {
+	    var entrance = {
+		firstURL: elemMap.mapName,
+		secondURL: elemEntrance.secondURL,
+	    };
+	    console.log(entrance);
+	    if (_.some(entranceLinkList, function(elem) {
+		return elem.firstURL == elemMap.mapName &&
+		    elem.secondURL == elemEntrance.secondURL;
+	    })) {
+	    }
+	    else {
+		entranceLinkList.push(entrance);
+	    }
+	});
+    });
+
+    console.log(entranceLinkList);
+
+    //grabs all of the connections for one entrance
+    var getConnections = function(entranceName) {
+	var values = _.where(entranceLinkList, {firstURL: entranceName});
+	return _.map(values, function(elem) {
+	   return elem.secondURL; 
+	});
+    }
+
+    console.log("x",getConnections(firstMapName));
+
+    //recursive function, passed the firstEntrance, and the partialList
+    var traverseEntrances = function(source, partialList) {
+	//if our current value is within the partial list, it's biting
+	//itself, kill it
+	if (_.contains(partialList, source)) {
+	    return [[]];
+	}
+	//if we reached our target, return our partial list
+	else if (source == secondMapName) {
+	    return [ partialList.concat(secondMapName) ];
+	}
+	
+	var result = _.map(getConnections(source), function(elemConnection) {
+	    return _.reduce(traverseEntrances(elemConnection, partialList.concat(source)), function(a,b){
+		return a.concat(b);
+	    });
+	});
+	return result;
+    }
+
+    //from our relation table of entrance links, traverse and try and
+    //form a path between each of the relations.
+    var entrancePathList = traverseEntrances(firstMapName, []);
+    console.log(entrancePathList);
+
+}
+
 
 //creates a map viewer and returns its instance. The viewer is
 //appended within the mappt context.

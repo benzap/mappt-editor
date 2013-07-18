@@ -12,6 +12,11 @@ $(function() {
 		    name: "Shuniah - 1st Floor",
 		},
 		{
+		    mapName: "Shuniah_2.svg", 
+		    dataName: "Shuniah_2.svg.json",
+		    name: "Shuniah - 2nd Floor",
+		},
+		{
 		    mapName: "Dorion_1.svg", 
 		    dataName: "Dorion_1.svg.json",
 		    name: "Dorion - 1st Floor",
@@ -24,4 +29,6 @@ $(function() {
 	    ]);
 
     mappt.showFullRoute(mappt.getPartialRoute(133, "Aerial.svg", 539, "Shuniah_1.svg"))
+    console.log(mappt.mapData);
+    mappt.getFullRoute(0,"Aerial.svg", 125, "Shuniah_2.svg")
 });
