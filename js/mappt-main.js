@@ -153,8 +153,8 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	    var entrance = {
 		firstURL: elemMap.mapName,
 		secondURL: elemEntrance.secondURL,
-	    };
-	    console.log(entrance);
+	    };//could have just extended
+
 	    if (_.some(entranceLinkList, function(elem) {
 		return elem.firstURL == elemMap.mapName &&
 		    elem.secondURL == elemEntrance.secondURL;
@@ -166,8 +166,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	});
     });
 
-    console.log(entranceLinkList);
-
     //grabs all of the connections for one entrance
     var getConnections = function(entranceName) {
 	var values = _.where(entranceLinkList, {firstURL: entranceName});
@@ -175,8 +173,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	   return elem.secondURL; 
 	});
     }
-
-    console.log("x",getConnections(firstMapName));
 
     //recursive function, passed the firstEntrance, and the partialList
     var traverseEntrances = function(source, partialList) {
@@ -201,8 +197,74 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
     //from our relation table of entrance links, traverse and try and
     //form a path between each of the relations.
     var entrancePathList = traverseEntrances(firstMapName, []);
-    console.log(entrancePathList);
 
+    //from these relations, we need to do another map reduce to find
+    //every traversal that can be formed between these relations
+
+    //function returns a list of entrances formed between the two
+    //given maps which is traversing from the firstMap --> secondMap
+    var getEntrances = function(firstMap, secondMap) {
+	//grab the map data for just the first map
+	var firstMapData = _.find(this.mapData, function(elem) {
+	    return (elem.mapName == firstMap);
+	});
+
+	var entranceList = firstMapData.routeData.EntranceInfoList;
+	//filter out all of the entrances that aren't a part of the
+	//second map
+	var entranceList = _.filter(entranceList, function(elem) {
+	    return elem.secondURL == secondMap;
+	});
+
+	//apply a bit more information to our entranceList
+	//include the firstMap name
+	return _.map(entranceList, function(elem) {
+	    return _.extend(elem, {firstURL:firstMap});
+	});
+    }.bind(this);
+
+    //function looks at a given path that could be taken, and produces
+    //a list of all of the legitimate routes that could be taken
+    var populateTraversal = function(path) {
+	var pathSegments = [];
+	_.reduce(path, function(a,b) {
+	    pathSegments.push(getEntrances(a,b));
+	    return b;
+	});
+
+	console.log("Path Segments", pathSegments);
+
+	var traverse = function(currentIndex, partialList) {
+	    if (currentIndex == pathSegments.length) {
+		console.log("the", partialList);
+		return partialList;
+	    }
+	    //mapping over the path segments
+	    return _.map(pathSegments[currentIndex], function(elem) {
+		//reducing over the map partial lists that are returned
+		return _.reduce(traverse(currentIndex+1, partialList.concat(elem)), function(a,b) {
+		    //concatenating the lists together
+		    console.log("xxxx", a, b);
+		    return a.concat(b);
+		});
+	    });
+	}
+	
+	var pathList = traverse(0, []);
+	console.log("pathList", pathList);
+	
+	return pathList;
+	
+    }
+    
+    populateTraversal(entrancePathList[0]);
+    
+    //get the full paths made between the maps.
+    var entranceFullPath = _.map(entrancePathList, function(elemPath) {
+	return _.reduce(populateTraversal(elemEntrance), function(a,b) {
+	    return a.concat(b);
+	});
+    });
 }
 
 
