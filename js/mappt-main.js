@@ -234,37 +234,42 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 
 	console.log("Path Segments", pathSegments);
 
-	var traverse = function(currentIndex, partialList) {
-	    if (currentIndex == pathSegments.length) {
-		console.log("the", partialList);
-		return partialList;
+	var numSegments = pathSegments.length;
+	var sizeList = _.map(pathSegments, function(elem) {
+	    return elem.length;
+	});
+
+	var pathList = [];
+
+	console.log(sizeList);
+	var _i = 0;
+	while (_.every(sizeList) && _i <= 10) {
+	    var index = _.indexOf(sizeList, 0) - 1;
+	    if (index = -2) {
+		index = numSegments - 1;
 	    }
-	    //mapping over the path segments
-	    return _.map(pathSegments[currentIndex], function(elem) {
-		//reducing over the map partial lists that are returned
-		return _.reduce(traverse(currentIndex+1, partialList.concat(elem)), function(a,b) {
-		    //concatenating the lists together
-		    console.log("xxxx", a, b);
-		    return a.concat(b);
-		});
-	    });
+	    var path = [];
+	    for (var i = 0; i < numSegments; i++) {
+		path.push(pathSegments[i][sizeList[i]]);
+	    }
+
+	    sizeList[index] -= 1; _i += 1;
+	    pathList.push(path);
+	    console.log(sizeList);
 	}
-	
-	var pathList = traverse(0, []);
-	console.log("pathList", pathList);
 	
 	return pathList;
 	
     }
     
-    populateTraversal(entrancePathList[0]);
+    //populateTraversal(entrancePathList[0]);
     
     //get the full paths made between the maps.
-    var entranceFullPath = _.map(entrancePathList, function(elemPath) {
-	return _.reduce(populateTraversal(elemEntrance), function(a,b) {
+    /*var entranceFullPath = _.map(entrancePathList, function(elemPath) {
+	return _.reduce(populateTraversal(elemPath), function(a,b) {
 	    return a.concat(b);
 	});
-    });
+    });*/
 }
 
 
