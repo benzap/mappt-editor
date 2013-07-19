@@ -327,7 +327,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 
 	return thePath;
     });
-    console.log(pathListing);
 
     //from our path listing, we need to get the best cost for our path
     //from the person's current position.
