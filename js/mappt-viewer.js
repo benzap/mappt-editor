@@ -212,7 +212,7 @@ MapptViewer.prototype.setMap = function(imageName) {
 	this.routeData = getJSON(this.dataURL);
     }
     else {
-	console.log(this.dataURL, " does not exist");
+	log(this.dataURL, " does not exist");
     }
     return this;
 };
@@ -312,7 +312,6 @@ MapptViewer.prototype.correctAspect = function(width, height,
         height_offset: svgHeight_offset 
     };
     
-    console.log(correctedAspect);
     return correctedAspect;
 };
 

@@ -269,9 +269,6 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	return a.concat(b);
     });
 
-    console.log("EntranceFullPath", entranceFullPath);
-    console.log("hello", this.mapData);
-
     //from our set of paths, form lists of traversals
     var pathListing = _.map(entranceFullPath, function(elemPath) {
 	var thePath = [];
@@ -330,9 +327,20 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 
 	return thePath;
     });
-    
-
     console.log(pathListing);
+
+    //from our path listing, we need to get the best cost for our path
+    //from the person's current position.
+    var bestPath = _.sortBy(pathListing, function(elemPath) {
+	var totalCostList = _.map(elemPath, function(elemPartialPath) {
+	    return elemPartialPath.totalCost;
+	});
+
+	return _.reduce(totalCostList, function(costA, costB) {
+	    return costA += costB;
+	});
+    })[0];
+    return bestPath;
 }
 
 
@@ -342,7 +350,6 @@ Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_
     var newViewerObj = document.createElement("div");
     newViewerObj.setAttribute("id", viewer_context_id);
     $(this.contextObj).append(newViewerObj);
-    console.log(viewer_context_id);
     //instantiate our viewer
     var mapptViewer = new MapptViewer(viewer_context_id, viewer_width, viewer_height)
 	.init();
@@ -353,9 +360,7 @@ Mappt.prototype.createViewer = function(viewer_context_id, viewer_width, viewer_
 //provided viewer instance is removed from the DOM
 Mappt.prototype.removeViewer = function(mapptViewerObject) {
     var theContext = mapptViewerObject.context_id;
-    console.log(theContext);
     delete mapptViewerObject;
-    console.log(mapptViewerObject);
     $("#" + theContext).remove();
     return this;
 }
@@ -384,16 +389,12 @@ Mappt.prototype.showFullRoute = function(routeList) {
     var viewerWidth = $(window).width();
     var viewerHeight = $(window).height();
 
-    console.log(routeList);
-
     _.map(routeList, function(elem) {
 	//develop an id, remove unwanted characters
 	var idString = elem.name
 	    .trim()
 	    .replace(/[_,.]|\s/g, "-")
 	    .toLowerCase();
-
-	console.log(idString);
 
 	//create our viewer
 	var viewerObj = this.createViewer(idString, viewerWidth, viewerHeight);
