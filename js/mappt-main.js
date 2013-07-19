@@ -269,49 +269,68 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	return a.concat(b);
     });
 
+    console.log("EntranceFullPath", entranceFullPath);
+    console.log("hello", this.mapData);
+
     //from our set of paths, form lists of traversals
     var pathListing = _.map(entranceFullPath, function(elemPath) {
 	var thePath = [];
-	//tack on our starting point using our partial pathrouting function
-
-	
-	var pathSize = elemPath.length;
-	    
-	//we tack the actual firstID and secondID within our path
-	//into the full path. 
-	
-	//Tack it onto the front
-	elemPath[0].first = firstID;
-	//Tack it onto the back
-	elemPath[pathSize-1].second = secondID;
-	
-	//we apply the same principle to each of the elements,
-	//transitioning the first and second between them to produce a
-	//link.
-	var fixedPath = [];
-	//reduce our path down from it's partial paths
-	_.reduce(elemPath, function(a,b) {
-	    fixedPath.push({
-		first: a.first,
-		second: b.first,
-		firstURL: a.firstURL,
-		secondURL: b.firstURL,
+	  
+	var pathRoutes = _.reduce(elemPath, function(a,b) {
+	    //find the map referring to our second URL
+	    var theMap = _.find(_this.mapData, function(elem) {
+		return elem.mapName == a.secondURL;
 	    });
-			    
-	    return b;
-	});
-	
-	fixedPath.push(elemPath[pathSize-1]);
-	   
-	var pathRoutes = _.map(fixedPath, function(elem) {
-	    return _this.getPartialRoute(elem.first, elem.firstURL,
-					 elem.second, elem.secondURL);
+	    
+	    var theRouteData = theMap.routeData;
+	    var theRoute = getRoute_djikstra(a.second, b.first, theRouteData);
+	    thePath.push({
+		name: theMap.name,
+		mapName: theMap.mapName,
+		path: theRoute.data,
+		totalCost: theRoute.totalCost,
+	    });
 	});
 
-	console.log("pathRoute?", pathRoutes);
+	//include our starting path and our ending path through the traversal
+	//starting path
+	var startRouteMap = _.find(_this.mapData, function(elem) {
+	    return elem.mapName == elemPath[0].firstURL;
+	});
+	
+	var startRouteData = startRouteMap.routeData;
+
+	var startRoute = getRoute_djikstra(firstID, elemPath[0].first, startRouteData);
+
+	startPath = {
+	    name: startRouteMap.name,
+	    mapName: startRouteMap.mapName,
+	    path: startRoute.data,
+	    totalCost: startRoute.totalCost,
+	};
+
+	thePath.splice(0,0,startPath);
+	
+	//ending path
+	var lastIndex = elemPath.length-1;
+	var endRouteMap = _.find(_this.mapData, function(elem) {
+	    return elem.mapName == elemPath[lastIndex].secondURL;
+	});
+	var endRouteData = endRouteMap.routeData;
+	
+	var endRoute = getRoute_djikstra(elemPath[lastIndex].second, secondID, endRouteData);
+	var endPath = {
+	    name: endRouteMap.name,
+	    mapName: endRouteMap.mapName,
+	    path: endRoute.data,
+	    totalCost: endRoute.totalCost,
+	};
+	thePath.push(endPath);
+
 
 	return thePath;
     });
+    
 
     console.log(pathListing);
 }

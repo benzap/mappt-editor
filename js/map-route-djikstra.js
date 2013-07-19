@@ -187,5 +187,10 @@ function getRoute_djikstra(source, target, routeTable, costFunc) {
 	totalCost = totalCost + costFunc(getPoint(a), getPoint(b));
 	return b;
     });
-    return {data: pathList, totalCost: totalCost};
+    var dataFinal =  {
+	data: pathList,
+	totalCost: totalCost,
+    };
+
+    return dataFinal;
 }
