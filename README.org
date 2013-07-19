@@ -1,203 +1,107 @@
-* Requirements
- - Grab a bitmap / png and display it on the screen.
- - The app is used to map out the areas of the current layout.
- - Click on the screen, and points are produced over top
-   of the bitmap which describe
-   + Doors for the current region
-   + The edges of the area or room that we are describing.
- - Need a way to label this region on the screen.
- - All of the information that we obtain should be stored
-   somewhere. Going to consider local storage.
- - Import and Export of this information in the form of JSON
-* Development
- - Using Raphael, possibly with JQuery.
- - First iteration should allow you to click on areas of the screen
-   and log this information in an array. The points are logged in a
-   visual list that you can scroll through on the side. Clicking on
-   one of these items on the list on the side will highlight the point
-   that it corresponds to.
- - Second iteration should allow you to change the state of what
-   clicking does, and perform a polygon construction, where you
-   construct a polygon to describe the area of the map that the door
-   point corresponds to.
- - No third iteration till further notice.
-* Design
- - PointInfoManager, used for storing all of the PointInfo objects
-   + Attributes ::
-     - PointInfoList:Array{PointInfo}
-   + Methods ::
-     - AddPoint(PointInfo)
-     - RemovePoint(UUID:String)
-     - GetPointByUUID(String)
-     - GetAllPoints():Array{PointInfo}
- - PointInfo class, for representing points on the map.
-   + Attributes ::
-     - Position:Array(float,float)
-     - UUID:String
-     - Bros:Array{PointInfo.UUID}
-     - Type:[DOOR, WALK]
-     - FloorNumber:Integer
- - AreaLayoutManager, used to store all of the AreaLayout objects
-   + Attributes ::
-     - AreaLayoutList:Array(AreaLayout)
-   + Method ::
-     - AddArea(AreaLayout)
-     - RemoveArea(UUID:String)
-     - GetAreaByUUID(UUID:String)
-     - GetAllRooms():Array{AreaLayout}
- - AreaLayout class, for representing rooms / areas of the map.
-   + Attributes ::
-     - UUID:String
-     - Label:String
-     - Doors:Array{PointInfo.UUID}
-     - VertexList:Array{(float,float)}
-* Steps
-  - Iteration 1 [6/6]
-    - [X] Add Node
-    - [X] Remove Node
-    - [X] Add Link
-    - [X] Remove Link
-    - [X] Change State (Mode)
-    - [X] Export to JSON
-  - Iteration 2 [2/2]
-    - [X] State to click on node and assign to variable
-    - [X] Add setAttr command, which modifies variable
-  - Iteration 3 [1/1]
-    - [X] Routing function getRoute(room1, room2). Returns lists of routes with a total score
-  - Iteration 4 [3/5]
-    - [X] Panning and Zooming
-    - [X] Convert previous importSVG command back over to background
-      SVG element. Consider using viewBox svg element
-    - [-] Add a very basic toolbar and properties panel for each tool, to modify how they work.
-      - Add Node :: change node type, change default node properties
-      - Remove Node :: na
-      - [ ] Add Link :: allow a chain link
-      - Remove Link :: na
-      - [X] Select Node :: Provide information on currently selected nodes, and allow editing
-      - Move Node :: na
-      - Route Node :: na
-    - [X] Ability to intuitively add and edit information for each node displayed on the screen
-    - [ ] Ability to properly save and load into HTML5 local storage
-  - Iteration 5 [0/3]
-    - [ ] Begin routing out a map, and iron out any bugs.
-    - [ ] After having at least two maps with full nodes (aerial.svg and shuniah_1st.svg) begin working on the web application, 
-          which is a single page web application sporting raphael, and a simple svg element.
-    - [ ] Follow the FDS, and produce a prototype
-
-
-
-
-* Technical
-** Storage
-*** JSON Structure
-    - Mappt-Structure :: Top-level of our JSON, has a -ID suffex
-         (ex. Mappt-Structure-CC) for "Confederation College" where
-         the ID is "CC"
-      - Mappt-Listing :: Includes the node lists and links
-	- {filename.svg.json} :: the file export from the editor
-	  - PointInfoList :: Contains a list of all of the nodes on the map
-	  - LinkInfoList :: Contains a list of id pairs, which is the link between each node
-          - Context_Width :: The map editor size used for editing
-	  - Context_Height :: ...
-	  - SVG_Width :: The width of the SVG editted
-	  - SVG_Height :: The height of the SVG editted
-	  - SVG_Filename :: The SVG filename
-	- ...
-** Node Types
-  - Hall Nodes
-    - Represent hallways to traverse. Never going to be an end point
-    - Cost: 10
-  - Walk Nodes
-    - Represent other walk nodes, such as outside nodes
-    - Cost: 15
-  - Doors Nodes
-    - Usually links to an area node, and has a higher cost to prevent strange traversals
-    - Cost: 20
-  - Area Nodes (Rooms, Departments, Buildings, General Locations)
-    - Tagging system (Area nodes tagged as 'department' could be grouped for searching)
-    - Carry out the very important role of searching
-    - Cost: 20
-  - Elevation (Stairs / Elevator) Nodes
-    - Carry important information about the maps it links to
-    - Includes information on the next floor  or entrance using attributes
-      - mapUp_name :: More specific name of the map it connects to
-      - mapUp_url :: the next map that it points to
-      - mapUp_data :: the next map node points and links
-      - mapUp_links :: the nodes that this particular node connects to
-      - mapUp_elevation :: the floor number for the map
-      - mapDown_name :: More specific name of the map it connects to
-      - mapDown_url :: the previous map that it points to
-      - mapDown_data :: the previous map node points and links
-      - mapDown_links :: Nodes that this particular node connects to.
-      - mapDown_elevation :: the floor number for the map
-    - Cost: 30
-  - Entrance Node
-    - Represents the entrance to a building. This usually links to an
-      entrance node on the other side of the building.
-    - Includes information on where the entrance leads using the attributes
-    - mapEntrance_name :: More specific name of the map it connects to
-    - mapEntrance_url :: url of the map it connects to
-    - mapEntrance_links :: Nodes that this particular node connects to.
-    - Cost: 25
-  - Start Node
-    - Represents points on the map where a person might start his search
-    - Holds a higher priority when it comes to showing search results for someone
-      trying to determine where they currently are
-    - Cost: 40
-** Editor
-*** Known Issues
-  - The svg size and the initialized paper for the svg must be the same size. 
-    If they aren't panning and zooming will cause the background image to distort 
-    due to incorrect scalings shared between them.
-* Use Cases
-** Jack is standing outside, and he's trying to find out where a particular room is on campus.
-*** Jack starts the app, and clicks on the "Where are you?" button
-  - Upon starting, the application would just show an aerial view of the confederation college campus
-*** He starts typing in his parking spot (R3, R4, etc) and close results begin to populate the search results, which are right below the search bar
-  - The context before any search terms have been entered might include a series of common starting locations to make it easier to start off
-  - Could include categories, where each category could be clicked to provide a drop down of things relating to that category.
-*** He clicks on where his current location might be, and the search context slides back down
-  - The application shows an aerial view with faint outlines for each building on campus
-  - Shows a faint X appears over the spot where Jack is currently standing
-*** The application begins to nudge the "Where do you want to go?" button, and Jack proceeds to push the button
-*** A new context pops up on the right side of the screen, and he proceeds to search for the place he would like to go
-  - Would include categories much like in the other button, but they target likely locations.
-*** The aerial view then shows a path between Jack's current location, to the place he would like to go
-  - While displaying this information, the application will nudge Jack, and encourage him to proceed to scroll the screen
-  - This could either be done by making the page scrollable and nudging the page down a tad bit, or producing some other interesting alternatives
-   -- This needs a lot of thought, I think something cool could be thought up to resolve this.
-*** Each time Jack scrolls down, we can show more specific information about each location that the person is passing through.
-  - For example, Jack is outside in the parking lot, and he wants to go to the Dental Clinic.
-  - The action cards would consist of an aerial view with a path from the parking lot to the shuniah building,
-    then it would show for the second slide, a birds eye view of the shuniah building, and a path from the shuniah entrance to the dental clinic
-  - Each time you scroll, it provides adequate information on more specifics within each building
-** Joe is standing outside, and he's trying to find out where a particular department is
-** Jill is trying to find a particular building on campus
-
-* Meeting
-** Story
-- 1. Joe is trying to find a department 7/10
-- 2. Jack is trying to find a specific room by number 9/10
-- 3. Jill is trying to find a building 5/10
-
-
-
-** Problem
- - google maps only gets you to the campus
- - cons :
-  + closed directions
-  + buildings
-  + no room layouts
-  + may not work well if you lose connection while navigating
-** FDS
-*** Implementation
-- Reuse google maps?
- + not always accurate
- + may not be able to implement full building layouts
-- Open wiki, where anyone can edit a map route
-*** Navigation
-- show a route from where you are to the building
-- then the next step would show more information on more specifics within the build (trying to find a specific room)
-- Subwaylike navigation UI
-- for getting routes, include a 'targetFunc' which can be used to designate what a 'target' is.
-"return true if you are currently at a node that resembles stairs going to the third floor"
+* Documentation
+* MapptViewer
+** Description
+   The MapptViewer class is used to display an SVG map, and provides
+   the ability to plot routes, translate, and scale the currently
+   displayed image while maintaining that route.
+** Methods
+*** MapptViewer(context_id, context_width, context_height)
+**** Description
+     Instantation of the mappt viewer
+**** Parameters
+     - context_id :: Refers to the DIV name that the viewer will be placed within
+     - context_width :: The width you want the viewer to be
+     - context_height :: The height you want the viewer to be
+**** Returns
+     Returns an instantiation of the MapptViewer
+*** MapptViewer.init()
+**** Description
+     Used to perform pre-instantiation initialization
+**** Parameters
+     none
+**** Returns
+     returns the instance of the MapptViewer (this)
+*** MapptViewer.setMap(imageName)
+**** Description
+     Sets the current map within the viewer to the given image. The
+     context and the image is corrected to ensure that the aspect
+     ratio is maintained.
+**** Parameters
+     - imageName :: is the name of the image contained within the
+                    image root folder. The image root folder is
+                    configured within the mappt-config.js file.
+**** Returns
+     returns the instance of the MapptViewer (this)
+*** MapptViewer.setViewBox(x,y,w,h)
+**** Description
+     Used to set the viewable area of the svg that you would like to
+     view. Note that if the width and height are not of the same
+     aspect ratio as the SVG, the svg image will become distorted. All
+     values provided are with respect to the original SVG width and
+     height and should not be provided in terms of the recalculated
+     values.
+**** Parameters
+     - x :: the x offset with respect to the top left
+     - y :: the y offset with respect to the top left
+     - w :: the width of the viewbox
+     - h :: the height of the viewbox
+**** Returns
+     returns the instance of MapptViewer (this)
+*** MapptViewer.translatePaper(x,y,s)
+**** Description
+     Used to translate the image on the screen either for both panning
+     and zooming
+**** Parameters
+     - x :: the amount you wish to translate on the x-axis
+     - y :: the amount you wish to translate on the y-axis
+     - s :: the amount you wish to scale.
+**** Returns
+     returns the instance of MapptViewer (this)
+*** MapptViewer.fitScreen()
+**** Description
+     Used to fit the current map to the size of the viewer context
+**** Parameters
+     none
+**** Returns
+     returns the instance of the MapptViewer (this)
+*** MapptViewer.getPaperScale()
+**** Description
+     Gets the current scaling of the paper
+**** Parameters
+     none
+**** Returns
+     a float value representing the current scale
+*** MapptViewer.correctAspect(width,height,svgWidth,svgHeight)
+**** Description
+     Used to correct the aspect ratio with respect to the
+     context. *(not currently fully working yet)*
+**** Parameters
+     - width :: the width of our context
+     - height :: the height of our context
+     - svgWidth :: the width of our SVG
+     - svgHeight :: the height of our SVG
+**** Returns
+     returns a hashtable with the values width, height, width_offset,
+     height_offset
+*** MapptViewer.getPoints(attr)
+**** Description
+     Gets points with the provided attributes
+**** Parameters
+     - attr :: a hashtable with the set of attributes to find
+**** Returns
+     a list of points with the given attributes
+*** MapptViewer.drawRoute(pathList)
+**** Description
+     Used to draw the route, based on the list of IDs provided. The
+     path is drawn in sequence to the given path list.
+**** Parameters
+     - pathList :: A list of node IDs from which to draw the path
+**** Returns
+     returns the instance of the MapptViewer (this)
+*** MapptViewer.clearRoute()
+**** Description
+     Clears the currently displayed path
+**** Parameters
+     none
+**** Returns
+     nothing
