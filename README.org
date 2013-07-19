@@ -1,107 +1,201 @@
 * Documentation
-* MapptViewer
-** Description
-   The MapptViewer class is used to display an SVG map, and provides
-   the ability to plot routes, translate, and scale the currently
-   displayed image while maintaining that route.
-** Methods
-*** MapptViewer(context_id, context_width, context_height)
-**** Description
-     Instantation of the mappt viewer
-**** Parameters
-     - context_id :: Refers to the DIV name that the viewer will be placed within
-     - context_width :: The width you want the viewer to be
-     - context_height :: The height you want the viewer to be
-**** Returns
-     Returns an instantiation of the MapptViewer
-*** MapptViewer.init()
-**** Description
-     Used to perform pre-instantiation initialization
-**** Parameters
-     none
-**** Returns
-     returns the instance of the MapptViewer (this)
-*** MapptViewer.setMap(imageName)
-**** Description
-     Sets the current map within the viewer to the given image. The
-     context and the image is corrected to ensure that the aspect
-     ratio is maintained.
-**** Parameters
-     - imageName :: is the name of the image contained within the
-                    image root folder. The image root folder is
-                    configured within the mappt-config.js file.
-**** Returns
-     returns the instance of the MapptViewer (this)
-*** MapptViewer.setViewBox(x,y,w,h)
-**** Description
-     Used to set the viewable area of the svg that you would like to
-     view. Note that if the width and height are not of the same
-     aspect ratio as the SVG, the svg image will become distorted. All
-     values provided are with respect to the original SVG width and
-     height and should not be provided in terms of the recalculated
-     values.
-**** Parameters
-     - x :: the x offset with respect to the top left
-     - y :: the y offset with respect to the top left
-     - w :: the width of the viewbox
-     - h :: the height of the viewbox
-**** Returns
-     returns the instance of MapptViewer (this)
-*** MapptViewer.translatePaper(x,y,s)
-**** Description
-     Used to translate the image on the screen either for both panning
-     and zooming
-**** Parameters
-     - x :: the amount you wish to translate on the x-axis
-     - y :: the amount you wish to translate on the y-axis
-     - s :: the amount you wish to scale.
-**** Returns
-     returns the instance of MapptViewer (this)
-*** MapptViewer.fitScreen()
-**** Description
-     Used to fit the current map to the size of the viewer context
-**** Parameters
-     none
-**** Returns
-     returns the instance of the MapptViewer (this)
-*** MapptViewer.getPaperScale()
-**** Description
-     Gets the current scaling of the paper
-**** Parameters
-     none
-**** Returns
-     a float value representing the current scale
-*** MapptViewer.correctAspect(width,height,svgWidth,svgHeight)
-**** Description
-     Used to correct the aspect ratio with respect to the
-     context. *(not currently fully working yet)*
-**** Parameters
-     - width :: the width of our context
-     - height :: the height of our context
-     - svgWidth :: the width of our SVG
-     - svgHeight :: the height of our SVG
-**** Returns
-     returns a hashtable with the values width, height, width_offset,
-     height_offset
-*** MapptViewer.getPoints(attr)
-**** Description
-     Gets points with the provided attributes
-**** Parameters
-     - attr :: a hashtable with the set of attributes to find
-**** Returns
-     a list of points with the given attributes
-*** MapptViewer.drawRoute(pathList)
-**** Description
-     Used to draw the route, based on the list of IDs provided. The
-     path is drawn in sequence to the given path list.
-**** Parameters
-     - pathList :: A list of node IDs from which to draw the path
-**** Returns
-     returns the instance of the MapptViewer (this)
-*** MapptViewer.clearRoute()
-**** Description
-     Clears the currently displayed path
-**** Parameters
-     none
-**** Returns
-     nothing
+** MapptViewer
+*** Description
+    The MapptViewer class is used to display an SVG map, and provides
+    the ability to plot routes, translate, and scale the currently
+    displayed image while maintaining that route.
+*** Methods
+**** MapptViewer(context_id, context_width, context_height)
+***** Description
+      Instantation of the mappt viewer
+***** Parameters
+      - context_id :: Refers to the DIV name that the viewer will be placed within
+      - context_width :: The width you want the viewer to be
+      - context_height :: The height you want the viewer to be
+***** Returns
+      Returns an instantiation of the MapptViewer
+**** MapptViewer.init()
+***** Description
+      Used to perform pre-instantiation initialization
+***** Parameters
+      none
+***** Returns
+      returns the instance of the MapptViewer (this)
+**** MapptViewer.setMap(imageName)
+***** Description
+      Sets the current map within the viewer to the given image. The
+      context and the image is corrected to ensure that the aspect
+      ratio is maintained.
+***** Parameters
+      - imageName :: is the name of the image contained within the
+                     image root folder. The image root folder is
+                     configured within the mappt-config.js file.
+***** Returns
+      returns the instance of the MapptViewer (this)
+**** MapptViewer.setViewBox(x,y,w,h)
+***** Description
+      Used to set the viewable area of the svg that you would like to
+      view. Note that if the width and height are not of the same
+      aspect ratio as the SVG, the svg image will become distorted. All
+      values provided are with respect to the original SVG width and
+      height and should not be provided in terms of the recalculated
+      values.
+***** Parameters
+      - x :: the x offset with respect to the top left
+      - y :: the y offset with respect to the top left
+      - w :: the width of the viewbox
+      - h :: the height of the viewbox
+***** Returns
+      returns the instance of MapptViewer (this)
+**** MapptViewer.translatePaper(x,y,s)
+***** Description
+      Used to translate the image on the screen either for both panning
+      and zooming
+***** Parameters
+      - x :: the amount you wish to translate on the x-axis
+      - y :: the amount you wish to translate on the y-axis
+      - s :: the amount you wish to scale.
+***** Returns
+      returns the instance of MapptViewer (this)
+**** MapptViewer.fitScreen()
+***** Description
+      Used to fit the current map to the size of the viewer context
+***** Parameters
+      none
+***** Returns
+      returns the instance of the MapptViewer (this)
+**** MapptViewer.getPaperScale()
+***** Description
+      Gets the current scaling of the paper
+***** Parameters
+      none
+***** Returns
+      a float value representing the current scale
+**** MapptViewer.correctAspect(width,height,svgWidth,svgHeight)
+***** Description
+      Used to correct the aspect ratio with respect to the
+      context. *(not currently fully working yet)*
+***** Parameters
+      - width :: the width of our context
+      - height :: the height of our context
+      - svgWidth :: the width of our SVG
+      - svgHeight :: the height of our SVG
+***** Returns
+      returns a hashtable with the values width, height, width_offset,
+      height_offset
+**** MapptViewer.getPoints(attr)
+***** Description
+      Gets points with the provided attributes
+***** Parameters
+      - attr :: a hashtable with the set of attributes to find
+***** Returns
+      a list of points with the given attributes
+**** MapptViewer.drawRoute(pathList)
+***** Description
+      Used to draw the route, based on the list of IDs provided. The
+      path is drawn in sequence to the given path list.
+***** Parameters
+      - pathList :: A list of node IDs from which to draw the path
+***** Returns
+      returns the instance of the MapptViewer (this)
+**** MapptViewer.clearRoute()
+***** Description
+      Clears the currently displayed path
+***** Parameters
+      none
+***** Returns
+      nothing
+** Mappt
+*** Description
+    The main application which contains the populated dataset for
+    traversals. This contains all of the useful methods for performing
+    cross-map path traversals. It can also be used to create
+    MapptViewer instantiations within itself.
+*** Methods
+**** Mappt(context_id, context_width, context_height)
+***** Description
+      Instantiates the mappt application with the given context. The
+      height and width don't currently do anything.
+***** Parameters
+      - context_id :: the id of the div you wish to link the mappt application to
+      - context_width :: the width you wish to make the mappt application
+      - context_height :: the height you wish to make the mappt application
+***** Returns
+      a new instantation of the mappt application
+**** Mappt.init()
+***** Description
+      Post instantiation initialization of the Mappt application
+***** Parameters
+***** Returns
+      none
+**** Mappt.setData(data, bAsync)
+***** Description
+      Used to set the data for this particular instantiation of the
+      Mappt application.
+***** Parameters
+      - data :: the set data must be structured as a list of
+                hashtables, where each hashtable has the attributes
+	- mapName :: The filename of the SVG map
+	- dataName :: The filename for the Data map
+	- name :: The name you would like to give the particular map
+***** Returns
+      returns the current instantiation of Mappt (this)
+**** Mappt.getPartialRoute(firstID, firstMapName, secondID, secondMapName)
+***** Description
+      *Deprecated* This function returns the paths between two related
+      maps. It tries to find the best route.
+***** Parameters
+      - firstID :: the ID of the first node
+      - firstMapName :: the svg filename of the map that the first node corresponds to
+      - secondID :: the ID of the second node
+      - secondMapName :: the svg filename of the map that the second node corresponds to
+***** Returns
+      returns a list of objects, where each object contains
+      - path :: a list of IDs corresponding to the path to be taken through the...
+      - mapName :: the svg filename of the map that the path refers to
+      - name :: the given name for the map
+**** Mappt.getFullRoute(firstID, firstMapName, secondID, secondMapName)
+***** Description
+      This function returns the paths between two related maps. It
+      tries to find the best route.
+***** Parameters
+      - firstID :: the ID of the first node
+      - firstMapName :: the svg filename of the map that the first node corresponds to
+      - secondID :: the ID of the second node
+      - secondMapName :: the svg filename of the map that the second node corresponds to
+***** Returns
+      returns a list of objects, where each object contains
+      - path :: a list of IDs corresponding to the path to be taken through the...
+      - mapName :: the svg filename of the map that the path refers to
+      - name :: the given name for the map
+**** Mappt.createViewer(viewer_context_id, viewer_width, viewer_height)
+***** Description
+      Used to instantiate viewers within the mappt application context
+      with the given width and height
+***** Parameters
+      - viewer_context_id :: The identifier for the viewer
+      - viewer_width :: the width of the viewer
+      - viewer_height :: the height of the viewer
+***** Returns
+      returns the MapptViewer object instantiation
+**** Mappt.removeViewer(mapptViewerObject)
+***** Description
+      Removes the provided MapptViewer object
+***** Parameters
+      - mapptViewerObject :: the MapptViewer object
+***** Returns
+      nothing
+**** Mappt.createSearchList()
+***** Description
+      *Not Implemented* Used to produce a tree structure that can be
+      used to perform search queries
+***** Parameters
+      none
+***** Returns
+      idk
+**** Mappt.showFullRoute(routeList)
+***** Description
+      Used to route out /all/ of the paths and create viewers for each
+**** Mappt.clearFullRoute()
+***** Description
+      Used to clear out all of the paths.
