@@ -364,21 +364,6 @@ Mappt.prototype.removeViewer = function(mapptViewerObject) {
     return this;
 }
 
-//create the search list and produce a hashtable that allows you to
-//easily traverse. The search is produced from the descriptors
-//describing the nodes.
-Mappt.prototype.createSearchList = function() {
-    var searchList = {};
-    //grab the map data for each map
-    _.map(this.mapData, function(elemMap) {
-	//traverse through the map's route data points
-	_.map(elemMap.dataRoute.PointInfoList, function(elemPoint) {
-	    //grab all of the descriptors and figure out what makes this particular point unique
-	});//END _.map(elemMap.dataRoute.PointInfoList, ...
-    });//END _.map(this.mapData, ...
-    
-}
-
 //shows the full route, by creating viewers and showing the routing
 //information for each of them. The viewers are also stored within the
 //this.viewerList to allow them tobe cleared with the
@@ -411,4 +396,21 @@ Mappt.prototype.clearFullRoute = function() {
     }.bind(this))
     this.viewerList = [];
     return this;
+}
+
+//create the search list and produce a hashtable that allows you to
+//easily traverse. The search is produced from the descriptors
+//describing the nodes.
+Mappt.prototype.createSearchList = function() {
+    var searchList = {};
+    //grab the map data for each map
+    _.map(this.mapData, function(elemMap) {
+	//traverse through the map's route data points
+	_.map(elemMap.routeData.PointInfoList, function(elemPoint) {
+	    //grab all of the descriptors and figure out what makes this particular point unique
+	    if (!_.isEmpty(elemPoint.descriptors)) {
+		console.log(elemPoint.descriptors);
+	    }
+	});//END _.map(elemMap.dataRoute.PointInfoList, ...
+    });//END _.map(this.mapData, ...   
 }

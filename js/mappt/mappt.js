@@ -32,4 +32,5 @@ $(function() {
     var fullRoute = mappt.getFullRoute(125, "Aerial.svg", 170, "Shuniah_2.svg");
     console.log(fullRoute);
     mappt.showFullRoute(fullRoute);
+    console.log(mappt.createSearchList());
 });
