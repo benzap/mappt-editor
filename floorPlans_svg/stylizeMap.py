@@ -112,5 +112,5 @@ if __name__ == "__main__":
 
 	#addStyling(itemList, pathStyleData_rooms)
 	outputString = xmldoc.toxml()
-	outputFile = open(filename+".svg", 'w')
+	outputFile = open(filename, 'w')
 	outputFile.write(outputString)

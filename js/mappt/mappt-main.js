@@ -409,8 +409,26 @@ Mappt.prototype.createSearchList = function() {
 	_.map(elemMap.routeData.PointInfoList, function(elemPoint) {
 	    //grab all of the descriptors and figure out what makes this particular point unique
 	    if (!_.isEmpty(elemPoint.descriptors)) {
-		console.log(elemPoint.descriptors);
+		for (key in elemPoint.descriptors) {
+		    if (!_.has(searchList, key)) {
+			searchList[key] = {};
+		    }
+		    //check if our value is within the key list,
+		    // create the key list otherwise
+		    if (!_.has(searchList[key], elemPoint.descriptors[key])) {
+			searchList[key][elemPoint.descriptors[key]] = [];
+		    }
+		    
+		    //create our field and push it into the searchList
+		    var searchData = {
+			id: elemPoint.id,
+			mapName: elemMap.mapName,
+			descriptors: elemPoint.descriptors,
+		    };
+		    searchList[key][elemPoint.descriptors[key]].push(searchData);
+		}
 	    }
 	});//END _.map(elemMap.dataRoute.PointInfoList, ...
     });//END _.map(this.mapData, ...   
+    return searchList;
 }
