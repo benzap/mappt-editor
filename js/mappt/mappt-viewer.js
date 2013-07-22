@@ -311,10 +311,12 @@ MapptViewer.prototype.fitPathToScreen = function(pathList, padding) {
     }).py;
 
     //our final rectangular dimensions
-    var areaWidth = maxX - minX;
-    var areaHeight = maxY - minY;
-    var areaXOffset = minX;
-    var areaYOffset = minY;
+    var areaWidth = maxX - minX + padding*2;
+    var areaHeight = maxY - minY + padding*2;
+    var areaXOffset = minX - padding;
+    var areaYOffset = minY - padding;
+
+    
 
     console.log("path rectangle", areaWidth, areaHeight,
 		areaXOffset, areaYOffset);
@@ -327,10 +329,7 @@ MapptViewer.prototype.fitPathToScreen = function(pathList, padding) {
 					 areaXOffset, areaYOffset);
     console.log(fixedAspect);
 
-    this.setViewBox(fixedAspect.width_offset,
-		    fixedAspect.height_offset,
-		    fixedAspect.width,
-		    fixedAspect.height);
+    this.setViewBox(areaXOffset, areaYOffset, areaWidth, areaHeight);
 }
 
 MapptViewer.prototype.getPaperScale = function() {
