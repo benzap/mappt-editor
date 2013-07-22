@@ -384,6 +384,8 @@ Mappt.prototype.showFullRoute = function(routeList) {
 	var viewerObj = this.createViewer(idString, viewerWidth, viewerHeight);
 	viewerObj.setMap(elem.mapName);
 	viewerObj.drawRoute(elem.path);
+	viewerObj.fitPathToScreen(elem.path);
+	
 
 	this.viewerList.push(viewerObj);
     }.bind(this));
