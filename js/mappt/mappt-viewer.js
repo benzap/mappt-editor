@@ -354,6 +354,10 @@ MapptViewer.prototype.getPaperScale = function() {
     return scale;
 };
 
+//corrects the aspect with respect to the context.  NOTE: this
+//function only works if the provided width and height are of the same
+//aspect as the SVG
+//TODO: fix the NOTE and put the fit to path code in here.
 MapptViewer.prototype.correctAspect = function(width, height,
 					       xOffset, yOffset) {
 
@@ -367,22 +371,25 @@ MapptViewer.prototype.correctAspect = function(width, height,
     var svgWidth_offset;
     var svgHeight_offset;
 
+    console.log("before offset", xOffset, yOffset);
+
     //if the svg is wider than the context
     if ((this.context_width / this.context_height) < 
        (width / height)) {
-       newContextWidth = this.context_svg_width / this.context_width * width;
-       newContextHeight = newContextWidth / width * height;
-       svgHeight_offset = yOffset;
-       svgWidth_offset = xOffset;
+	newContextWidth = this.context_svg_width / this.context_width * width;
+	newContextHeight = newContextWidth / width * height;
+	svgWidth_offset = xOffset * (this.context_svg_width / this.context_width);
+	svgWidth_offset = xOffset;
+	svgHeight_offset = yOffset - (height - newContextHeight) / 2;
     }
     else {//if the svg is narrower than the context
-       newContextHeight = this.context_svg_height / this.context_height * height;
-       newContextWidth = width * newContextHeight / height;
-       svgWidth_offset = xOffset;
-       svgHeight_offset = yOffset;
-
+	newContextHeight = this.context_svg_height / this.context_height * height;
+	newContextWidth = width * newContextHeight / height;
+	svgHeight_offset = yOffset * (this.context_svg_height / this.context_height);
+	svgHeight_offset = yOffset;
+	svgWidth_offset = xOffset + (width - newContextWidth) / 2;
     }
-
+    
     var correctedAspect = { 
 	width: newContextWidth,
         height: newContextHeight,
@@ -390,6 +397,8 @@ MapptViewer.prototype.correctAspect = function(width, height,
         height_offset: svgHeight_offset 
     };
     
+    console.log("after offset", svgWidth_offset, svgHeight_offset);
+
     return correctedAspect;
 };
 
