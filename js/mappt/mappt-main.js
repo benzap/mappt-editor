@@ -372,8 +372,6 @@ Mappt.prototype.showFullRoute = function(routeList) {
     var numViews = routeList.length;
     var viewerWidth = $(window).width();
     var viewerHeight = $(window).height();
-    var viewerWidth = 1024;
-    var viewerHeight = 768;
 
     _.map(routeList, function(elem) {
 	//develop an id, remove unwanted characters

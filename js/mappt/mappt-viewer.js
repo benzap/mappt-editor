@@ -316,20 +316,37 @@ MapptViewer.prototype.fitPathToScreen = function(pathList, padding) {
     var areaXOffset = minX - padding;
     var areaYOffset = minY - padding;
 
-    
-
-    console.log("path rectangle", areaWidth, areaHeight,
+    console.log("path rectangle before", areaWidth, areaHeight,
 		areaXOffset, areaYOffset);
 
-    //TODO: apply padding.
-    
+    //temporaries
+    var tempWidth = areaWidth;
+    var tempHeight = areaHeight;
+    //before we send it into "correctAspect", we need to... correct the aspect...
+    //if the rectangle is wider than our context, correct our height
+    if (areaWidth / areaHeight >
+	this.svg_original_width / this.svg_original_height) {
+	areaHeight = this.svg_original_height / this.svg_original_width * areaWidth;
+	//fix our offset to place the area in the center
+	areaYOffset -= (areaHeight - tempHeight) / 2;
+	
+    }
+    else { //if the rectangle is narrower than our context, correct width
+	areaWidth = this.svg_original_width / this.svg_original_height * areaHeight;
+	//fix our offset to place our area in the center
+	areaXOffset -= (areaWidth - tempWidth) / 2;
+    }
+
+    console.log("path rectangle after", areaWidth, areaHeight,
+		areaXOffset, areaYOffset);
 
     //get the corrected aspect
     var fixedAspect = this.correctAspect(areaWidth, areaHeight,
 					 areaXOffset, areaYOffset);
     console.log(fixedAspect);
 
-    this.setViewBox(areaXOffset, areaYOffset, areaWidth, areaHeight);
+    this.setViewBox(fixedAspect.width_offset, fixedAspect.height_offset,
+		    fixedAspect.width, fixedAspect.height);
 }
 
 MapptViewer.prototype.getPaperScale = function() {
@@ -355,13 +372,13 @@ MapptViewer.prototype.correctAspect = function(width, height,
        (width / height)) {
        newContextWidth = this.context_svg_width / this.context_width * width;
        newContextHeight = newContextWidth / width * height;
-       svgHeight_offset = (this.context_svg_width / this.context_width * this.context_height - newContextHeight) / 2 + yOffset;
+       svgHeight_offset = yOffset;
        svgWidth_offset = xOffset;
     }
     else {//if the svg is narrower than the context
        newContextHeight = this.context_svg_height / this.context_height * height;
        newContextWidth = width * newContextHeight / height;
-       svgWidth_offset = (this.context_svg_height / this.context_height * this.context_width - newContextWidth) / 2 + xOffset;
+       svgWidth_offset = xOffset;
        svgHeight_offset = yOffset;
 
     }
