@@ -262,8 +262,8 @@ MapptViewer.prototype.fitScreen = function() {
 					 this.svg_original_height,
 					 0,0);
     
-    this.currentView.x = 0;
-    this.currentView.y = 0;
+    this.currentView.x = fixedAspect.width_offset;
+    this.currentView.y = fixedAspect.height_offset;
     this.currentView.w = fixedAspect.width;
     this.currentView.h = fixedAspect.height;
     

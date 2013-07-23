@@ -1,4 +1,9 @@
 * Documentation
+** Important Notes
+   - The MapptViewer's use z-index: 0 and z-index: 1 for the back and
+     front context's. Therefore, if you wish to display new elements
+     over top of these, you need to supplay a z-index of '2' or
+     higher.
 ** MapptViewer
 *** Description
     The MapptViewer class is used to display an SVG map, and provides
@@ -114,6 +119,33 @@
       none
 ***** Returns
       nothing
+*** Attributes
+**** MapptViewer.contextObj
+***** Description
+      The main DOM for the context, which holds the front context, and
+      the back context. Stylizing this context will stylize the viewer.
+***** Example
+      Add a border to a MapptViewer instance
+      
+      $(this.contextObj).css){
+      border: "1px solid black",
+      });
+**** MapptViewer.contextObj_front
+***** Description
+      The front SVG paths context.
+**** MapptViewer.contextObj_back
+***** Description
+      The back SVG layout context.
+**** MapptViewer.context_paper
+***** Description
+      The Raphael paper instance used to display paths on the
+      screen. This is linked to the MapptViewer.contextObj_front
+      context.
+***** Example
+      Draw a circle in the top right corner
+      [[http://raphaeljs.com/reference.html#Paper.circle]]
+      
+      var circle = this.context_paper.circle(this.svg_original_width, 0, 10);
 ** Mappt
 *** Description
     The main application which contains the populated dataset for
