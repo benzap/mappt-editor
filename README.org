@@ -57,6 +57,15 @@
       - s :: the amount you wish to scale.
 ***** Returns
       returns the instance of MapptViewer (this)
+**** MapptViewer.fitPathToScreen(pathList, padding = 10)
+***** Description
+      Used to fit a given set of IDs representing a path on the
+      current screen.
+***** Parameters
+      - pathList :: list of node IDs representing the path
+      - padding :: The padding produced around the zoomed area
+***** Returns
+      returns the instance of the MapptViewer (this)
 **** MapptViewer.fitScreen()
 ***** Description
       Used to fit the current map to the size of the viewer context

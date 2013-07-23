@@ -347,6 +347,7 @@ MapptViewer.prototype.fitPathToScreen = function(pathList, padding) {
 
     this.setViewBox(fixedAspect.width_offset, fixedAspect.height_offset,
 		    fixedAspect.width, fixedAspect.height);
+    return this;
 }
 
 MapptViewer.prototype.getPaperScale = function() {
