@@ -258,11 +258,12 @@ MapptViewer.prototype.translatePaper = function(x, y, s) {
 
 MapptViewer.prototype.fitScreen = function() {
     
-    var fixedAspect = this.correctAspect(this.context_width, this.context_height,
-					 this.svg_original_width, this.svg_original_height);
-
-    this.currentView.x = 0;
-    this.currentView.y = 0;
+    var fixedAspect = this.correctAspect(this.svg_original_width, 
+					 this.svg_original_height,
+					 0,0);
+    
+    this.currentView.x = fixedAspect.width_offset;
+    this.currentView.y = fixedAspect.height_offset;
     this.currentView.w = fixedAspect.width;
     this.currentView.h = fixedAspect.height;
     
@@ -276,13 +277,91 @@ MapptViewer.prototype.fitScreen = function() {
     return this;
 };
 
+//from the list of node IDs, works out the best way to display our
+//path within the mappt viewer.
+MapptViewer.prototype.fitPathToScreen = function(pathList, padding) {
+    if (_.isUndefined(padding)) {
+	padding = 10;
+    }
+
+    var nodeList = _.map(pathList, function(elem) {
+	return _.find(this.routeData.PointInfoList, function(elemData) {
+	    return elemData.id == elem;
+	}.bind(this));
+    }.bind(this));
+
+    console.log("Node List", nodeList);
+
+    //from our path list, work out the smallest rectangular dimensions
+    //required to show the entire path
+    var minX = _.min(nodeList, function(elem) {
+	return elem.px;
+    }).px;
+
+    var maxX = _.max(nodeList, function(elem) {
+	return elem.px;
+    }).px;
+
+    var minY = _.min(nodeList, function(elem) {
+	return elem.py;
+    }).py;
+
+    var maxY = _.max(nodeList, function(elem) {
+	return elem.py;
+    }).py;
+
+    //our final rectangular dimensions
+    var areaWidth = maxX - minX + padding*2;
+    var areaHeight = maxY - minY + padding*2;
+    var areaXOffset = minX - padding;
+    var areaYOffset = minY - padding;
+
+    console.log("path rectangle before", areaWidth, areaHeight,
+		areaXOffset, areaYOffset);
+
+    //temporaries
+    var tempWidth = areaWidth;
+    var tempHeight = areaHeight;
+    //before we send it into "correctAspect", we need to... correct the aspect...
+    //if the rectangle is wider than our context, correct our height
+    if (areaWidth / areaHeight >
+	this.svg_original_width / this.svg_original_height) {
+	areaHeight = this.svg_original_height / this.svg_original_width * areaWidth;
+	//fix our offset to place the area in the center
+	areaYOffset -= (areaHeight - tempHeight) / 2;
+	
+    }
+    else { //if the rectangle is narrower than our context, correct width
+	areaWidth = this.svg_original_width / this.svg_original_height * areaHeight;
+	//fix our offset to place our area in the center
+	areaXOffset -= (areaWidth - tempWidth) / 2;
+    }
+
+    console.log("path rectangle after", areaWidth, areaHeight,
+		areaXOffset, areaYOffset);
+
+    //get the corrected aspect
+    var fixedAspect = this.correctAspect(areaWidth, areaHeight,
+					 areaXOffset, areaYOffset);
+    console.log(fixedAspect);
+
+    this.setViewBox(fixedAspect.width_offset, fixedAspect.height_offset,
+		    fixedAspect.width, fixedAspect.height);
+    return this;
+}
+
 MapptViewer.prototype.getPaperScale = function() {
     var scale = this.context_width / this.currentView.w;
     return scale;
 };
 
+//corrects the aspect with respect to the context.  NOTE: this
+//function only works if the provided width and height are of the same
+//aspect as the SVG
+//TODO: fix the NOTE and put the fit to path code in here.
 MapptViewer.prototype.correctAspect = function(width, height,
-					       svgWidth, svgHeight) {
+					       xOffset, yOffset) {
+
     //temporaries
     var newContextWidth;
     var newContextHeight;
@@ -293,22 +372,25 @@ MapptViewer.prototype.correctAspect = function(width, height,
     var svgWidth_offset;
     var svgHeight_offset;
 
+    console.log("before offset", xOffset, yOffset);
+
     //if the svg is wider than the context
     if ((this.context_width / this.context_height) < 
-       (this.context_svg_width / this.context_svg_height)) {
-       newContextWidth = this.context_svg_width / this.context_width * this.svg_original_width;
-       newContextHeight = newContextWidth / this.svg_original_width * this.svg_original_height;
-       svgHeight_offset = (this.context_svg_width / this.context_width * this.context_height - newContextHeight) / 2;
-       svgWidth_offset = 0;
+       (width / height)) {
+	newContextWidth = this.context_svg_width / this.context_width * width;
+	newContextHeight = newContextWidth / width * height;
+	svgWidth_offset = xOffset * (this.context_svg_width / this.context_width);
+	svgWidth_offset = xOffset;
+	svgHeight_offset = yOffset - (height - newContextHeight) / 2;
     }
     else {//if the svg is narrower than the context
-       newContextHeight = this.context_svg_height / this.context_height * this.svg_original_height;
-       newContextWidth = this.svg_original_width * newContextHeight / this.svg_original_height;
-       svgWidth_offset = (this.context_svg_height / this.context_height * this.context_width - newContextWidth) / 2;
-       svgHeight_offset = 0;
-
+	newContextHeight = this.context_svg_height / this.context_height * height;
+	newContextWidth = width * newContextHeight / height;
+	svgHeight_offset = yOffset * (this.context_svg_height / this.context_height);
+	svgHeight_offset = yOffset;
+	svgWidth_offset = xOffset + (width - newContextWidth) / 2;
     }
-
+    
     var correctedAspect = { 
 	width: newContextWidth,
         height: newContextHeight,
@@ -316,6 +398,8 @@ MapptViewer.prototype.correctAspect = function(width, height,
         height_offset: svgHeight_offset 
     };
     
+    console.log("after offset", svgWidth_offset, svgHeight_offset);
+
     return correctedAspect;
 };
 
@@ -360,7 +444,8 @@ MapptViewer.prototype.drawRoute = function(pathList) {
     }.bind(this));
 
     this.currentPath.push(this.context_paper.path(pathString));
-    this.currentPath.attr({
+
+    this.currentPath[this.currentPath.length-1].attr({
 	stroke: "#D11141",
 	"stroke-linecap": "round",
 	"stroke-linejoin" : "round",
@@ -371,7 +456,8 @@ MapptViewer.prototype.drawRoute = function(pathList) {
 //shortcut function to get and draw a route for the current map
 MapptViewer.prototype.showRoute = function(startingID, endingID) {
     var theRoute = this.getMapRoute(startingID, endingID, this.routeData);
-    return this.drawRoute(theRoute.data);
+    this.drawRoute(theRoute.data);
+    return this;
 }
 
 //clears the route on the map

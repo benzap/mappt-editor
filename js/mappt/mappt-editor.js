@@ -931,6 +931,21 @@ MapptEditor.prototype.displayJSON = function() {
     log(json_data);
 }
 
+MapptEditor.prototype.saveJSON = function() {
+    var json_data = this.exportJSON();
+    log("mapname:", this.imageName)
+    log(json_data);
+
+    var data = {file:this.imageName, data:json_data}
+
+    $.ajax({
+		type: "POST",
+		url:"savemap",
+		data: JSON.stringify(data),
+	})
+
+}
+
 MapptEditor.prototype.setAttr = function(key, value) {
     _.map(selectNode_currentlySelected, function(elem) {
 	var elementID = grabFirstWhereSecond(this.paperPoints, elem);
@@ -1187,3 +1202,5 @@ function prompt_clearLocal(mappt) {
 	log("Nothing happened.");
     }
 }
+
+
