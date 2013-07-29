@@ -146,6 +146,9 @@ Mappt.prototype.getPartialRoute = function(firstID, firstMapName,
 //best one.
 Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 				secondID, secondMapName) {
+
+    console.log(this.mapData);
+
     var _this = this;
     //grab all of the entrancepointlinks for each map
     var entranceLinkList = []
@@ -280,13 +283,45 @@ Mappt.prototype.getFullRoute = function(firstID, firstMapName,
 	    });
 	    
 	    var theRouteData = theMap.routeData;
-	    var theRoute = getRoute_djikstra(a.second, b.first, theRouteData);
-	    thePath.push({
-		name: theMap.name,
-		mapName: theMap.mapName,
-		path: theRoute.data,
-		totalCost: theRoute.totalCost,
+	    console.log(a.second, b.first, theRouteData);
+
+	    //need to check and see if our point is even in the map,
+	    //otherwise we should return a path with an infinite total
+	    //cost
+	    bCheckFirst = _.find(theRouteData.PointInfoList, function(elem) {
+		if (elem.id == b.first) {
+		    return true;
+		}
+		return false;
 	    });
+
+	    bCheckSecond = _.find(theRouteData.PointInfoList, function(elem) {
+		if (elem.id == a.second) {
+		    return true;
+		}
+		return false;
+	    }); 
+
+	    if (bCheckFirst && bCheckSecond) {
+
+	    var theRoute = getRoute_djikstra(a.second, b.first, theRouteData);
+		thePath.push({
+		    name: theMap.name,
+		    mapName: theMap.mapName,
+		path: theRoute.data,
+		    totalCost: theRoute.totalCost,
+		});
+	    }
+	    else {
+		if (!bCheckFirst) {
+		    console.log("ERROR: Could not find ID " + b.first.toString() + " in the resulting map, skipping");
+		}
+		if (!bCheckSecond) {
+		    console.log("ERROR: Could not find ID " + a.second.toString() + " in the resulting map, skipping");
+		}
+	    }
+
+
 	});
 
 	//include our starting path and our ending path through the traversal
