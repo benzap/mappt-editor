@@ -444,6 +444,7 @@ MapptViewer.prototype.drawRoute = function(pathList) {
     }.bind(this));
 
     this.currentPath.push(this.context_paper.path(pathString));
+
     this.currentPath[this.currentPath.length-1].attr({
 	stroke: "#D11141",
 	"stroke-linecap": "round",
