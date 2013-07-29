@@ -90,6 +90,10 @@ MapptViewer = function(context_id, context_width, context_height) {
 	w : this.context_width,
 	h : this.context_height
     };
+
+    //contains a reference to the current path on the paper
+    this.currentPath = [];
+
 }
 
 MapptViewer.prototype.init = function() {
@@ -355,10 +359,10 @@ MapptViewer.prototype.drawRoute = function(pathList) {
 	
     }.bind(this));
 
-    this.currentPath = this.context_paper.path(pathString);
+    this.currentPath.push(this.context_paper.path(pathString));
     this.currentPath.attr({
 	stroke: "#D11141",
-	"stroke-linecap": "butt",
+	"stroke-linecap": "round",
 	"stroke-linejoin" : "round",
     });
     return this;
@@ -372,5 +376,7 @@ MapptViewer.prototype.showRoute = function(startingID, endingID) {
 
 //clears the route on the map
 MapptViewer.prototype.clearRoute = function() {
-    this.currentPath.remove();
+    _.map(this.currentPath, function(elem) {
+	elem.remove();
+    });
 }
