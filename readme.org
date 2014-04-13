@@ -1,0 +1,106 @@
+* Introduction
+  Mappt is an application library to build map applications. 
+
+  It follows a specification that can be implemented in any existing
+  language whether it be through wrapping the libmappt library or
+  defining a completely new library that follows the pre-defined
+  specification.
+
+* Programming Tasks
+** libmappt [0%]
+   - [ ] Implement the Makefile for libmappt compilation
+   - [ ] Begin work on design of the libmappt library
+   - [ ] 
+** Mappt Specification [%]
+   - [ ] Develop JSON Sample specification
+   - [ ] 
+** Gui Application [%]
+   - [ ] Come up with specification for GUI application to modify the
+     maps.
+
+* libmappt
+  
+* Mappt Specification
+** Definitions
+*** Mappt
+   - name :: The name of our current map that we'd like to
+             traverse. ex. "Ohio Regional Hospital" if we were
+             developing a layout for that particular hospital
+   - maps :: a dictionary list consisting of all of the maps that make
+             up the current application.
+     - name :: The name of the particular map within the set of maps
+     - description :: a unique description describing info about this
+                      map. ex. First floor of shuniah building
+     - mapid :: A GUID to uniquely identify this map
+     - points :: Traversal points to represent within _Map Units_.
+       - pointid :: A GUID to uniquely identify this point
+       - x :: the x dimension for the given point
+       - y :: the y dimension for the given point
+       - z :: the z dimension for the given point
+     - images :: maps consist of images.
+       - ref :: A reference to the location of the given
+                file. Supported formats have not been determined
+       - scale :: The scale of the given image in order to determine
+                  it's representation in _Map Units_.
+       - position :: The position of the image relative to the
+                     dimensions of the map.
+       - rotation :: the rotation of the given image relative to the
+                     map. Expressed in quaternions.
+     - dimensions :: The dimensions of the given map. This determines
+                     how many units the map makes up in _Map Units_.
+     - links :: links make up the connections between points in the
+                given map. It forms a relation between them.
+       - first :: Guid representing the first point
+       - second :: Guid representing the second point
+   - entrances :: the relationship between two points between any two
+                  given maps. They can be thought of as 'global'
+                  links
+     - first :: Guid representing the first point
+     - second :: Guid representing the second point
+** Json Sample
+#+BEGIN_SRC javascript
+mappt = {
+  name = ":String",
+  maps = [{
+            name = ":String",
+            description = ":String",
+            mapid = ":Guid",
+            points = [{
+                        pointid = ":Guid",
+                        x = ":Float",
+                        y = ":Float",
+                        z = ":Float",
+                        tags = {
+                          ":String" = ":Any",
+                          ...
+                               },
+                     }],
+            images = [{
+                          ref = ":FileUri",
+                          scale = [:Float, :Float, :Float],
+                          position = [:Float, :Float, :Float],
+                          rotation = [:Float, :Float, :Float, :Float],
+                          
+                      }],
+            dimensions = [:Integer, :Integer, :Integer],
+            links = [{
+                       first = ":Guid",
+                       second = ":Guid",
+                    }],
+         }],
+  entrances = [{
+                 first = ":Guid",
+                 second = ":Guid",
+              }],
+  
+}
+#+END_SRC 
+
+* Gui Application
+
+
+* Notes
+  - How to perform parsing of JSON within c++?
+    - More importantly, how to parse dynamic sections of JSON?
+      - simply don't have dynamic sections of JSON (makes it easier to
+        implement in static languages)
