@@ -1,5 +1,5 @@
 #Makefile for libmappt library
-#makefile for Mappt game engine
+
 UNAME := $(shell uname)
 
 TAGS_EXEC = etags
