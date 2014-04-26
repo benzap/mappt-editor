@@ -59,46 +59,79 @@
      - second :: Guid representing the second point
 ** Json Sample
 #+BEGIN_SRC javascript
-mappt = {
-  name = ":String",
-  maps = [{
-            name = ":String",
-            description = ":String",
-            mapid = ":Guid",
-            points = [{
-                        pointid = ":Guid",
-                        x = ":Float",
-                        y = ":Float",
-                        z = ":Float",
-                        tags = {
-                          ":String" = ":Any",
-                          ...
-                               },
-                     }],
-            images = [{
-                          ref = ":FileUri",
-                          scale = [:Float, :Float, :Float],
-                          position = [:Float, :Float, :Float],
-                          rotation = [:Float, :Float, :Float, :Float],
-                          
-                      }],
-            dimensions = [:Integer, :Integer, :Integer],
-            links = [{
-                       first = ":Guid",
-                       second = ":Guid",
-                    }],
-         }],
-  entrances = [{
-                 first = ":Guid",
-                 second = ":Guid",
-              }],
-  
-}
+  mappt : {
+      name : ":String",
+      maps : [{
+          name : ":String",
+          description : ":String",
+          mapid : ":Guid",
+          points : [{
+              pointid : ":Guid",
+              x : ":Float",
+              y : ":Float",
+              z : ":Float",
+              tags : {
+                  ":String" : ":Any",
+                      ...
+              },
+          }],
+          images : [{
+              ref : ":FileUri",
+              scale : [:Float, :Float, :Float],
+              position : [:Float, :Float, :Float],
+              rotation : [:Float, :Float, :Float, :Float],
+              
+          }],
+          dimensions : [:Float, :Float, :Float],
+          links : [{
+              first : ":Guid",
+              second : ":Guid",
+          }],
+      }],
+      entrances : [{
+          first : ":Guid",
+          second : ":Guid",
+      }],    
+  }
 #+END_SRC 
-
+** XML Sample
+#+BEGIN_SRC html
+  <mappt>
+    <name>Example</name>
+    <maps>
+      <map mapid="0000-0000-0000-0000">
+        <name>Map Name</name>
+        <description>Here is a description</description>
+        <points>
+          <point pointid="0000-0000-0000-0000">
+            <position x="0.0" y="0.0" z="0.0"></position>
+            <tags>
+              <tag key="someKey" value="someValue"></tag>
+            </tags>
+          </point>
+        </points>
+        <images>
+          <image ref="./somefile">
+            <scale x="0.0" y="0.0" z="0.0"></scale>
+            <position x="0.0" y="0.0" z="0.0"></position>
+            <rotation i="0.0" j="0.0" z="0.0" w="0.0"></rotation>
+          </image>
+        </images>
+        <dimensions>
+          <position x="0.0" y="0.0" z="0.0"></position>
+        </dimensions>
+        <links>
+          <link first="0000-0000-0000-0000" second="0000-0000-0000-0000"></link>
+        </links>
+      </map>
+    </maps>
+    <entrances>
+      <entrance first="0000-0000-0000-0000" second="0000-0000-0000-0000"></entrance>
+    </entrances>
+  </mappt>
+#+END_SRC
 * Gui Application
-
-
+  
 * Notes
   - How to perform parsing of JSON within c++?
     - More importantly, how to parse dynamic sections of JSON?
