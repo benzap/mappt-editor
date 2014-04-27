@@ -28,6 +28,8 @@ public:
     virtual ~MapptManager();
     
     loadXmlString(std::string);
+    loadJsonString(std::string);
+
 };
 
 #endif //END MAPPTMANAGER__HPP

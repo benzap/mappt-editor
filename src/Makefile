@@ -36,7 +36,7 @@ OUTPUT_DIRECTORY = ../lib
 TESTS_DIRECTORY = ./tests
 
 #global hpp files
-GLOBAL_HPP= 
+GLOBAL_HPP= Mappt_Utils.hpp Mappt_Globals.hpp
 
 #included directories considered for compiling
 INCLUDED_DIRS = 
