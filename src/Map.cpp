@@ -54,7 +54,7 @@ void Mappt::Map::removePoint(guidType pointid) {
 		   });
 }
 
-const Mappt::Point* Mappt::Map::getPointById(guidType pointid) {
+Mappt::Point* Mappt::Map::getPointById(guidType pointid) {
     auto point = std::find_if(this->points.begin(), this->points.end(),
 			      [=] (Mappt::Point point) {
 				  if (point.getId() == pointid) {
