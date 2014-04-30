@@ -7,9 +7,15 @@
  */
 
 //CLASSES
-class Mappt;
 
 //INCLUDES
+#include "Mappt_Utils.hpp"
+#include "Mappt_Globals.hpp"
+#include "MapptManager.hpp"
+#include "Map.hpp"
+#include "Image.hpp"
+#include "Point.hpp"
+#include "Parser.hpp"
 
 //DEFINITIONS
 
