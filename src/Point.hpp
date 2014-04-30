@@ -17,6 +17,8 @@ namespace Mappt {
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <cassert>
 
 //DEFINITIONS
 
@@ -31,12 +33,27 @@ typedef std::map<std::string, std::string> tagContainer;
 namespace Mappt {
     class Point {
     private:
-	guidType pointid;
-	std::vector<float> position;
+	Mappt::guidType pointid = generateGUID();
+	std::vector<float> position = {0.0, 0.0, 0.0};
 	tagContainer tags;
     public:
 	Point();
 	virtual ~Point() {};
+	
+	//getters / setters
+	Mappt::guidType getId();
+	void setId(Mappt::guidType value);
+
+	const std::vector<float>& getPosition();
+	void setPosition(std::vector<float> value);
+
+	//const tagContainer& getTags();
+	//void setTags(tagContainer value);
+
+	void addTag(std::string key, std::string value);
+	bool hasTag(std::string key);
+	std::string getTag(std::string key);
+	void deleteTag(std::string key);
     };
 }
 

@@ -28,7 +28,8 @@ namespace Mappt {
 
 //TYPEDEFS
 typedef std::vector<Mappt::Point> pointContainerType;
-typedef std::vector<std::pair<Mappt::guidType, Mappt::guidType>> linkContainerType;
+typedef std::pair<Mappt::guidType, Mappt::guidType> linkPair;
+typedef std::vector<linkPair> linkContainerType;
 
 //FUNCTIONS
 
@@ -36,8 +37,8 @@ typedef std::vector<std::pair<Mappt::guidType, Mappt::guidType>> linkContainerTy
 namespace Mappt {
     class Map {
     private:
-	std::string name;
-	std::string description;
+	std::string name = "None";
+	std::string description = "None";
 	pointContainerType points;
 	linkContainerType links;
 	std::vector<float> dimensions;
@@ -45,6 +46,35 @@ namespace Mappt {
     public:
 	Map();
 	virtual ~Map() {}
+	
+	//getters / setters
+	const std::string& getName();
+	void setName(std::string value);
+
+	const std::string& getDescription();
+	void setDescription(std::string value);
+
+	const pointContainerType& getPointContainer();
+	void addPoint(Point point);
+	bool hasPoint(guidType pointid);
+	void removePoint(int index);
+	void removePoint(guidType pointid);
+	const Point* getPointById(guidType pointid);
+	std::vector<Point*> getPointsByTag(std::string key);
+
+	const linkContainerType& getLinkContainer();
+	void addLink(guidType firstPoint, guidType secondPoint);
+	bool hasLink(guidType firstPoint, guidType secondPoint);
+	void removeLink(int index);
+	void removeLink(guidType firstPoint, guidType secondPoint);
+	void removeAllLinks(guidType pointid);
+	const std::vector<linkPair> getLinks(guidType pointid);
+	
+	const std::vector<float>& getDimensions();
+	void setDimensions(std::vector<float>& value);
+
+	const std::vector<Image>& getImageContainer();
+	void addImage(Image image);
     };
 }
 
