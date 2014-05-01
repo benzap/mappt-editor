@@ -134,7 +134,7 @@ const std::vector<float>& Mappt::Map::getDimensions() {
     return this->dimensions;
 }
 
-void Mappt::Map::setDimensions(std::vector<float>& value) {
+void Mappt::Map::setDimensions(std::vector<float> value) {
     assert(value.size() == 3);
     this->dimensions = value;
 }

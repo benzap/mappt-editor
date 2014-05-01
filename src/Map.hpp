@@ -71,7 +71,7 @@ namespace Mappt {
 	const std::vector<linkPair> getLinks(guidType pointid);
 	
 	const std::vector<float>& getDimensions();
-	void setDimensions(std::vector<float>& value);
+	void setDimensions(std::vector<float> value);
 
 	const std::vector<Image>& getImageContainer();
 	void addImage(Image image);

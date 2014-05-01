@@ -57,7 +57,40 @@ int main() {
     auto elevatorTags = map.getPointsByTag("elevator");
     TEST_BOOL(elevatorTags.size() == 2, "getPointsByTag");
 
+    //Links
+    map.addLink(tagPoint1.getId(), tagPoint2.getId());
+
+    TEST_BOOL(map.getLinkContainer().size() == 1, "getLinkContainer");
+    TEST_BOOL(map.hasLink(tagPoint1.getId(), tagPoint2.getId()), "hasLink");
     
+    map.addLink(tagPoint1.getId(), tagPoint3.getId());
+    map.addLink(tagPoint2.getId(), tagPoint3.getId());
+
+    map.removeLink(0);
+
+    TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint2.getId()),
+	      "removeLink(index)");
+
+    map.addLink(tagPoint1.getId(), tagPoint2.getId());
+    map.removeLink(tagPoint1.getId(), tagPoint2.getId());
+
+    TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint2.getId()),
+	      "removeLink(link)");
+
+    map.addLink(tagPoint1.getId(), tagPoint2.getId());
+
+    map.removeAllLinks(tagPoint1.getId());
+
+    TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint2.getId()),
+	      "removeAllLinks 1");
+
+    TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint3.getId()),
+    	      "removeAllLinks 1");
+
+    //Dimensions
+    map.setDimensions({600, 400, 0});
+    TEST_BOOL(map.getDimensions() == std::vector<float>({600, 400, 0}),
+	      "getDimensions");
     
     return 0;
 }
