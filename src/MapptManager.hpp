@@ -25,7 +25,7 @@ namespace Mappt {
 //MACROS
 
 //TYPEDEFS
-typedef std::vector<std::tuple<Mappt::guidType, Mappt::guidType>> entranceContainerType;
+typedef std::vector<linkPair> entranceContainerType;
 
 //FUNCTIONS
 
@@ -47,20 +47,20 @@ namespace Mappt {
 
 	//entrances
 	void addEntrance(guidType first, guidType second);
-	const entranceContainerType& getEntrancesWithGuid(guidType guid);
+	entranceContainerType getEntrancesWithGuid(guidType guid);
 	void removeAllEntrancesWithGuid(guidType guid);
 	const entranceContainerType& getAllEntrances();
 
 	//maps
 	void addMap(Map map);
 	void removeMapByName(std::string mapName);
-	const Map& getMapByName(std::string mapName);
+	Map* getMapByName(std::string mapName);
 	bool hasMapByName(std::string mapName);
 	const std::vector<Map>& getMaps();
 	
 	//helper functions
 	bool hasPoint(guidType pointId);
-	const Point& getPoint(guidType pointId);
+	Point* getPoint(guidType pointId);
 	void removePoint(guidType pointId);
 
 	//Initialization / Loading / Clearing
