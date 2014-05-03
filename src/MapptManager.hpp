@@ -46,6 +46,7 @@ namespace Mappt {
 	void setName(std::string value);
 
 	//entrances
+	void addEntrance(Point* firstPoint, Point* secondPoint);
 	void addEntrance(guidType first, guidType second);
 	const entranceContainerType getEntrancesWithGuid(guidType guid);
 	void removeAllEntrancesWithGuid(guidType guid);

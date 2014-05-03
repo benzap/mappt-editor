@@ -41,7 +41,7 @@ namespace Mappt {
 	virtual ~Point() {};
 	
 	//getters / setters
-	Mappt::guidType getId();
+	const Mappt::guidType& getId();
 	void setId(Mappt::guidType value);
 
 	const std::vector<float>& getPosition();

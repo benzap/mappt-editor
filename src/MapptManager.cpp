@@ -15,6 +15,14 @@ void Mappt::MapptManager::setName(std::string value) {
 
 
 //entrances
+void Mappt::MapptManager::addEntrance(Mappt::Point* firstPoint,
+				      Mappt::Point* secondPoint) {
+    auto firstId = guidType(firstPoint->getId());
+    auto secondId = guidType(secondPoint->getId());
+    auto link = linkPair(firstId, secondId);
+    this->entrances.push_back(link);
+}
+
 void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
     this->entrances.push_back(std::make_pair(first, second));
 }

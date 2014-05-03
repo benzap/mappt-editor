@@ -3,11 +3,12 @@
 using std::chrono::system_clock;
 
 //TODO: better random seed
-static int randomSeed = time(NULL);
+static int randomSeed = time(NULL) + std::random_device()();
 static int increment = 0;
 Mappt::guidType Mappt::generateGUID() {
-    std::default_random_engine rEngine;
-    
+    //std::default_random_engine rEngine;
+    std::mt19937 rEngine;
+
     rEngine.seed(randomSeed + increment++);
 
     std::string hexChars = "0123456789ABCDEF";
@@ -38,6 +39,8 @@ Mappt::guidType Mappt::generateGUID() {
     for (int i = 0; i < 8 * 2; i++) {
 	guid += hexChars[rCharDistribution(rEngine)];
     }
+
+    std::cout << "guid: " << guid << std::endl;
 
     return guid;
 }

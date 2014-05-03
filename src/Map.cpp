@@ -33,6 +33,17 @@ const pointContainerType& Mappt::Map::getPointContainer() {
   return this->points;
 }
 
+Mappt::Point* Mappt::Map::newPoint() {
+    auto point = Mappt::Point();
+    auto id = point.getId();
+
+    point.setTag("MapName", this->name);
+    
+    this->points.push_back(point);
+
+    return this->getPointById(id);
+}
+
 void Mappt::Map::addPoint(Point point) {
     //assign the map name within the point tags
     point.setTag("MapName", this->name);
@@ -90,15 +101,20 @@ const linkContainerType& Mappt::Map::getLinkContainer() {
     return this->links;
 }
 
-void Mappt::Map::addLink(guidType firstPoint, guidType secondPoint) {
-    auto pointPair = std::make_pair(firstPoint, secondPoint);
+void Mappt::Map::addLink(guidType firstGuid, guidType secondGuid) {
+    auto pointPair = std::make_pair(firstGuid, secondGuid);
     this->links.push_back(pointPair);
 }
 
-bool Mappt::Map::hasLink(guidType firstPoint, guidType secondPoint) {
+void Mappt::Map::addLink(Mappt::Point* firstPoint, Mappt::Point* secondPoint) {
+    auto pointPair = std::make_pair(firstPoint->getId(), secondPoint->getId());
+    this->links.push_back(pointPair);
+}
+
+bool Mappt::Map::hasLink(guidType firstGuid, guidType secondGuid) {
     for (auto link : this->links) {
-	if (link.first == firstPoint && link.second == secondPoint ||
-	    link.first == secondPoint && link.second == firstPoint) {
+	if (link.first == firstGuid && link.second == secondGuid ||
+	    link.first == secondGuid && link.second == firstGuid) {
 	    return true;
 	}
     }
@@ -110,10 +126,10 @@ void Mappt::Map::removeLink(int index) {
     this->links.erase(this->links.begin() + index);
 }
 
-void Mappt::Map::removeLink(guidType firstPoint, guidType secondPoint) {
+void Mappt::Map::removeLink(guidType firstGuid, guidType secondGuid) {
     for (auto link = this->links.begin(); link != this->links.end(); link++) {
-	if (link->first == firstPoint && link->second == secondPoint ||
-	    link->first == secondPoint && link->second == firstPoint) {
+	if (link->first == firstGuid && link->second == secondGuid ||
+	    link->first == secondGuid && link->second == firstGuid) {
 	    this->links.erase(link);
 	}
     }
@@ -135,7 +151,6 @@ const std::vector<linkPair> Mappt::Map::getLinks(guidType pointid) {
     return linkContainer;
 }
 
-	
 const std::vector<float>& Mappt::Map::getDimensions() {
     return this->dimensions;
 }

@@ -5,7 +5,7 @@ Mappt::Point::Point() {
 }
 
 //getters / setters
-Mappt::guidType Mappt::Point::getId() {
+const Mappt::guidType& Mappt::Point::getId() {
     return this->pointid;
 }
 
