@@ -47,7 +47,7 @@ namespace Mappt {
 
 	//entrances
 	void addEntrance(guidType first, guidType second);
-	entranceContainerType getEntrancesWithGuid(guidType guid);
+	const entranceContainerType getEntrancesWithGuid(guidType guid);
 	void removeAllEntrancesWithGuid(guidType guid);
 	const entranceContainerType& getAllEntrances();
 
@@ -69,7 +69,7 @@ namespace Mappt {
 	void clear();
 
 	//Map Routing Functions
-	const std::vector<guidType>& getFullRoute(guidType firstPoint, guidType secondPoint);
+	const std::vector<guidType> getFullRoute(guidType firstPoint, guidType secondPoint);
 	
 	//Map Searching Functions
 	const std::vector<std::string> getAllTags();
