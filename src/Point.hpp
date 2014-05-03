@@ -50,7 +50,7 @@ namespace Mappt {
 	//const tagContainer& getTags();
 	//void setTags(tagContainer value);
 
-	void addTag(std::string key, std::string value);
+	void setTag(std::string key, std::string value);
 	bool hasTag(std::string key);
 	std::string getTag(std::string key);
 	void deleteTag(std::string key);

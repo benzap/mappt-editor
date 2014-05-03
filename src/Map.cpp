@@ -10,6 +10,13 @@ const std::string& Mappt::Map::getName() {
 
 void Mappt::Map::setName(std::string value) {
     this->name = value;
+
+    //make sure we update the map name tag within the points when we
+    //change the name of our map
+    for (auto point : this->points) {
+	point.setTag("MapName", this->name);
+    }
+
 }
 
 
@@ -23,10 +30,13 @@ void Mappt::Map::setDescription(std::string value) {
 
 
 const pointContainerType& Mappt::Map::getPointContainer() {
-    return this->points;
+  return this->points;
 }
 
 void Mappt::Map::addPoint(Point point) {
+    //assign the map name within the point tags
+    point.setTag("MapName", this->name);
+    
     this->points.push_back(point);
 }
 

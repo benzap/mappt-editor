@@ -40,18 +40,18 @@ int main() {
     TEST_BOOL(getPoint->getId() == testPoint3.getId(), "getPointById");
     
     auto tagPoint1 = Mappt::Point();
-    tagPoint1.addTag("elevator", "true");
-    tagPoint1.addTag("stairs", "false");
+    tagPoint1.setTag("elevator", "true");
+    tagPoint1.setTag("stairs", "false");
     map.addPoint(tagPoint1);
     
     
     auto tagPoint2 = Mappt::Point();
-    tagPoint2.addTag("elevator", "false");
-    tagPoint2.addTag("department", "science");
+    tagPoint2.setTag("elevator", "false");
+    tagPoint2.setTag("department", "science");
     map.addPoint(tagPoint2);
     
     auto tagPoint3 = Mappt::Point();
-    tagPoint3.addTag("stairs", "true");
+    tagPoint3.setTag("stairs", "true");
     map.addPoint(tagPoint3);
     
     auto elevatorTags = map.getPointsByTag("elevator");

@@ -52,6 +52,7 @@ namespace Mappt {
 	const entranceContainerType& getAllEntrances();
 
 	//maps
+	Map* newMap(std::string mapName);
 	void addMap(Map map);
 	void removeMapByName(std::string mapName);
 	Map* getMapByName(std::string mapName);

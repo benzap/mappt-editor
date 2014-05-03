@@ -20,8 +20,8 @@ int main() {
     
     TEST_BOOL(point.getPosition()[0] == 1.0, "getPosition");
 
-    point.addTag("floor", "1");
-    point.addTag("Ben", "awesome");
+    point.setTag("floor", "1");
+    point.setTag("Ben", "awesome");
 
     TEST_BOOL(point.hasTag("stupid") != true, "hasTag (false)");
     TEST_BOOL(point.hasTag("Ben") == true, "hasTag(true)");

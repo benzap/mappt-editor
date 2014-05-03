@@ -24,7 +24,7 @@ void Mappt::Point::setPosition(std::vector<float> value) {
     this->position = value;
 }
 
-void Mappt::Point::addTag(std::string key, std::string value) {
+void Mappt::Point::setTag(std::string key, std::string value) {
     this->tags[key] = value;
 }
 

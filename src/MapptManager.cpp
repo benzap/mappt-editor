@@ -39,6 +39,14 @@ const entranceContainerType& Mappt::MapptManager::getAllEntrances() {
 
 
 //maps
+Mappt::Map* Mappt::MapptManager::newMap(std::string mapName) {
+    auto map = Mappt::Map();
+    map.setName(mapName);
+
+    this->maps.push_back(map);
+    return this->getMapByName(mapName);
+}
+
 void Mappt::MapptManager::addMap(Map map) {
     this->maps.push_back(map);
 }
@@ -67,15 +75,29 @@ const std::vector<Mappt::Map>& Mappt::MapptManager::getMaps() {
 	
 //helper functions
 bool Mappt::MapptManager::hasPoint(guidType pointId) {
+    for (auto& map : maps) {
+	if (map.hasPoint(pointId)) {
+	    return true;
+	}
+    }
     return false;
 }
 
 Mappt::Point* Mappt::MapptManager::getPoint(guidType pointId) {
+    for (auto& map : maps) {
+	if (map.hasPoint(pointId)) {
+	    return map.getPointById(pointId);
+	}
+    }
     return nullptr;
 }
 
 void Mappt::MapptManager::removePoint(guidType pointId) {
-    
+    for (auto& map : maps) {
+	if (map.hasPoint(pointId)) {
+	    return map.removePoint(pointId);
+	}
+    }
 }
 
 
@@ -89,7 +111,8 @@ void Mappt::MapptManager::loadJsonString(std::string) {
 }
 
 void Mappt::MapptManager::clear() {
-
+    this->maps.clear();
+    this->entrances.clear();
 }
 
 
