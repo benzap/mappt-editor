@@ -15,10 +15,10 @@ void Mappt::MapptManager::setName(std::string value) {
 
 
 //entrances
-void Mappt::MapptManager::addEntrance(Mappt::Point* firstPoint,
-				      Mappt::Point* secondPoint) {
-    auto firstId = guidType(firstPoint->getId());
-    auto secondId = guidType(secondPoint->getId());
+void Mappt::MapptManager::addEntrance(Mappt::Point firstPoint,
+				      Mappt::Point secondPoint) {
+    auto firstId = guidType(firstPoint.getId());
+    auto secondId = guidType(secondPoint.getId());
     auto link = linkPair(firstId, secondId);
     this->entrances.push_back(link);
 }
@@ -47,12 +47,12 @@ const entranceContainerType& Mappt::MapptManager::getAllEntrances() {
 
 
 //maps
-Mappt::Map* Mappt::MapptManager::newMap(std::string mapName) {
+Mappt::Map& Mappt::MapptManager::newMap(std::string mapName) {
     auto map = Mappt::Map();
     map.setName(mapName);
 
     this->maps.push_back(map);
-    return this->getMapByName(mapName);
+    return this->maps.back();
 }
 
 void Mappt::MapptManager::addMap(Map map) {
@@ -63,13 +63,12 @@ void Mappt::MapptManager::removeMapByName(std::string mapName) {
 
 }
 
-Mappt::Map* Mappt::MapptManager::getMapByName(std::string mapName) {
+Mappt::Map& Mappt::MapptManager::getMapByName(std::string mapName) {
     for (auto& map : this->maps) {
 	if (map.getName() == mapName) {
-	    return &map;
+	    return map;
 	}
     }
-    return nullptr;
 }
 
 bool Mappt::MapptManager::hasMapByName(std::string mapName) {
@@ -91,13 +90,13 @@ bool Mappt::MapptManager::hasPoint(guidType pointId) {
     return false;
 }
 
-Mappt::Point* Mappt::MapptManager::getPoint(guidType pointId) {
+Mappt::Point& Mappt::MapptManager::getPoint(guidType pointId) {
     for (auto& map : maps) {
 	if (map.hasPoint(pointId)) {
 	    return map.getPointById(pointId);
 	}
     }
-    return nullptr;
+    //return *maps.end();
 }
 
 void Mappt::MapptManager::removePoint(guidType pointId) {

@@ -37,7 +37,7 @@ int main() {
     TEST_BOOL(!map.hasPoint(testPoint2.getId()), "removePoint(guid)");
 
     auto getPoint = map.getPointById(testPoint3.getId());
-    TEST_BOOL(getPoint->getId() == testPoint3.getId(), "getPointById");
+    TEST_BOOL(getPoint.getId() == testPoint3.getId(), "getPointById");
     
     auto tagPoint1 = Mappt::Point();
     tagPoint1.setTag("elevator", "true");
@@ -64,7 +64,7 @@ int main() {
     TEST_BOOL(map.hasLink(tagPoint1.getId(), tagPoint2.getId()), "hasLink");
     
     map.addLink(tagPoint1.getId(), tagPoint3.getId());
-    map.addLink(&tagPoint2, &tagPoint3);
+    map.addLink(tagPoint2, tagPoint3);
 
     map.removeLink(0);
 
@@ -77,7 +77,7 @@ int main() {
     TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint2.getId()),
 	      "removeLink(link)");
 
-    map.addLink(&tagPoint1, &tagPoint2);
+    map.addLink(tagPoint1, tagPoint2);
 
     map.removeAllLinks(tagPoint1.getId());
 

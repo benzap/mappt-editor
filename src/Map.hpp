@@ -55,17 +55,17 @@ namespace Mappt {
 	void setDescription(std::string value);
 
 	const pointContainerType& getPointContainer();
-	Point* newPoint();
+	Point& newPoint();
 	void addPoint(Point point);
 	bool hasPoint(guidType pointid);
 	void removePoint(int index);
 	void removePoint(guidType pointid);
-	Point* getPointById(guidType pointid);
+	Point& getPointById(guidType pointid);
 	std::vector<Point*> getPointsByTag(std::string key);
 
 	const linkContainerType& getLinkContainer();
 	void addLink(guidType firstGuid, guidType secondGuid);
-	void addLink(Point* firstPoint, Point* secondPoint);
+	void addLink(Point firstPoint, Point secondPoint);
 	bool hasLink(guidType firstGuid, guidType secondGuid);
 	void removeLink(int index);
 	void removeLink(guidType firstGuid, guidType secondGuid);

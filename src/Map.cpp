@@ -33,7 +33,7 @@ const pointContainerType& Mappt::Map::getPointContainer() {
   return this->points;
 }
 
-Mappt::Point* Mappt::Map::newPoint() {
+Mappt::Point& Mappt::Map::newPoint() {
     auto point = Mappt::Point();
     auto id = point.getId();
 
@@ -41,7 +41,7 @@ Mappt::Point* Mappt::Map::newPoint() {
     
     this->points.push_back(point);
 
-    return this->getPointById(id);
+    return this->points.back();
 }
 
 void Mappt::Map::addPoint(Point point) {
@@ -75,7 +75,7 @@ void Mappt::Map::removePoint(guidType pointid) {
 		   });
 }
 
-Mappt::Point* Mappt::Map::getPointById(guidType pointid) {
+Mappt::Point& Mappt::Map::getPointById(guidType pointid) {
     auto point = std::find_if(this->points.begin(), this->points.end(),
 			      [=] (Mappt::Point point) {
 				  if (point.getId() == pointid) {
@@ -83,7 +83,8 @@ Mappt::Point* Mappt::Map::getPointById(guidType pointid) {
 				  }
 				  return false;
 			      });
-    return &(*point);
+
+    return *point;
 }
 
 std::vector<Mappt::Point*> Mappt::Map::getPointsByTag(std::string key) {
@@ -102,13 +103,15 @@ const linkContainerType& Mappt::Map::getLinkContainer() {
 }
 
 void Mappt::Map::addLink(guidType firstGuid, guidType secondGuid) {
-    auto pointPair = std::make_pair(firstGuid, secondGuid);
-    this->links.push_back(pointPair);
+    auto link = linkPair(firstGuid, secondGuid);
+    this->links.push_back(link);
 }
 
-void Mappt::Map::addLink(Mappt::Point* firstPoint, Mappt::Point* secondPoint) {
-    auto pointPair = std::make_pair(firstPoint->getId(), secondPoint->getId());
-    this->links.push_back(pointPair);
+void Mappt::Map::addLink(Mappt::Point firstPoint, Mappt::Point secondPoint) {
+    guidType firstGuid = guidType(firstPoint.getId());
+    guidType secondGuid = guidType(secondPoint.getId());
+    linkPair link = linkPair(firstGuid, secondGuid);
+    this->links.push_back(link);
 }
 
 bool Mappt::Map::hasLink(guidType firstGuid, guidType secondGuid) {

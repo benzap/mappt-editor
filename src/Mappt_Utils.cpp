@@ -40,7 +40,5 @@ Mappt::guidType Mappt::generateGUID() {
 	guid += hexChars[rCharDistribution(rEngine)];
     }
 
-    std::cout << "guid: " << guid << std::endl;
-
     return guid;
 }

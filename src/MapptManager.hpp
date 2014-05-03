@@ -46,23 +46,23 @@ namespace Mappt {
 	void setName(std::string value);
 
 	//entrances
-	void addEntrance(Point* firstPoint, Point* secondPoint);
+	void addEntrance(Point firstPoint, Point secondPoint);
 	void addEntrance(guidType first, guidType second);
 	const entranceContainerType getEntrancesWithGuid(guidType guid);
 	void removeAllEntrancesWithGuid(guidType guid);
 	const entranceContainerType& getAllEntrances();
 
 	//maps
-	Map* newMap(std::string mapName);
+	Map& newMap(std::string mapName);
 	void addMap(Map map);
 	void removeMapByName(std::string mapName);
-	Map* getMapByName(std::string mapName);
+	Map& getMapByName(std::string mapName);
 	bool hasMapByName(std::string mapName);
 	const std::vector<Map>& getMaps();
 	
 	//helper functions
 	bool hasPoint(guidType pointId);
-	Point* getPoint(guidType pointId);
+	Point& getPoint(guidType pointId);
 	void removePoint(guidType pointId);
 
 	//Initialization / Loading / Clearing
