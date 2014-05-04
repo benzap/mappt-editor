@@ -44,10 +44,10 @@ int main() {
     mapThree.addLink(p31, p33);
 
     //make entrance relationships
-    //mapptManager.addEntrance(p11, p21);
-    //mapptManager.addEntrance(p12, p22);
-    //mapptManager.addEntrance(p21, p31);
-    //mapptManager.addEntrance(p22, p32);
+    mapptManager.addEntrance(p11, p21);
+    mapptManager.addEntrance(p12, p22);
+    mapptManager.addEntrance(p21, p31);
+    mapptManager.addEntrance(p22, p32);
 
     TEST_BOOL(mapptManager.getMapByName("Shuniah").getName() == mapOne.getName(),
 	      "getMapByName");
