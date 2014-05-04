@@ -18,6 +18,7 @@ namespace Mappt {
 
 #include "Mappt_Utils.hpp"
 #include "Mappt_Globals.hpp"
+#include "MapptException.hpp"
 
 #include "Point.hpp"
 #include "Image.hpp"

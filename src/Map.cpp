@@ -76,15 +76,14 @@ void Mappt::Map::removePoint(guidType pointid) {
 }
 
 Mappt::Point& Mappt::Map::getPointById(guidType pointid) {
-    auto point = std::find_if(this->points.begin(), this->points.end(),
-			      [=] (Mappt::Point point) {
-				  if (point.getId() == pointid) {
-				      return true;
-				  }
-				  return false;
-			      });
+    for (auto& point : this->points) {
+	if (point.getId() == pointid) {
+	    return point;
+	}
+    }
 
-    return *point;
+    throw MapptException("Mappt::Map::getPointById",
+			 "Failed to get point with id " + pointid);
 }
 
 std::vector<Mappt::Point*> Mappt::Map::getPointsByTag(std::string key) {

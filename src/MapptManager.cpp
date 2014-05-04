@@ -24,7 +24,10 @@ void Mappt::MapptManager::addEntrance(Mappt::Point firstPoint,
 }
 
 void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
-    this->entrances.push_back(std::make_pair(first, second));
+    auto firstId = guidType(first);
+    auto secondId = guidType(second);
+    auto link = linkPair(firstId, secondId);
+    this->entrances.push_back(link);
 }
 
 const entranceContainerType Mappt::MapptManager::getEntrancesWithGuid(guidType guid) {
@@ -69,6 +72,8 @@ Mappt::Map& Mappt::MapptManager::getMapByName(std::string mapName) {
 	    return map;
 	}
     }
+    throw MapptException("Mappt::MapptManager::getMapByName",
+			 "Unable to find map by name " + mapName);
 }
 
 bool Mappt::MapptManager::hasMapByName(std::string mapName) {
@@ -96,7 +101,8 @@ Mappt::Point& Mappt::MapptManager::getPoint(guidType pointId) {
 	    return map.getPointById(pointId);
 	}
     }
-    //return *maps.end();
+    throw MapptException("Mappt::MapptManager::getPoint",
+			 "Unable to get point with id " + pointId);
 }
 
 void Mappt::MapptManager::removePoint(guidType pointId) {

@@ -10,6 +10,8 @@
 //INCLUDES
 #include <iostream>
 
+#include "MapptException.hpp"
+
 //DEFINITIONS
 
 //MACROS
