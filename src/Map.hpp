@@ -15,6 +15,7 @@ namespace Mappt {
 #include <map>
 #include <tuple>
 #include <vector>
+#include <algorithm>
 
 #include "Mappt_Utils.hpp"
 #include "Mappt_Globals.hpp"

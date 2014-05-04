@@ -34,14 +34,9 @@ const pointContainerType& Mappt::Map::getPointContainer() {
 
 Mappt::Point& Mappt::Map::newPoint() {
     auto point = Mappt::Point();
-    auto id = point.getId();
-
     point.setTag("MapName", this->name);
-    
     this->points.push_back(point);
-    
-    auto& pointRef = this->points.back();
-    return pointRef;
+    return this->points.back();
 }
 
 void Mappt::Map::addPoint(Point point) {
@@ -122,24 +117,42 @@ bool Mappt::Map::hasLink(guidType firstGuid, guidType secondGuid) {
 
 void Mappt::Map::removeLink(int index) {
     assert(index >= 0);
-    this->links.erase(this->links.begin() + index);
+    this->links.erase((this->links.begin() + index));
 }
 
 void Mappt::Map::removeLink(guidType firstGuid, guidType secondGuid) {
-    for (auto link = this->links.begin(); link != this->links.end(); link++) {
-	if (link->first == firstGuid && link->second == secondGuid ||
-	    link->first == secondGuid && link->second == firstGuid) {
-	    this->links.erase(link);
-	}
+    auto erasedLink = std::find_if(this->links.begin(),
+				   this->links.end(),
+				   [=] (linkPair link) {
+				       if (link.first == firstGuid &&
+					   link.second == secondGuid ||
+					   link.first == secondGuid &&
+					   link.second == firstGuid) {
+					   return true;
+				       }
+				       return false;
+				   });
+    
+    if (erasedLink != this->links.end()) {
+	this->links.erase(erasedLink);
     }
+    
 }
 
 void Mappt::Map::removeAllLinks(guidType pointid) {
-    for (auto link = this->links.begin(); link != this->links.end(); link++) {
-	if (link->first == pointid || link->second == pointid) {
-	    this->links.erase(link);
-	}
-    }
+    auto erasedLink = std::find_if(this->links.begin(),
+				   this->links.end(),
+				   [=] (linkPair link) {
+				       if (link.first == pointid ||
+					   link.second == pointid) {
+					   return true;
+				       }
+				       return false;
+				   });
+    
+    if (erasedLink != this->links.end()) {
+	this->links.erase(erasedLink);
+    } 
 }
 
 const std::vector<linkPair> Mappt::Map::getLinks(guidType pointid) {

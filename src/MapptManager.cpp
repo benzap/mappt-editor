@@ -17,10 +17,7 @@ void Mappt::MapptManager::setName(std::string value) {
 //entrances
 void Mappt::MapptManager::addEntrance(Mappt::Point firstPoint,
 				      Mappt::Point secondPoint) {
-    auto firstId = guidType(firstPoint.getId());
-    auto secondId = guidType(secondPoint.getId());
-    auto link = linkPair(firstId, secondId);
-    this->entrances.push_back(link);
+    this->entrances.push_back(std::make_pair(firstPoint.getId(), secondPoint.getId()));
 }
 
 void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
@@ -53,9 +50,8 @@ const entranceContainerType& Mappt::MapptManager::getAllEntrances() {
 Mappt::Map& Mappt::MapptManager::newMap(std::string mapName) {
     auto map = Mappt::Map();
     map.setName(mapName);
-
     this->maps.push_back(map);
-    return this->maps.back();
+    return maps.back();
 }
 
 void Mappt::MapptManager::addMap(Map map) {
