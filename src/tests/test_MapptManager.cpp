@@ -17,7 +17,9 @@ int main() {
     auto& mapOne = mapptManager.newMap("Shuniah");
 
     auto& p11 = mapOne.newPoint();
-    p11.setTag("Entrance", "True");
+    p11.setTag("Entrance", "true");
+    p11.setTag("Elevator", "false");
+    
     auto& p12 = mapOne.newPoint();
     auto& p13 = mapOne.newPoint();
 
@@ -28,7 +30,13 @@ int main() {
     auto& mapTwo = mapptManager.newMap("Aerial");
 
     auto& p21 = mapTwo.newPoint();
+    p21.setTag("Elevator", "true");
+    p21.setTag("Entrance", "true");
+    
     auto& p22 = mapTwo.newPoint();
+    p22.setTag("Elevator", "false");
+    p22.setTag("Building", "Shuniah");
+    
     auto& p23 = mapTwo.newPoint();
    
     mapTwo.addLink(p21, p22);
@@ -68,5 +76,7 @@ int main() {
 	std::cout << "Received Unknown Exception" << std::endl;
     }
 
+    
+    
     return 0;
 }

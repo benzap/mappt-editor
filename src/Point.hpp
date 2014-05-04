@@ -54,6 +54,7 @@ namespace Mappt {
 	bool hasTag(std::string key);
 	std::string getTag(std::string key);
 	void deleteTag(std::string key);
+	const std::map<std::string, std::string>& getAllTags();
     };
 }
 

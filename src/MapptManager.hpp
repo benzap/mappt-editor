@@ -13,6 +13,7 @@ namespace Mappt {
 //INCLUDES
 #include <vector>
 #include <list>
+#include <set>
 #include <tuple>
 #include <string>
 
@@ -75,7 +76,7 @@ namespace Mappt {
 	const std::vector<guidType> getFullRoute(guidType firstPoint, guidType secondPoint);
 	
 	//Map Searching Functions
-	const std::vector<std::string> getAllTags();
+	const std::set<std::string> getAllTags();
 	const std::vector<std::string> getAllValuesForTag(std::string tagName);
 	bool hasTag(std::string tagName);
     };

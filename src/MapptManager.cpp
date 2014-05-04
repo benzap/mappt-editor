@@ -40,7 +40,12 @@ const entranceContainerType Mappt::MapptManager::getEntrancesWithGuid(guidType g
 }
 
 void Mappt::MapptManager::removeAllEntrancesWithGuid(guidType guid) {
-    
+    for (auto link = this->entrances.begin();
+	 link != this->entrances.end(); link++) {
+	if (link->first == guid || link->second == guid) {
+	    this->entrances.erase(link);
+	}
+    }
 }
 
 const entranceContainerType& Mappt::MapptManager::getAllEntrances() {
@@ -61,7 +66,12 @@ void Mappt::MapptManager::addMap(Map map) {
 }
 
 void Mappt::MapptManager::removeMapByName(std::string mapName) {
-
+    for (auto map = this->maps.begin();
+	 map != this->maps.end(); map++) {
+	if (map->getName() == mapName) {
+	    this->maps.erase(map);
+	}
+    }
 }
 
 Mappt::Map& Mappt::MapptManager::getMapByName(std::string mapName) {
@@ -82,7 +92,6 @@ const std::list<Mappt::Map>& Mappt::MapptManager::getMaps() {
     return this->maps;
 }
 
-	
 //helper functions
 bool Mappt::MapptManager::hasPoint(guidType pointId) {
     for (auto& map : maps) {
@@ -112,7 +121,6 @@ void Mappt::MapptManager::removePoint(guidType pointId) {
     }
 }
 
-
 //Initialization / Loading / Clearing
 void Mappt::MapptManager::loadXmlString(std::string) {
 
@@ -135,8 +143,17 @@ const std::vector<Mappt::guidType> Mappt::MapptManager::getFullRoute(guidType fi
 
 	
 //Map Searching Functions
-const std::vector<std::string> Mappt::MapptManager::getAllTags() {
-    return std::vector<std::string>();
+const std::set<std::string> Mappt::MapptManager::getAllTags() {
+    std::set<std::string> tagContainer;
+    for (auto map : this->maps) {
+	for (auto point : map.getPointContainer()) {
+	    for (auto tagPair : point.getAllTags()) {
+		std::string tagName = tagPair.first;
+		tagContainer.insert(tagName);
+	    }
+	}
+    }
+    return tagContainer;
 }
 
 const std::vector<std::string> Mappt::MapptManager::getAllValuesForTag(std::string tagName) {

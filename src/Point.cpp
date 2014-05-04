@@ -42,3 +42,7 @@ std::string Mappt::Point::getTag(std::string key) {
 void Mappt::Point::deleteTag(std::string key) {
     tags.erase(key);
 }
+
+const std::map<std::string, std::string>& Mappt::Point::getAllTags() {
+    return this->tags;
+}
