@@ -55,19 +55,13 @@ bool Mappt::Map::hasPoint(guidType pointid) {
     return false;
 }
 
-void Mappt::Map::removePoint(int index) {
-    assert(index >= 0);
-    this->points.erase(this->points.begin() + index);
-}
-
 void Mappt::Map::removePoint(guidType pointid) {
-    std::remove_if(this->points.begin(), this->points.end(),
-		   [=] (Mappt::Point point) {
-		       if (point.getId() == pointid) {
-			   return true;
-		       }
-		       return false;
-		   });
+    points.remove_if([=] (Mappt::Point point) {
+			 if (point.getId() == pointid) {
+			     return true;
+			 }
+			 return false;
+		     });
 }
 
 Mappt::Point& Mappt::Map::getPointById(guidType pointid) {
@@ -100,7 +94,8 @@ void Mappt::Map::addLink(guidType firstGuid, guidType secondGuid) {
     this->links.push_back(std::make_pair(firstGuid, secondGuid));
 }
 
-void Mappt::Map::addLink(Mappt::Point firstPoint, Mappt::Point secondPoint) {
+void Mappt::Map::addLink(Mappt::Point firstPoint,
+			 Mappt::Point secondPoint) {
     auto link = std::make_pair(firstPoint.getId(), secondPoint.getId());
     this->links.push_back(link);
 }

@@ -12,6 +12,7 @@ namespace Mappt {
 }
 //INCLUDES
 #include <vector>
+#include <list>
 #include <tuple>
 #include <string>
 
@@ -35,7 +36,7 @@ namespace Mappt {
     private:
 	std::string name;
 	entranceContainerType entrances;
-	std::vector<Map> maps;
+	std::list<Map> maps;
     public:
 	//C&D
 	MapptManager();
@@ -58,7 +59,7 @@ namespace Mappt {
 	void removeMapByName(std::string mapName);
 	Map& getMapByName(std::string mapName);
 	bool hasMapByName(std::string mapName);
-	const std::vector<Map>& getMaps();
+	const std::list<Map>& getMaps();
 	
 	//helper functions
 	bool hasPoint(guidType pointId);

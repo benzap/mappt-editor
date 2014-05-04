@@ -17,7 +17,9 @@ void Mappt::MapptManager::setName(std::string value) {
 //entrances
 void Mappt::MapptManager::addEntrance(Mappt::Point firstPoint,
 				      Mappt::Point secondPoint) {
-    this->entrances.push_back(std::make_pair(firstPoint.getId(), secondPoint.getId()));
+    //auto link = std::make_pair(firstPoint.getId(),
+    //secondPoint.getId());
+    //this->entrances.push_back(link);
 }
 
 void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
@@ -76,7 +78,7 @@ bool Mappt::MapptManager::hasMapByName(std::string mapName) {
     return false;
 }
 
-const std::vector<Mappt::Map>& Mappt::MapptManager::getMaps() {
+const std::list<Mappt::Map>& Mappt::MapptManager::getMaps() {
     return this->maps;
 }
 

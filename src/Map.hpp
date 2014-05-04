@@ -15,6 +15,7 @@ namespace Mappt {
 #include <map>
 #include <tuple>
 #include <vector>
+#include <list>
 #include <algorithm>
 
 #include "Mappt_Utils.hpp"
@@ -29,7 +30,7 @@ namespace Mappt {
 //MACROS
 
 //TYPEDEFS
-typedef std::vector<Mappt::Point> pointContainerType;
+typedef std::list<Mappt::Point> pointContainerType;
 typedef std::pair<Mappt::guidType, Mappt::guidType> linkPair;
 typedef std::vector<linkPair> linkContainerType;
 
@@ -60,7 +61,6 @@ namespace Mappt {
 	Point& newPoint();
 	void addPoint(Point point);
 	bool hasPoint(guidType pointid);
-	void removePoint(int index);
 	void removePoint(guidType pointid);
 	Point& getPointById(guidType pointid);
 	std::vector<Point*> getPointsByTag(std::string key);

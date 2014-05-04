@@ -17,6 +17,7 @@ int main() {
     auto& mapOne = mapptManager.newMap("Shuniah");
 
     auto& p11 = mapOne.newPoint();
+    p11.setTag("Entrance", "True");
     auto& p12 = mapOne.newPoint();
     auto& p13 = mapOne.newPoint();
 
@@ -48,6 +49,7 @@ int main() {
     mapptManager.addEntrance(p12, p22);
     mapptManager.addEntrance(p21, p31);
     mapptManager.addEntrance(p22, p32);
+    mapptManager.addEntrance(p32, p23);
 
     TEST_BOOL(mapptManager.getMapByName("Shuniah").getName() == mapOne.getName(),
 	      "getMapByName");
