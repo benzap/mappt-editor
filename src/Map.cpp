@@ -19,7 +19,6 @@ void Mappt::Map::setName(std::string value) {
 
 }
 
-
 const std::string& Mappt::Map::getDescription() {
     return this->description;
 }
@@ -40,8 +39,9 @@ Mappt::Point& Mappt::Map::newPoint() {
     point.setTag("MapName", this->name);
     
     this->points.push_back(point);
-
-    return this->points.back();
+    
+    auto& pointRef = this->points.back();
+    return pointRef;
 }
 
 void Mappt::Map::addPoint(Point point) {
@@ -52,7 +52,7 @@ void Mappt::Map::addPoint(Point point) {
 }
 
 bool Mappt::Map::hasPoint(guidType pointid) {
-    for (auto point : this->points) {
+    for (auto& point : this->points) {
 	if (point.getId() == pointid) {
 	    return true;
 	}
@@ -102,14 +102,11 @@ const linkContainerType& Mappt::Map::getLinkContainer() {
 }
 
 void Mappt::Map::addLink(guidType firstGuid, guidType secondGuid) {
-    auto link = linkPair(firstGuid, secondGuid);
-    this->links.push_back(link);
+    this->links.push_back(std::make_pair(firstGuid, secondGuid));
 }
 
 void Mappt::Map::addLink(Mappt::Point firstPoint, Mappt::Point secondPoint) {
-    guidType firstGuid = guidType(firstPoint.getId());
-    guidType secondGuid = guidType(secondPoint.getId());
-    linkPair link = linkPair(firstGuid, secondGuid);
+    auto link = std::make_pair(firstPoint.getId(), secondPoint.getId());
     this->links.push_back(link);
 }
 

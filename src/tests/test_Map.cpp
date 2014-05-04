@@ -92,5 +92,14 @@ int main() {
     TEST_BOOL(map.getDimensions() == std::vector<float>({600, 400, 0}),
 	      "getDimensions");
     
+    auto& p11 = map.newPoint();
+    auto& p12 = map.newPoint();
+
+    map.addLink(p11, p12);
+
+    TEST_BOOL(map.hasPoint(p11.getId()), "hasPoint2");
+    TEST_BOOL(map.getPointById(p11.getId()).getId() == p11.getId(), "getPointById2");
+
+
     return 0;
 }

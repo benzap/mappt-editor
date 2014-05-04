@@ -108,7 +108,8 @@ Mappt::Point& Mappt::MapptManager::getPoint(guidType pointId) {
 void Mappt::MapptManager::removePoint(guidType pointId) {
     for (auto& map : maps) {
 	if (map.hasPoint(pointId)) {
-	    return map.removePoint(pointId);
+	    map.removePoint(pointId);
+	    return;
 	}
     }
 }
