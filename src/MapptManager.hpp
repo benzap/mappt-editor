@@ -77,7 +77,7 @@ namespace Mappt {
 	
 	//Map Searching Functions
 	const std::set<std::string> getAllTags();
-	const std::vector<std::string> getAllValuesForTag(std::string tagName);
+	const std::set<std::string> getAllValuesForTag(std::string tagName);
 	bool hasTag(std::string tagName);
     };
 }

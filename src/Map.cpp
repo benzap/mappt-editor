@@ -75,11 +75,11 @@ Mappt::Point& Mappt::Map::getPointById(guidType pointid) {
 			 "Failed to get point with id " + pointid);
 }
 
-std::vector<Mappt::Point*> Mappt::Map::getPointsByTag(std::string key) {
-    auto pointContainer = std::vector<Point*>();
+std::vector<Mappt::Point> Mappt::Map::getPointsByTag(std::string key) {
+    auto pointContainer = std::vector<Point>();
     for (auto point : this->points) {
 	if (point.hasTag(key)) {
-	    pointContainer.push_back(&point);
+	    pointContainer.push_back(point);
 	}
     }
     return pointContainer;

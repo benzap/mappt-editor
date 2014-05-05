@@ -63,7 +63,7 @@ namespace Mappt {
 	bool hasPoint(guidType pointid);
 	void removePoint(guidType pointid);
 	Point& getPointById(guidType pointid);
-	std::vector<Point*> getPointsByTag(std::string key);
+	std::vector<Point> getPointsByTag(std::string key);
 
 	const linkContainerType& getLinkContainer();
 	void addLink(guidType firstGuid, guidType secondGuid);

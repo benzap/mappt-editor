@@ -17,9 +17,8 @@ void Mappt::MapptManager::setName(std::string value) {
 //entrances
 void Mappt::MapptManager::addEntrance(Mappt::Point firstPoint,
 				      Mappt::Point secondPoint) {
-    //auto link = std::make_pair(firstPoint.getId(),
-    //secondPoint.getId());
-    //this->entrances.push_back(link);
+    auto link = std::make_pair(firstPoint.getId(), secondPoint.getId());
+    this->entrances.push_back(link);
 }
 
 void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
@@ -85,6 +84,11 @@ Mappt::Map& Mappt::MapptManager::getMapByName(std::string mapName) {
 }
 
 bool Mappt::MapptManager::hasMapByName(std::string mapName) {
+    for (auto map : this->maps) {
+	if (map.getName() == mapName) {
+	    return true;
+	}
+    }
     return false;
 }
 
@@ -156,11 +160,25 @@ const std::set<std::string> Mappt::MapptManager::getAllTags() {
     return tagContainer;
 }
 
-const std::vector<std::string> Mappt::MapptManager::getAllValuesForTag(std::string tagName) {
-    return std::vector<std::string>();
+const std::set<std::string> Mappt::MapptManager::getAllValuesForTag(std::string tagName) {
+    std::set<std::string> tagValuesContainer;
+    for (auto map : this->maps) {
+	for (auto point : map.getPointContainer()) {
+	    if (point.hasTag(tagName)) {
+		tagValuesContainer.insert(point.getTag(tagName));
+	    }
+	}
+    }
+    return tagValuesContainer;
 }
 
 bool Mappt::MapptManager::hasTag(std::string tagName) {
+    auto tags = getAllTags();
+    for (auto tag : tags) {
+	if (tagName == tag) {
+	    return true;
+	}
+    }
     return false;
 }
 

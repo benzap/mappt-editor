@@ -97,6 +97,7 @@ int main() {
     TEST_BOOL(map.hasPoint(p11.getId()), "hasPoint2");
     TEST_BOOL(map.getPointById(p11.getId()).getId() == p11.getId(), "getPointById2");
 
+    
 
     return 0;
 }
