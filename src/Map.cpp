@@ -135,19 +135,13 @@ void Mappt::Map::removeLink(guidType firstGuid, guidType secondGuid) {
 }
 
 void Mappt::Map::removeAllLinks(guidType pointid) {
-    auto erasedLink = std::find_if(this->links.begin(),
-				   this->links.end(),
-				   [=] (linkPair link) {
-				       if (link.first == pointid ||
-					   link.second == pointid) {
-					   return true;
-				       }
-				       return false;
-				   });
-    
-    if (erasedLink != this->links.end()) {
-	this->links.erase(erasedLink);
-    } 
+    for (auto link = this->links.begin();
+	 link != this->links.end(); link++) {
+	if (link->first == pointid ||
+	    link->second == pointid) {
+	    this->links.erase(link);
+	}
+    }
 }
 
 const std::vector<linkPair> Mappt::Map::getLinks(guidType pointid) {

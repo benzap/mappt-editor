@@ -30,9 +30,6 @@ int main() {
     
     TEST_BOOL(map.hasPoint(testPoint2.getId()), "hasPoint (true)");
 
-    map.removePoint(0);
-    TEST_BOOL(!map.hasPoint(testPoint1.getId()), "removePoint(index)");
-
     map.removePoint(testPoint2.getId());
     TEST_BOOL(!map.hasPoint(testPoint2.getId()), "removePoint(guid)");
 
@@ -85,7 +82,7 @@ int main() {
 	      "removeAllLinks 1");
 
     TEST_BOOL(!map.hasLink(tagPoint1.getId(), tagPoint3.getId()),
-    	      "removeAllLinks 1");
+    	      "removeAllLinks 2");
 
     //Dimensions
     map.setDimensions({600, 400, 0});
