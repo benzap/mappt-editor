@@ -54,6 +54,7 @@ int main() {
 
     //make entrance relationships
     mapptManager.addEntrance(p11, p21);
+    mapptManager.addEntrance(p11, p31);
     mapptManager.addEntrance(p12, p22);
     mapptManager.addEntrance(p21, p31);
     mapptManager.addEntrance(p22, p32);
@@ -76,7 +77,17 @@ int main() {
 	std::cout << "Received Unknown Exception" << std::endl;
     }
 
+    auto entranceRelations = mapptManager.getEntrancesWithGuid(p11.getId());
+    for (auto entrance : entranceRelations) {
+	std::cout << p11.getTag(MAPTAG) << " -- "; 
+	std::cout << mapptManager.getPoint(entrance).getTag(MAPTAG) << std::endl;
+    }
     
-    
+    auto linkRelations = mapptManager.getRelationsWithGuid(p11.getId());
+
+    for (auto relation : linkRelations) {
+	std::cout << p11.getId() << " -- " << relation << std::endl;
+    }
+
     return 0;
 }

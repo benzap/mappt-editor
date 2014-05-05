@@ -26,6 +26,7 @@ namespace Mappt {
 #include "Image.hpp"
 
 //DEFINITIONS
+#define MAPTAG "MapName"
 
 //MACROS
 
@@ -72,7 +73,7 @@ namespace Mappt {
 	void removeLink(int index);
 	void removeLink(guidType firstGuid, guidType secondGuid);
 	void removeAllLinks(guidType pointid);
-	const std::vector<linkPair> getLinks(guidType pointid);
+	const std::vector<guidType> getLinks(guidType pointid);
 	
 	const std::vector<float>& getDimensions();
 	void setDimensions(std::vector<float> value);

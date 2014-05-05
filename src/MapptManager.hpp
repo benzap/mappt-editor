@@ -16,6 +16,7 @@ namespace Mappt {
 #include <set>
 #include <tuple>
 #include <string>
+#include <functional>
 
 #include "Mappt_Utils.hpp"
 #include "Mappt_Globals.hpp"
@@ -27,8 +28,10 @@ namespace Mappt {
 //MACROS
 
 //TYPEDEFS
-typedef std::vector<linkPair> entranceContainerType;
-
+namespace Mappt {
+    typedef std::vector<linkPair> entranceContainerType;
+    typedef std::function<float(Point, Point)> costFunctionType;
+}
 //FUNCTIONS
 
 //BEGIN
@@ -50,7 +53,18 @@ namespace Mappt {
 	//entrances
 	void addEntrance(Point firstPoint, Point secondPoint);
 	void addEntrance(guidType first, guidType second);
-	const entranceContainerType getEntrancesWithGuid(guidType guid);
+	const std::vector<guidType> getEntrancesWithGuid(guidType guid);
+
+	//creates a list of points that relate to this point, whether
+	//it be through an entrance relation, or a link relation.
+	const std::vector<guidType> getRelationsWithGuid(guidType guid);
+
+	//returns true if the two given points are contained within
+	//the same map useful for determining if a given set of points
+	//form a link relation, or an entrance relation
+	bool inSameMap(guidType firstPoint, guidType secondPoint);
+
+	//removes all of the entrance relations for the given point id
 	void removeAllEntrancesWithGuid(guidType guid);
 	const entranceContainerType& getAllEntrances();
 
@@ -73,7 +87,9 @@ namespace Mappt {
 	void clear();
 
 	//Map Routing Functions
-	const std::vector<guidType> getFullRoute(guidType firstPoint, guidType secondPoint);
+	const std::vector<guidType> getFullRoute(guidType firstPoint,
+						 guidType secondPoint,
+						 costFunctionType func);
 	
 	//Map Searching Functions
 	const std::set<std::string> getAllTags();

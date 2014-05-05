@@ -14,7 +14,7 @@ void Mappt::Map::setName(std::string value) {
     //make sure we update the map name tag within the points when we
     //change the name of our map
     for (auto point : this->points) {
-	point.setTag("MapName", this->name);
+	point.setTag(MAPTAG, this->name);
     }
 
 }
@@ -34,14 +34,14 @@ const pointContainerType& Mappt::Map::getPointContainer() {
 
 Mappt::Point& Mappt::Map::newPoint() {
     auto point = Mappt::Point();
-    point.setTag("MapName", this->name);
+    point.setTag(MAPTAG, this->name);
     this->points.push_back(point);
     return this->points.back();
 }
 
 void Mappt::Map::addPoint(Point point) {
     //assign the map name within the point tags
-    point.setTag("MapName", this->name);
+    point.setTag(MAPTAG, this->name);
     
     this->points.push_back(point);
 }
@@ -144,10 +144,17 @@ void Mappt::Map::removeAllLinks(guidType pointid) {
     }
 }
 
-const std::vector<linkPair> Mappt::Map::getLinks(guidType pointid) {
-    auto linkContainer = std::vector<linkPair>();
+const std::vector<Mappt::guidType> Mappt::Map::getLinks(guidType pointid) {
+    auto linkContainer = std::vector<Mappt::guidType>();
     for (linkPair link : this->links) {
-	
+	if (link.first == pointid) {
+	    linkContainer.push_back(link.second);
+	    continue;
+	}
+	else if (link.second == pointid) {
+	    linkContainer.push_back(link.first);
+	    continue;
+	}
     }
     return linkContainer;
 }

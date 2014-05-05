@@ -28,14 +28,50 @@ void Mappt::MapptManager::addEntrance(guidType first, guidType second) {
     this->entrances.push_back(link);
 }
 
-const entranceContainerType Mappt::MapptManager::getEntrancesWithGuid(guidType guid) {
-    auto entranceLinks = entranceContainerType();
+const std::vector<Mappt::guidType> Mappt::MapptManager::getEntrancesWithGuid(guidType guid) {
+    auto entranceLinks = std::vector<Mappt::guidType>();
     for (auto entrance : this->entrances) {
-	if (entrance.first == guid || entrance.second == guid) {
-	    entranceLinks.push_back(entrance);
+	if (entrance.first == guid) {
+	    entranceLinks.push_back(entrance.second);
+	    continue;
+	}
+	else if (entrance.second == guid) {
+	    entranceLinks.push_back(entrance.first);
+	    continue;
 	}
     }
     return entranceLinks;
+}
+
+const std::vector<Mappt::guidType> Mappt::MapptManager::getRelationsWithGuid(guidType guid) {
+    auto relationLinks = std::vector<Mappt::guidType>();
+    
+    //concatentate the entrance links into the relationlinks vector
+    auto entranceLinks = this->getEntrancesWithGuid(guid);
+    relationLinks.insert(relationLinks.end(), entranceLinks.begin(), entranceLinks.end());
+    
+    //get the map's link relations
+    auto point = this->getPoint(guid);
+    auto mapName = point.getTag(MAPTAG);
+    
+    //get the point's map object
+    auto map = this->getMapByName(mapName);
+    auto pointLinks = map.getLinks(guid);
+    
+    //concatentate the maps links into the relation links vector
+    relationLinks.insert(relationLinks.end(), pointLinks.begin(), pointLinks.end());
+
+    return relationLinks;
+}
+
+bool Mappt::MapptManager::inSameMap(Mappt::guidType firstPoint, Mappt::guidType secondPoint) {
+    auto p1 = this->getPoint(firstPoint);
+    auto p2 = this->getPoint(secondPoint);
+    
+    if (p1.getTag(MAPTAG) == p2.getTag(MAPTAG)) {
+	return true;
+    }
+    return false;
 }
 
 void Mappt::MapptManager::removeAllEntrancesWithGuid(guidType guid) {
@@ -47,7 +83,7 @@ void Mappt::MapptManager::removeAllEntrancesWithGuid(guidType guid) {
     }
 }
 
-const entranceContainerType& Mappt::MapptManager::getAllEntrances() {
+const Mappt::entranceContainerType& Mappt::MapptManager::getAllEntrances() {
     return this->entrances;
 }
 
@@ -139,9 +175,11 @@ void Mappt::MapptManager::clear() {
     this->entrances.clear();
 }
 
-
-//Map Routing Functions
-const std::vector<Mappt::guidType> Mappt::MapptManager::getFullRoute(guidType firstPoint, guidType secondPoint) {
+//Map Routing Functionality
+const std::vector<Mappt::guidType> Mappt::MapptManager::getFullRoute(guidType firstPoint, 
+								     guidType secondPoint,
+								     costFunctionType costFunc) {
+    
     return std::vector<guidType>();
 }
 
