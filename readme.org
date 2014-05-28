@@ -1,3 +1,12 @@
+#+AUTHOR: Benjamin Zaporzan
+#+TITLE: Mappt Editor Readme
+#+EMAIL: benzaporzan@gmail.com
+#+DESCRIPTION: Readme for the Mappt Editor
+#+BEGIN_COMMENT
+File for tasks
+#+END_COMMENT
+#+STARTUP: overview hidestars
+#+TODO: TODO(t) STARTED(s) HOLD(h) | DONE(d!) CANCELED(c!@)
 * Introduction
   Mappt is an application library to build map applications. 
 
@@ -137,3 +146,8 @@
     - More importantly, how to parse dynamic sections of JSON?
       - simply don't have dynamic sections of JSON (makes it easier to
         implement in static languages)
+* Programming Tasks					     :PROJECTS:MAPPT:
+** TODO Consider switching to Elm with Haskell
+   - Could use Haskell Yesod with Elm. It seems like it would be
+     pretty easy to setup, and would be a lot of fun to develop
+   - http://www.yesodweb.com/book-1.2
