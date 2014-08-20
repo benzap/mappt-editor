@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Mappt Editor Readme</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Mappt Editor Readme"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2014-08-16T14:42-0400"/>
+<meta name="author" content=""/>
+<meta name="description" content="Readme for the Mappt Editor"/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Mappt Editor Readme</h1>
+
+<p>d#+AUTHOR: Benjamin Zaporzan
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction</a></li>
+<li><a href="#sec-2">2 Programming Tasks</a>
+<ul>
+<li><a href="#sec-2-1">2.1 mappt backend [0%]</a></li>
+<li><a href="#sec-2-2">2.2 Mappt Specification [%]</a></li>
+<li><a href="#sec-2-3">2.3 mappt web frontend [%]</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 libmappt</a></li>
+<li><a href="#sec-4">4 Mappt Specification</a>
+<ul>
+<li><a href="#sec-4-1">4.1 Definitions</a>
+<ul>
+<li><a href="#sec-4-1-1">4.1.1 Mappt</a></li>
+</ul>
+</li>
+<li><a href="#sec-4-2">4.2 Json Sample</a></li>
+<li><a href="#sec-4-3">4.3 XML Sample</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 Gui Application</a></li>
+<li><a href="#sec-6">6 Notes</a></li>
+<li><a href="#sec-7">7 Programming Tasks</a>
+<ul>
+<li><a href="#sec-7-1">7.1 Develop the base project.clj file</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>  Mappt is an application to build maps with intelligent routing
+  capabilitites
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Programming Tasks</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> mappt backend [0%]</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<ul>
+<li><code>[&nbsp;]</code> Begin work on the design
+</li>
+<li><code>[&nbsp;]</code> Decide on a database schema
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Mappt Specification [%]</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<ul>
+<li><code>[&nbsp;]</code> Develop JSON Sample specification
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> mappt web frontend [%]</h3>
+<div class="outline-text-3" id="text-2-3">
+
+<ul>
+<li><code>[&nbsp;]</code> Develop Design for frontend application
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> libmappt</h2>
+<div class="outline-text-2" id="text-3">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Mappt Specification</h2>
+<div class="outline-text-2" id="text-4">
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Definitions</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+</div>
+
+<div id="outline-container-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> Mappt</h4>
+<div class="outline-text-4" id="text-4-1-1">
+
+<dl>
+<dt>name</dt><dd>The name of our current map that we'd like to
+             traverse. ex. "Ohio Regional Hospital" if we were
+             developing a layout for that particular hospital
+</dd>
+<dt>maps</dt><dd>a dictionary list consisting of all of the maps that make
+             up the current application.
+<dl>
+<dt>name</dt><dd>The name of the particular map within the set of maps
+</dd>
+<dt>description</dt><dd>a unique description describing info about this
+                      map. ex. First floor of shuniah building
+</dd>
+<dt>mapid</dt><dd>A GUID to uniquely identify this map
+</dd>
+<dt>points</dt><dd>Traversal points to represent within <span style="text-decoration:underline;">Map Units</span>.
+<dl>
+<dt>pointid</dt><dd>A GUID to uniquely identify this point
+</dd>
+<dt>x</dt><dd>the x dimension for the given point
+</dd>
+<dt>y</dt><dd>the y dimension for the given point
+</dd>
+<dt>z</dt><dd>the z dimension for the given point
+</dd>
+</dl>
+
+</dd>
+<dt>images</dt><dd>maps consist of images.
+<dl>
+<dt>ref</dt><dd>A reference to the location of the given
+                file. Supported formats have not been determined
+</dd>
+<dt>scale</dt><dd>The scale of the given image in order to determine
+                  it's representation in <span style="text-decoration:underline;">Map Units</span>.
+</dd>
+<dt>position</dt><dd>The position of the image relative to the
+                     dimensions of the map.
+</dd>
+<dt>rotation</dt><dd>the rotation of the given image relative to the
+                     map. Expressed in quaternions.
+</dd>
+</dl>
+
+</dd>
+<dt>dimensions</dt><dd>The dimensions of the given map. This determines
+                     how many units the map makes up in <span style="text-decoration:underline;">Map Units</span>.
+</dd>
+<dt>links</dt><dd>links make up the connections between points in the
+                given map. It forms a relation between them.
+<dl>
+<dt>first</dt><dd>Guid representing the first point
+</dd>
+<dt>second</dt><dd>Guid representing the second point
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</dd>
+<dt>entrances</dt><dd>the relationship between two points between any two
+                  given maps. They can be thought of as 'global'
+                  links
+<dl>
+<dt>first</dt><dd>Guid representing the first point
+</dd>
+<dt>second</dt><dd>Guid representing the second point
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Json Sample</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+
+
+<pre class="example">mappt : {
+    name : ":String",
+    maps : [{
+        name : ":String",
+        description : ":String",
+        mapid : ":Guid",
+        points : [{
+            pointid : ":Guid",
+            x : ":Float",
+            y : ":Float",
+            z : ":Float",
+            tags : {
+                ":String" : ":Any",
+                    ...
+            },
+        }],
+        images : [{
+            ref : ":FileUri",
+            scale : [:Float, :Float, :Float],
+            position : [:Float, :Float, :Float],
+            rotation : [:Float, :Float, :Float, :Float],
+
+        }],
+        dimensions : [:Float, :Float, :Float],
+        links : [{
+            first : ":Guid",
+            second : ":Guid",
+        }],
+    }],
+    entrances : [{
+        first : ":Guid",
+        second : ":Guid",
+    }],    
+}
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> XML Sample</h3>
+<div class="outline-text-3" id="text-4-3">
+
+
+
+
+<pre class="example">&lt;mappt&gt;
+  &lt;name&gt;Example&lt;/name&gt;
+  &lt;maps&gt;
+    &lt;map mapid="0000-0000-0000-0000"&gt;
+      &lt;name&gt;Map Name&lt;/name&gt;
+      &lt;description&gt;Here is a description&lt;/description&gt;
+      &lt;points&gt;
+        &lt;point pointid="0000-0000-0000-0000"&gt;
+          &lt;position x="0.0" y="0.0" z="0.0"&gt;&lt;/position&gt;
+          &lt;tags&gt;
+            &lt;tag key="someKey" value="someValue"&gt;&lt;/tag&gt;
+          &lt;/tags&gt;
+        &lt;/point&gt;
+      &lt;/points&gt;
+      &lt;images&gt;
+        &lt;image ref="./somefile"&gt;
+          &lt;scale x="0.0" y="0.0" z="0.0"&gt;&lt;/scale&gt;
+          &lt;position x="0.0" y="0.0" z="0.0"&gt;&lt;/position&gt;
+          &lt;rotation i="0.0" j="0.0" z="0.0" w="0.0"&gt;&lt;/rotation&gt;
+        &lt;/image&gt;
+      &lt;/images&gt;
+      &lt;dimensions&gt;
+        &lt;position x="0.0" y="0.0" z="0.0"&gt;&lt;/position&gt;
+      &lt;/dimensions&gt;
+      &lt;links&gt;
+        &lt;link first="0000-0000-0000-0000" second="0000-0000-0000-0000"&gt;&lt;/link&gt;
+      &lt;/links&gt;
+    &lt;/map&gt;
+  &lt;/maps&gt;
+  &lt;entrances&gt;
+    &lt;entrance first="0000-0000-0000-0000" second="0000-0000-0000-0000"&gt;&lt;/entrance&gt;
+  &lt;/entrances&gt;
+&lt;/mappt&gt;
+</pre>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Gui Application</h2>
+<div class="outline-text-2" id="text-5">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Notes</h2>
+<div class="outline-text-2" id="text-6">
+
+<ul>
+<li>using clojure, should I use clojurescript for the frontend, or
+    stick to javascript?
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Programming Tasks &nbsp;&nbsp;&nbsp;<span class="tag"><span class="PROJECTS">PROJECTS</span>&nbsp;<span class="MAPPT">MAPPT</span></span></h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> <span class="todo TODO">TODO</span> Develop the base project.clj file</h3>
+<div class="outline-text-3" id="text-7-1">
+
+<ul>
+<li>make sure that the development environment is painless to work
+     with. Who wants to spend hours working in an environment that is
+     annoying to work in? 
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2014-08-16T14:42-0400</p>
+<p class="author">Author: </p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>
