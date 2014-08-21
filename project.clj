@@ -8,7 +8,9 @@
                  [org.clojure/clojurescript "0.0-2197"
                   :exclusions [org.apache.ant/ant]]
                  [compojure "1.1.8"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [garden "1.2.1"]
+                 [secretary "1.2.0"]]
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-ring "0.8.11"]]
   :cljsbuild {
