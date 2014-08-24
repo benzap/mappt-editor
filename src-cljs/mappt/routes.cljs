@@ -5,9 +5,15 @@
              :refer [defroute]]))
 
 (defroute "/" {:as params}
-  (js/console.log "hello"))
+  (js/console.log "hello!"))
 
-(defroute "/users/:id" {id :id}
+(defroute "/user/:id" {id :id}
   (js/console.log (str "User: " id)))
 
-(secretary/dispatch! "/users/10")
+(let [location (.-location js/document)
+      pathname (.-pathname location)]
+  (secretary/dispatch! pathname))
+
+(js/console.log (.-href (.-location js/document)))
+
+;;(secretary/dispatch! "/users/10")

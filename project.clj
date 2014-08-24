@@ -13,6 +13,7 @@
                  [secretary "1.2.0"]]
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-ring "0.8.11"]]
+  :hooks [leiningen.cljsbuild]
   :cljsbuild {
               :builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/main.js"
