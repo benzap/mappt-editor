@@ -24463,43 +24463,43 @@ goog.provide("app.routes");
 goog.require("cljs.core");
 goog.require("secretary.core");
 goog.require("secretary.core");
-var action__4860__auto___4963 = function(params__4861__auto__) {
+var action__4860__auto___4995 = function(params__4861__auto__) {
   if (cljs.core.map_QMARK_.call(null, params__4861__auto__)) {
-    var map__4961 = params__4861__auto__;
-    var map__4961__$1 = cljs.core.seq_QMARK_.call(null, map__4961) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4961) : map__4961;
-    var params = map__4961__$1;
-    return console.log("hello");
+    var map__4993 = params__4861__auto__;
+    var map__4993__$1 = cljs.core.seq_QMARK_.call(null, map__4993) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4993) : map__4993;
+    var params = map__4993__$1;
+    return console.log(params);
   } else {
     if (cljs.core.vector_QMARK_.call(null, params__4861__auto__)) {
-      var map__4962 = params__4861__auto__;
-      var map__4962__$1 = cljs.core.seq_QMARK_.call(null, map__4962) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4962) : map__4962;
-      var params = map__4962__$1;
-      return console.log("hello");
+      var map__4994 = params__4861__auto__;
+      var map__4994__$1 = cljs.core.seq_QMARK_.call(null, map__4994) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4994) : map__4994;
+      var params = map__4994__$1;
+      return console.log(params);
     } else {
       return null;
     }
   }
 };
-secretary.core.add_route_BANG_.call(null, "/", action__4860__auto___4963);
-var action__4860__auto___4966 = function(params__4861__auto__) {
+secretary.core.add_route_BANG_.call(null, "/", action__4860__auto___4995);
+var action__4860__auto___4998 = function(params__4861__auto__) {
   if (cljs.core.map_QMARK_.call(null, params__4861__auto__)) {
-    var map__4964 = params__4861__auto__;
-    var map__4964__$1 = cljs.core.seq_QMARK_.call(null, map__4964) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4964) : map__4964;
-    var id = cljs.core.get.call(null, map__4964__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
+    var map__4996 = params__4861__auto__;
+    var map__4996__$1 = cljs.core.seq_QMARK_.call(null, map__4996) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4996) : map__4996;
+    var id = cljs.core.get.call(null, map__4996__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
     return console.log([cljs.core.str("User: "), cljs.core.str(id)].join(""));
   } else {
     if (cljs.core.vector_QMARK_.call(null, params__4861__auto__)) {
-      var map__4965 = params__4861__auto__;
-      var map__4965__$1 = cljs.core.seq_QMARK_.call(null, map__4965) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4965) : map__4965;
-      var id = cljs.core.get.call(null, map__4965__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
+      var map__4997 = params__4861__auto__;
+      var map__4997__$1 = cljs.core.seq_QMARK_.call(null, map__4997) ? cljs.core.apply.call(null, cljs.core.hash_map, map__4997) : map__4997;
+      var id = cljs.core.get.call(null, map__4997__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
       return console.log([cljs.core.str("User: "), cljs.core.str(id)].join(""));
     } else {
       return null;
     }
   }
 };
-secretary.core.add_route_BANG_.call(null, "/users/:id", action__4860__auto___4966);
-secretary.core.dispatch_BANG_.call(null, "/users/10");
+secretary.core.add_route_BANG_.call(null, "/users/:id", action__4860__auto___4998);
+secretary.core.dispatch_BANG_.call(null, window.location.pathname);
+console.log(window.location.pathname);
 goog.provide("mappt.main");
 goog.require("cljs.core");
-alert("Hello from ClojureScript!");
