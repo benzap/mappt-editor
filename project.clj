@@ -11,7 +11,8 @@
                  [hiccup "1.0.5"]
                  [garden "1.2.1"]
                  [secretary "1.2.0"]
-                 [prone "0.4.0"]]
+                 [prone "0.4.0"]
+                 [om "0.7.1"]]
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-ring "0.8.11"]
             [lein-garden "0.2.0"]]
@@ -21,7 +22,9 @@
                        {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/main.js"
                                    :optimizations :whitespace
-                                   :pretty-print true}}
+                                   :pretty-print true
+                                   :preamble ["react/react.min.js"]
+                                   :externs ["react/externs/react.js"]}}
                        :prod
                        {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/main.min.js"
