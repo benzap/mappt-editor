@@ -1,4 +1,4 @@
-(ns app.routes
+(ns mappt.routes
   (:require [secretary.core 
              :as secretary 
              :include-macros true 
@@ -14,6 +14,4 @@
       pathname (.-pathname location)]
   (secretary/dispatch! pathname))
 
-(js/console.log (.-href (.-location js/document)))
 
-;;(secretary/dispatch! "/users/10")

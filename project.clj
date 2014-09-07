@@ -13,8 +13,10 @@
                  [secretary "1.2.0"]
                  [prone "0.4.0"]]
   :plugins [[lein-cljsbuild "1.0.3"]
-            [lein-ring "0.8.11"]]
-  :hooks [leiningen.cljsbuild]
+            [lein-ring "0.8.11"]
+            [lein-garden "0.2.0"]]
+  :hooks [leiningen.cljsbuild
+          leiningen.garden]
   :cljsbuild {:builds {:dev
                        {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/main.js"
@@ -25,4 +27,8 @@
                         :compiler {:output-to "resources/public/js/main.min.js"
                                    :optimizations :advanced
                                    :pretty-print false}}}}
+  :garden {:builds [{:id "main"
+                     :stylesheet mappt.server.styles/main
+                     :compiler {:output-to "resources/public/css/main.css"
+                                :pretty-print? false}}]}
   :ring {:handler mappt.server.routes/app})
