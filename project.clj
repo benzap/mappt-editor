@@ -5,15 +5,16 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2197"
+                 [org.clojure/clojurescript "0.0-2173"
                   :exclusions [org.apache.ant/ant]]
                  [compojure "1.1.8"]
                  [hiccup "1.0.5"]
                  [garden "1.2.1"]
                  [secretary "1.2.0"]
                  [prone "0.4.0"]
-                 [om "0.7.1"]]
-  :plugins [[lein-cljsbuild "1.0.3"]
+                 [om "0.7.1"]
+                 [sablono "0.2.22"]]
+  :plugins [[lein-cljsbuild "1.0.2"]
             [lein-ring "0.8.11"]
             [lein-garden "0.2.0"]]
   :hooks [leiningen.cljsbuild

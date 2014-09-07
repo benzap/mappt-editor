@@ -19,8 +19,8 @@
    [:body
     [:div {:class :main-container}
      header
-     [:div {:class :sidebar}]
-     [:div {:class :content} "content"]]
+     [:div {:id :sidebar :class :sidebar}]
+     [:div {:id :content :class :content}]]
     (include-js "/js/main.js")
     (include-css "/css/main.css")]))
 
