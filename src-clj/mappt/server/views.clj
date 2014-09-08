@@ -7,7 +7,8 @@
   [:div {:class :header}
    [:div {:class :header-left}
     [:span {:class :mappt-logo} "Mappt"]]
-   [:div {:class :header-breadcrumb} "Home >"]
+   [:div {:id :header-breadcrumb
+          :class :header-breadcrumb}]
    [:div {:class :header-right}
     [:button {:class :button} "Sign In"]
     [:button {:class :button-icon} "S"]]])
