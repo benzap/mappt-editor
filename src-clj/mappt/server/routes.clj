@@ -9,8 +9,6 @@
 
 (defroutes main-routes
   (GET "/" [] (index-page))
-  (GET "/viewer" [] (viewer-page))
-  (GET "/users/:id" [id] (index-page))
   (route/resources "/")
   (route/not-found "Page not found"))
 
