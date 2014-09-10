@@ -3,13 +3,18 @@
             [sablono.core :as html :refer-macros [html]]
             [secretary.core :as secretary]))
 
-(defn click-handler [url e]
+(defn append-breadcrumb!
+  "appends a breadcrumb to the list of breadcrumbs"
+  [state name url]
+  (swap! state update-in [:breadcrumbs] conj {:name name :url url}))
+
+(defn click-handler [state url e]
   (.log js/console "breadcrumb clicked! - " url))
 
-(defn gen-breadcrumb [crumb]
+(defn gen-breadcrumb [state crumb]
   [:a {:href (crumb :url)
        :class "breadcrumb"
-       :on-click (partial click-handler (crumb :url))}
+       :on-click (partial click-handler state (crumb :url))}
    (crumb :name)])
 
 (defn widget [data owner]
@@ -17,8 +22,12 @@
     om/IRender
     (render [this]
       (html [:div {:class "breadcrumb-tree"}
-             (let [crumbs-dom (map gen-breadcrumb (data :breadcrumbs))
-                   crumbs (interpose
-                           [:span {:class "breadcrumb-separator"} ">"]
-                           crumbs-dom)]
+             (let [gen-partial
+                   (partial gen-breadcrumb data)
+                   crumbs-dom
+                   (map gen-partial (data :breadcrumbs))
+                   crumbs
+                   (interpose
+                    [:span {:class "breadcrumb-separator"} ">"]
+                    crumbs-dom)]
                crumbs)]))))
