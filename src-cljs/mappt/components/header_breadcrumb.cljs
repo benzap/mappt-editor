@@ -8,8 +8,18 @@
   [state name url]
   (swap! state update-in [:breadcrumbs] conj {:name name :url url}))
 
+(defn splice-breadcrumb!
+  "splices the breadcrumb to the given url"
+  [state url]
+  (let [crumbs (:breadcrumbs @state)
+        sp (split-with #(not= (:url %) url) crumbs)]
+    (when (not (empty? (second sp)))
+      (let [breadcrumbs (conj (first sp) (first (second sp)))]
+        (om/transact! state :breadcrumbs #(vec breadcrumbs))))))
+
 (defn click-handler [state url e]
-  (.log js/console "breadcrumb clicked! - " url))
+  (.log js/console "breadcrumb clicked! - " url)
+  (splice-breadcrumb! state url))
 
 (defn gen-breadcrumb [state crumb]
   [:a {:href (crumb :url)
