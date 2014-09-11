@@ -16,7 +16,11 @@
 (defn index-page []
   (html5
    [:head
-    [:title "Mappt"]]
+    [:title "Mappt"]
+    [:link
+     {:href "http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Righteous|Inconsolata"
+      :rel "stylesheet"
+      :type "text/css"}]]
    [:body
     [:div {:class :main-container}
      header

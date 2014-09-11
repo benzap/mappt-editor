@@ -14,8 +14,13 @@
                      :cherry (rgb 229 64 40) ;;#E54028
                      :orange (rgb 241 141 5) ;;#F18D05
                      :grey (rgb 97 97 97) ;;#616161
-                     :offwhite (rgb 240 240 245)
+                     :offwhite (rgb 253 253 253)
                      :black (rgb 13 13 13)})
+
+(def default-fonts
+  {:inconsolata "'Inconsolata', "
+   :righteous "'Righteous', cursive"
+   :roboto "'Roboto Slab', serif"})
 
 (def panel-style {:color (default-colors :offwhite)
                   :background-color (default-colors :grey)})
@@ -36,7 +41,7 @@
                     :width (px 200)
                     :background-color
                     (color/darken (default-colors :offwhite) 10)
-                    :color (default-colors :offwhite)
+                    :color (default-colors :orange)
                     :border-right-width (px 4)
                     :border-right-style :solid
                     :border-right-color
@@ -45,6 +50,25 @@
                     :border-bottom-style :solid
                     :border-bottom-color
                     (color/darken (default-colors :offwhite) 20)})
+
+(def sidebar-element-style
+  (merge
+   panel-style
+   {:color (default-colors :orange)
+    :background-color
+    (color/lighten (panel-style :background-color) 10)
+    :padding-top (px 5)
+    :padding-right (px 10)
+    :padding-bottom (px 5)
+    :padding-left (px 10)
+    :font-family (default-fonts :roboto)
+    :font-weight :bold
+    :font-size (px 18)
+    :cursor :pointer
+    :border-bottom-style :solid
+    :border-bottom-width (px 2)
+    :border-bottom-color
+    (color/darken (panel-style :background-color) 10)}))
 
 (def content-style {:position :absolute
                     :top (header-style :height)
@@ -64,11 +88,26 @@
    :background-color (default-colors :lime-green)
    :color (default-colors :offwhite)})
 
+(def breadcrumb-style
+  {:background-color
+   (color/lighten (header-style :background-color) 10)
+   :padding-top (px 5)
+   :padding-right (px 10)
+   :padding-bottom (px 5)
+   :padding-left (px 10)})
+
+(def link-style
+  {:color (default-colors :blue)
+   :text-decoration :none})
+
 (defstyles main
   [:*
    {:margin 0
     :padding 0
     :box-sizing :border-box}]
+  [:a link-style
+   [:&:hover
+    {:color (color/lighten (link-style :color) 20)}]]
   [:body
    {:position :absolute
     :top 0 :right 0 :bottom 0 :left 0}]
@@ -86,7 +125,7 @@
     (color/lighten (header-style :background-color) 10)}]
   [:.header-breadcrumb
    {:position :absolute
-    :padding (px 10)
+    :padding (px 5)
     :height (header-style :height)
     :top 0
     :left (sidebar-style :width)}]
@@ -96,8 +135,36 @@
     :top 0
     :right 0}]
   [:.header [:.mappt-logo {:padding (px 10)
+                           :font-family (default-fonts :righteous)
                            :font-size (px 28)}]]
+  [:.breadcrumb breadcrumb-style
+   [:&:first-child
+    {:border-top-left-radius (px 4)
+     :border-bottom-left-radius (px 4)}]
+   [:&:last-child
+    {:border-top-right-radius (px 4)
+     :border-bottom-right-radius (px 4)}]]
+  [:.breadcrumb-tree
+   {:margin (px 5)}]
+  [:.breadcrumb-separator
+   (merge breadcrumb-style
+          {:border-left-width (px 2)
+           :border-left-style :solid
+           :border-left-color (rgba 255 255 255 0.1)
+           :border-right-width (px 2)
+           :border-right-style :solid
+           :border-right-color (rgba 255 255 255 0.1)})]
   [:.sidebar sidebar-style]
+  [:.sidebar-element sidebar-element-style
+   [:&:hover
+    {:background-color
+     (color/darken (sidebar-element-style :background-color) 30)}]
+   [:selected
+    {#_:background-color
+     #_(color/darken (sidebar-element-style :background-color) 40)
+     :border-right-width (px 5)
+     :border-right-style :solid
+     :border-right-color (default-colors :orange)}]]
   [:.button
    (merge
     button-style
