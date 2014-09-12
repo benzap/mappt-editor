@@ -42,21 +42,22 @@
                     :background-color
                     (color/darken (default-colors :offwhite) 10)
                     :color (default-colors :orange)
-                    :border-right-width (px 4)
+                    :border-right-width (px 3)
                     :border-right-style :solid
                     :border-right-color
-                    (color/darken (default-colors :offwhite) 20)
-                    :border-bottom-width (px 4)
-                    :border-bottom-style :solid
-                    :border-bottom-color
-                    (color/darken (default-colors :offwhite) 20)})
+                    (color/lighten (panel-style :background-color) 30)
+                    ;;:border-bottom-width (px 2)
+                    ;;:border-bottom-style :solid
+                    ;;:border-bottom-color
+                    ;;(color/lighten (panel-style :background-color) 30)
+                    })
 
 (def sidebar-element-style
   (merge
    panel-style
    {:color (default-colors :orange)
     :background-color
-    (color/lighten (panel-style :background-color) 10)
+    (color/lighten (panel-style :background-color) 5)
     :padding-top (px 5)
     :padding-right (px 10)
     :padding-bottom (px 5)
@@ -66,9 +67,9 @@
     :font-size (px 18)
     :cursor :pointer
     :border-bottom-style :solid
-    :border-bottom-width (px 2)
+    :border-bottom-width (px 1)
     :border-bottom-color
-    (color/darken (panel-style :background-color) 10)}))
+    (color/lighten (panel-style :background-color) 30)}))
 
 (def content-style {:position :absolute
                     :top (header-style :height)
@@ -100,7 +101,8 @@
   {:color (default-colors :blue)
    :text-decoration :none})
 
-(defstyles main
+(defstylesheet main 
+  {:output-to "resources/public/css/main.css"}
   [:*
    {:margin 0
     :padding 0
@@ -122,7 +124,11 @@
     :height (header-style :height)
     :width (sidebar-style :width)
     :background-color
-    (color/lighten (header-style :background-color) 10)}]
+    (color/lighten (header-style :background-color) 10)
+    :border-bottom-style :solid
+    :border-bottom-width (px 2)
+    :border-bottom-color
+    (color/lighten (panel-style :background-color) 30)}]
   [:.header-breadcrumb
    {:position :absolute
     :padding (px 5)

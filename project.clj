@@ -17,9 +17,8 @@
                  [org.clojure/core.async "0.1.338.0-5c5012-alpha"]]
   :plugins [[lein-cljsbuild "1.0.2"]
             [lein-ring "0.8.11"]
-            [lein-garden "0.2.0"]]
-  :hooks [leiningen.cljsbuild
-          leiningen.garden]
+            [lein-garden "0.2.1"]]
+  :hooks [leiningen.cljsbuild]
   :cljsbuild {:builds {:dev
                        {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/main.js"
