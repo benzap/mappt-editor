@@ -15,7 +15,7 @@
 
 (defroutes main-routes
   (GET "/" [] (index-page))
-  (POST "/api/hello" [data] (generate-api-response {:hello data}))
+  (POST "/api/echo" [data] (generate-api-response data))
   (route/resources "/")
   (route/not-found "Page not found"))
 
