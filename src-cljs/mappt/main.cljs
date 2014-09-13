@@ -15,3 +15,4 @@
 (let [content-target (.getElementById js/document "sidebar")]
   (om/root sidebar/widget app-state
            {:target content-target}))
+

@@ -1,6 +1,7 @@
 (ns mappt.components.header-breadcrumb
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
+            [cljs.core.async :refer [put! chan <!]]
             [secretary.core :as secretary]))
 
 (defn append-breadcrumb!
@@ -17,8 +18,11 @@
       (let [breadcrumbs (conj (first sp) (first (second sp)))]
         (om/transact! state :breadcrumbs #(vec breadcrumbs))))))
 
+(def navigate-channel (chan))
+
 (defn click-handler [state url e]
   (.log js/console "breadcrumb clicked! - " url)
+  (put! navigate-channel url)
   (splice-breadcrumb! state url))
 
 (defn gen-breadcrumb [state crumb]

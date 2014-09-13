@@ -1,10 +1,14 @@
 (ns mappt.components.sidebar
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
+            [cljs.core.async :refer [put! chan <!]]
             [secretary.core :as secretary]))
 
+(def navigate-channel (chan))
+
 (defn click-handler [state url e]
-  (.log js/console "clicked!" url))
+  (.log js/console "clicked!" url)
+  (put! navigate-channel url))
 
 (defn gen-sidebar-element [state name url icon]
   [:div {:class "sidebar-element"
