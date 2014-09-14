@@ -10,7 +10,7 @@
 (secretary/set-config! :prefix "#")
 
 (defroute "/" {:as params}
-  (js/console.log "hello!"))
+  (.log js/console "hello!"))
 
 (defroute "/home" {:as params}
   (.log js/console "home"))
@@ -21,9 +21,9 @@
 (defroute "*" []
   (.log js/console "Unknown Url"))
 
-(let [location (.-location js/document)
-      pathname (.-pathname location)]
-  (secretary/dispatch! pathname))
+;(let [location (.-location js/document)
+;      pathname (.-pathname location)]
+;  (secretary/dispatch! pathname))
 
 (let [history (History.)]
   (events/listen history EventType/NAVIGATE

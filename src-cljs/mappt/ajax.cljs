@@ -15,6 +15,8 @@
 (def err-chan (chan))
 
 (defn post-request
+  "performs an ajax post request and returns a core.async
+  channel (success channel) which contains the response"
   [url & {:keys [data success-chan error-chan timeout]
           :or {data nil
                success-chan (chan)

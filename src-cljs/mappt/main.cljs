@@ -6,7 +6,10 @@
 (def app-state (atom {:name "haha!"
                       :breadcrumbs
                       [{:name "Home" :url "#/"}
-                       {:name "User" :url "#/users/1"}]}))
+                       {:name "User" :url "#/users/1"}]
+                      :sidebar
+                      [{:name "Explore" :url "#/explore"}
+                       {:name "Search" :url "#/search"}]}))
 
 (let [content-target (.getElementById js/document "header-breadcrumb")]
   (om/root breadcrumb/widget app-state
