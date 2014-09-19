@@ -6,13 +6,18 @@
 
 (def navigate-channel (chan))
 
-(defn click-handler [state url e]
+(defn click-handler [state url name e]
   (.log js/console "clicked!" url)
+  (om/transact! state :sidebar-selected #(str name))
   (put! navigate-channel url))
 
-(defn gen-sidebar-element [state name url icon]
-  [:div {:class "sidebar-element"
-         :on-click (partial click-handler state url)}
+(defn gen-sidebar-element [state & {:keys [name url icon selected]
+                                    :or {name "unknown"
+                                         url "/#/"
+                                         icon ""
+                                         selected false}}]
+  [:div {:class (str "sidebar-element" (when selected " selected"))
+         :on-click (partial click-handler state url name)}
    [:div {:class "sidebar-icon"}]
    [:div {:class "sidebar-name"} name]])
 
@@ -21,5 +26,12 @@
     om/IRender
     (render [this]
       (html [:div {:class "sidebar-navigation"}
-             (gen-sidebar-element data "test" "/#/test" "")
-             (gen-sidebar-element data "test2" "/#/test2" "")]))))
+             (map (fn [elem]
+                    (gen-sidebar-element
+                     data
+                     :name (elem :name)
+                     :url (elem :url)
+                     :icon (elem :icon)
+                     :selected
+                     (= (elem :name) (data :sidebar-selected))))
+                  (data :sidebar))]))))

@@ -42,14 +42,7 @@
                     :background-color
                     (color/darken (default-colors :offwhite) 10)
                     :color (default-colors :orange)
-                    :border-right-width (px 3)
-                    :border-right-style :solid
-                    :border-right-color
-                    (color/lighten (panel-style :background-color) 30)
-                    ;;:border-bottom-width (px 2)
-                    ;;:border-bottom-style :solid
-                    ;;:border-bottom-color
-                    ;;(color/lighten (panel-style :background-color) 30)
+                    :letter-spacing (px 1.5)
                     })
 
 (def sidebar-element-style
@@ -126,7 +119,7 @@
     :background-color
     (color/lighten (header-style :background-color) 10)
     :border-bottom-style :solid
-    :border-bottom-width (px 2)
+    :border-bottom-width (px 1)
     :border-bottom-color
     (color/lighten (panel-style :background-color) 30)}]
   [:.header-breadcrumb
@@ -164,13 +157,15 @@
   [:.sidebar-element sidebar-element-style
    [:&:hover
     {:background-color
-     (color/darken (sidebar-element-style :background-color) 30)}]
-   [:selected
-    {#_:background-color
-     #_(color/darken (sidebar-element-style :background-color) 40)
+     (color/darken (sidebar-element-style :background-color) 30)}]]
+  [:.sidebar-element.selected
+   (merge
+    sidebar-element-style
+    {:background-color
+     (color/darken (sidebar-element-style :background-color) 40)
      :border-right-width (px 5)
      :border-right-style :solid
-     :border-right-color (default-colors :orange)}]]
+     :border-right-color (default-colors :orange)})]
   [:.button
    (merge
     button-style
