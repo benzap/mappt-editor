@@ -1,7 +1,8 @@
 (ns mappt.main
   (:require [om.core :as om :include-macros true]
             [mappt.components.header-breadcrumb :as breadcrumb]
-            [mappt.components.sidebar :as sidebar]))
+            [mappt.components.sidebar :as sidebar]
+            [mappt.components.content :as content]))
 
 (def app-state
   (atom {:name "haha!"
@@ -24,3 +25,6 @@
   (om/root sidebar/widget app-state
            {:target content-target}))
 
+(let [content-target (.getElementById js/document "content")]
+  (om/root content/widget app-state
+           {:target content-target}))
