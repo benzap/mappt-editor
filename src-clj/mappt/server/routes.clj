@@ -1,5 +1,6 @@
 (ns mappt.server.routes
   (:use compojure.core
+        ring.middleware.session
         ring.middleware.edn
         mappt.server.views
         [hiccup.middleware :only (wrap-base-url)])
@@ -23,4 +24,5 @@
   (-> (handler/site main-routes)
       wrap-exceptions
       wrap-edn-params
+      (wrap-session)
       (wrap-base-url)))
