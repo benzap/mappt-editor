@@ -23,9 +23,16 @@
      :session (assoc session :test-var "foo")}))
 
 (defroutes main-routes
-  (GET "/" {session :session} (generate-main-page session))
-  (POST "/api/echo" {session :session {:keys [data]}
-                     :params} (generate-api-response data session))
+  (GET "/" {session :session}
+       (generate-main-page session))
+
+  (POST "/api/echo" {session :session 
+                     {:keys [data]} :params} 
+        (generate-api-response data session))
+
+  (POST "/api/login" {session :session 
+                      {:keys [data]} :params})
+
   (route/resources "/")
   (route/not-found "Page not found"))
 
