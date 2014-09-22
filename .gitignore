@@ -8,4 +8,6 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 resources/public/js/main.js
+resources/public/js/main.min.js
 resources/public/css/main.css
+*.db
