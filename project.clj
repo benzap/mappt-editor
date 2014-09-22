@@ -13,6 +13,7 @@
                  [secretary "1.2.0"]
                  [prone "0.4.0"]
                  [om "0.7.1"]
+                 [crypto-password "0.1.3"]
                  [org.clojure/java.jdbc "0.3.5"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
                  [postgresql/postgresql "8.4-702.jdbc4"]

@@ -19,4 +19,13 @@
   "Table defined for users within the system"
   (user-tbl-exists? [this])
   (user-tbl-create! [this])
-  (user-get-by-id [this id]))
+  (user-get-by-id [this id])
+  (user-get-by-username [this name])
+  (user-has-user? [this name])
+  (user-insert! [this user-map]
+    "user-map key-values:
+       :username name
+       :password_hash hash
+       :email email")
+  (user-update! [this id user-map])
+  (user-delete! [this id]))
