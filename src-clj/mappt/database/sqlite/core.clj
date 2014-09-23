@@ -76,6 +76,8 @@
               :subprotocol "sqlite"
               :subname     "mappt.db"})
 
+(def sql (Sqlite. db-spec))
+
 (let [sql (Sqlite. db-spec)]
   (when (not (user-tbl-exists? sql))
     (user-tbl-create! sql))
@@ -85,7 +87,7 @@
                    :email "benzaporzan@gmail.com"
                    :password_hash "test"}))
   (let [user (user-get-by-username sql "benzap")
-        id (user :id)]
+        id (user :uid)]
     (user-update! sql id {:email "btzaporz@lakeheadu.ca"})))
 
 ;;(user-has-user? (Sqlite. db-spec) "benzap")
