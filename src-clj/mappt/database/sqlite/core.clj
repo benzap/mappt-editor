@@ -1,7 +1,6 @@
 (ns mappt.database.sqlite.core
   (:use mappt.database.database-protocols)
-  (:require [mappt.database.db :as db]
-            [clojure.java.jdbc :as jdbc]))
+  (:require [clojure.java.jdbc :as jdbc]))
 
 (defrecord Sqlite [db-spec]
   Database_Utils

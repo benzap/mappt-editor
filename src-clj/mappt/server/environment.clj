@@ -5,7 +5,8 @@
 (def default-config
   {:database
    {:type :sqlite ;; [:postgresql :memory]
-    :location "mappt.db"}})
+    :location "mappt.db"
+    :salt "QtNvmgAQal"}})
 
 (defn get-config []
   (try

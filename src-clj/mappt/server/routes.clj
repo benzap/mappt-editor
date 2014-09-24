@@ -7,15 +7,16 @@
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
             [compojure.response :as response]
-            [prone.middleware :refer [wrap-exceptions]]))
+            [prone.middleware :refer [wrap-exceptions]]
+            [mappt.server.login :as login]))
 
-(defn generate-api-response [data session & [status]]
-  {:status (or status 200)
+(defn generate-api-response [data session]
+  {:status 200
    :headers {"Content-Type" "application/edn"}
    :body (pr-str data)
    :session session})
 
-(defn generate-main-page [session]
+(defn generate-main-page [data session]
   (if (:test-var session)
     {:status 200
      :body (index-page)}
@@ -30,8 +31,13 @@
                      {:keys [data]} :params} 
         (generate-api-response data session))
 
+  (POST "/api/register" {session :session
+                         {:keys [data]} :params}
+        (login/register-user! data session))
+  
   (POST "/api/login" {session :session 
-                      {:keys [data]} :params})
+                      {:keys [data]} :params}
+        (generate-api-response data session))
 
   (route/resources "/")
   (route/not-found "Page not found"))
