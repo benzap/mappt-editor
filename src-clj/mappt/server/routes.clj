@@ -16,7 +16,7 @@
    :body (pr-str data)
    :session session})
 
-(defn generate-main-page [data session]
+(defn generate-main-page [session]
   (if (:test-var session)
     {:status 200
      :body (index-page)}
