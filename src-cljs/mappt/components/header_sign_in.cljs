@@ -7,7 +7,10 @@
   (.log js/console "clicked!"))
 
 (defn modal-sign-in [state]
-  [:div {:class "modal"}])
+  [:div {:id "modal-container"}
+   [:div {:id "modal-header"}]
+   [:div {:id "modal-content"}]
+   [:div {:id "modal-footer"}]])
 
 (defn view-header-signed-in [state]
   (let [username (-> state :user :username)]
