@@ -94,6 +94,20 @@
   {:color (default-colors :blue)
    :text-decoration :none})
 
+(def modal-style
+  {:position :relative
+   :margin :auto
+   :top (px 30)
+   :width (px 600)
+   :height "80%"
+   :z-index 999
+   :background-color :white
+   :border-width (px 1)
+   :border-style :solid
+   :border-color :black
+   :border-radius (px 7)
+   :box-shadow "0px -3px 9px 2px rgba(50, 50, 50, 0.25)"})
+
 (defstylesheet main 
   {:output-to "resources/public/css/main.css"}
   [:*
@@ -175,4 +189,29 @@
    (merge
     button-style
     {:height (px 30)
-     :width (px 30)})])
+     :width (px 30)})]
+  [:.modal modal-style]
+  [:#modal-header
+   {:position :absolute
+    :top (px 0)
+    :left (px 0)
+    :right (px 0)
+    :height (px 40)
+    :background-color (default-colors :grey)
+    :border-top-right-radius (modal-style :border-radius)
+    :border-top-left-radius (modal-style :border-radius)}]
+  [:#modal-content
+   {:position :absolute
+    :top (px 40)
+    :left (px 0)
+    :right (px 0)
+    :bottom (px 30)}]
+  [:#modal-footer
+   {:position :absolute
+    :left (px 0)
+    :right (px 0)
+    :bottom (px 0)
+    :height (px 30)
+    :background-color (color/lighten (default-colors :grey) 10)
+    :border-bottom-right-radius (modal-style :border-radius)
+    :border-bottom-left-radius (modal-style :border-radius)}])

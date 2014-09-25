@@ -1,7 +1,8 @@
 (ns mappt.components.header-sign-in
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
-            [cljs.core.async :refer [put! chan <!]]))
+            [cljs.core.async :refer [put! chan <!]]
+            [mappt.style.icon :refer [gen-icon]]))
 
 (defn onclick-sign-in-handler [e]
   (.log js/console "clicked!"))
@@ -17,11 +18,13 @@
     [:div {:class "header-right-container"}
      [:span (str "Signed in as " username)]
      [:button {:class "button-icon"}
-      [:i {:class "icon-cog"
+      #_[:i {:class "icon-cog"
            :style #js{:fontSize "20px"
                       :position "relative"
                       :bottom "2px"
-                      :right "5px"}}]]]))
+                      :right "5px"}}]
+      (gen-icon "cog" 20 5 2)
+      ]]))
 
 (defn view-header-signed-out [state]
   (let []

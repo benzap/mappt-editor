@@ -24,7 +24,8 @@
     [:div {:class :main-container}
      header
      [:div {:id :sidebar :class :sidebar}]
-     [:div {:id :content :class :content}]]
+     [:div {:id :content :class :content}]
+     [:div {:id :modal :class :modal}]]
     (include-js "/js/main.js")
     (include-css "/css/main.css")
     (include-css "/css/mappt.css")

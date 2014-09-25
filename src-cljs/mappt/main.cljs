@@ -3,7 +3,8 @@
             [mappt.components.header-breadcrumb :as breadcrumb]
             [mappt.components.sidebar :as sidebar]
             [mappt.components.content :as content]
-            [mappt.components.header-sign-in :as sign-in]))
+            [mappt.components.header-sign-in :as sign-in]
+            [mappt.components.modal :as modal]))
 
 (def app-state
   (atom {:name "haha!"
@@ -35,4 +36,8 @@
 
 (let [content-target (.getElementById js/document "header-right")]
   (om/root sign-in/widget app-state
+           {:target content-target}))
+
+(let [content-target (.getElementById js/document "modal")]
+  (om/root modal/widget app-state
            {:target content-target}))
