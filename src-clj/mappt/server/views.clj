@@ -9,9 +9,8 @@
     [:span {:class :mappt-logo} "Mappt"]]
    [:div {:id :header-breadcrumb
           :class :header-breadcrumb}]
-   [:div {:class :header-right}
-    [:button {:class :button} "Sign In"]
-    [:button {:class :button-icon} "S"]]])
+   [:div {:id :header-right
+          :class :header-right}]])
 
 (defn index-page []
   (html5
@@ -27,7 +26,9 @@
      [:div {:id :sidebar :class :sidebar}]
      [:div {:id :content :class :content}]]
     (include-js "/js/main.js")
-    (include-css "/css/main.css")]))
+    (include-css "/css/main.css")
+    (include-css "/css/mappt.css")
+    (include-css "/css/animation.css")]))
 
 (defn viewer-page []
   (html5
