@@ -80,7 +80,22 @@
    :border-color (color/lighten (default-colors :lime-green) 10)
    :border-radius (px 4)
    :background-color (default-colors :lime-green)
-   :color (default-colors :offwhite)})
+   :color (default-colors :offwhite)
+   :user-select :none
+   :-webkit-touch-callout :none
+   :-webkit-user-select :none
+   :-khtml-user-select :none
+   :-moz-user-select :none
+   :-ms-user-select :none})
+
+(def button-hover-style
+  {:background-color
+   (color/lighten (button-style :background-color) 10)
+   :cursor :pointer})
+
+(def button-active-style
+  {:background-color
+   (color/darken (button-style :background-color) 10)})
 
 (def breadcrumb-style
   {:background-color
@@ -184,12 +199,20 @@
    (merge
     button-style
     {:height (px 30)
-     :width (px 150)})]
+     :width (px 150)})
+   [:&:hover
+    button-hover-style]
+   [:&:active
+    button-active-style]]
   [:.button-icon
    (merge
     button-style
     {:height (px 30)
-     :width (px 30)})]
+     :width (px 30)})
+   [:&:hover
+    button-hover-style]
+   [:&:active
+    button-active-style]]
   [:.modal modal-style]
   [:#modal-header
    {:position :absolute

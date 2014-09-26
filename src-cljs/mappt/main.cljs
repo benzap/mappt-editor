@@ -7,37 +7,43 @@
             [mappt.components.modal :as modal]))
 
 (def app-state
-  (atom {:name "haha!"
-         :breadcrumbs
+  (atom {:breadcrumbs
          [{:name "Home" :url "#/"}
           {:name "User" :url "#/users/1"}]
          :sidebar
-         [{:name "Home" :url "/#/" :icon ""}
-          {:name "Get Directions" :url "/#/get_directions" :icon ""}
-          {:name "Explore" :url "/#/explore" :icon ""}
-          {:name "Search" :url "/#/search" :icon ""}
-          {:name "Go To Editor" :url "/#/editor" :icon ""}]
-         :sidebar-selected "Home"
-         :user {:username "benzap"
-                :email nil
-                :is-admin? false}}))
+         {:buttons
+          [{:name "Home" :url "/#/" :icon ""}
+           {:name "Get Directions" :url "/#/get_directions" :icon ""}
+           {:name "Explore" :url "/#/explore" :icon ""}
+           {:name "Search" :url "/#/search" :icon ""}
+           {:name "Go To Editor" :url "/#/editor" :icon ""}]
+          :selected "Home"}
+         :user
+         {:username "benzap"
+          :email nil
+          :is-admin? false}}))
 
 (let [content-target (.getElementById js/document "header-breadcrumb")]
-  (om/root breadcrumb/widget app-state
+  (om/root breadcrumb/widget
+           app-state
            {:target content-target}))
 
 (let [content-target (.getElementById js/document "sidebar")]
-  (om/root sidebar/widget app-state
+  (om/root sidebar/widget
+           app-state
            {:target content-target}))
 
 (let [content-target (.getElementById js/document "content")]
-  (om/root content/widget app-state
+  (om/root content/widget
+           app-state
            {:target content-target}))
 
 (let [content-target (.getElementById js/document "header-right")]
-  (om/root sign-in/widget app-state
+  (om/root sign-in/widget
+           app-state
            {:target content-target}))
 
 (let [content-target (.getElementById js/document "modal")]
-  (om/root modal/widget app-state
+  (om/root modal/widget
+           app-state
            {:target content-target}))
