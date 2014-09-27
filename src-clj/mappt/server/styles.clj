@@ -121,7 +121,8 @@
    :border-style :solid
    :border-color :black
    :border-radius (px 7)
-   :box-shadow "0px -3px 9px 2px rgba(50, 50, 50, 0.25)"})
+   :box-shadow "0px -3px 9px 2px rgba(50, 50, 50, 0.25)"
+   :overflow :hidden})
 
 (defstylesheet main 
   {:output-to "resources/public/css/main.css"}
@@ -220,9 +221,7 @@
     :left (px 0)
     :right (px 0)
     :height (px 40)
-    :background-color (default-colors :grey)
-    :border-top-right-radius (modal-style :border-radius)
-    :border-top-left-radius (modal-style :border-radius)}]
+    :background-color (default-colors :grey)}]
   [:#modal-content
    {:position :absolute
     :top (px 40)
@@ -235,6 +234,4 @@
     :right (px 0)
     :bottom (px 0)
     :height (px 30)
-    :background-color (color/lighten (default-colors :grey) 10)
-    :border-bottom-right-radius (modal-style :border-radius)
-    :border-bottom-left-radius (modal-style :border-radius)}])
+    :background-color (color/lighten (default-colors :grey) 10)}])
