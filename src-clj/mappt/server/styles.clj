@@ -124,6 +124,9 @@
    :box-shadow "0px -3px 9px 2px rgba(50, 50, 50, 0.25)"
    :overflow :hidden})
 
+(def input-text-style
+  {:border-radius (px 3)})
+
 (defstylesheet main 
   {:output-to "resources/public/css/main.css"}
   [:*
@@ -227,11 +230,19 @@
     :top (px 40)
     :left (px 0)
     :right (px 0)
-    :bottom (px 30)}]
+    :bottom (px 0)}]
   [:#modal-footer
    {:position :absolute
     :left (px 0)
     :right (px 0)
     :bottom (px 0)
-    :height (px 30)
-    :background-color (color/lighten (default-colors :grey) 10)}])
+    :height (px 0)
+    :background-color (color/lighten (default-colors :grey) 10)}]
+  [:#modal-sign-in
+   {:text-align :center
+    :margin "10px 10px"}]
+  [:.input-text
+   {:border-radius (px 5)
+    :padding (px 5)
+    :font-size (px 18)}])
+

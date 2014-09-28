@@ -14,8 +14,7 @@
                         (when (= name selected) " selected"))
                    :on-click
                    (fn [_]
-                     (put! select-chan name)
-                     (om/refresh! owner))}
+                     (put! select-chan name))}
              [:div {:class (str "sidebar-icon")}]
              [:div {:class "sidebar-name"} name]]))))
 

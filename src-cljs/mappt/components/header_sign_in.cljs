@@ -4,38 +4,30 @@
             [cljs.core.async :refer [put! chan <!]]
             [mappt.style.icon :refer [gen-icon]]))
 
-(defn onclick-sign-in-handler [e]
-  (.log js/console "clicked!"))
-
-(defn modal-sign-in [state]
-  [:div {:id "modal-container"}
-   [:div {:id "modal-header"}]
-   [:div {:id "modal-content"}]
-   [:div {:id "modal-footer"}]])
-
-(defn view-header-signed-in [state]
-  (let [username (-> state :user :username)]
+(defn view-header-signed-in [app]
+  (let [username (-> app :user :username)]
     [:div {:class "header-right-container"}
      [:span (str "Signed in as " username)]
      [:button {:class "button-icon"}
-      #_[:i {:class "icon-cog"
-           :style #js{:fontSize "20px"
-                      :position "relative"
-                      :bottom "2px"
-                      :right "5px"}}]
-      (gen-icon "cog" 20 5 2)
-      ]]))
+      (gen-icon "cog" 20 5 2)]]))
 
-(defn view-header-signed-out [state]
+(defn view-header-signed-out [app]
   (let []
     [:div {:class "header-right-container"} 
-             [:button {:class "button"
-                       :on-click onclick-sign-in-handler} "Sign-in"]
-             [:button {:class "button-icon"} "S"]]))
+     [:button {:class "button"
+               :on-click
+               (fn [_]
+                 (om/update! app [:modal :open?] true)
+                 (om/update! app [:modal :content] :sign-in))}
+      "Sign-in"]
+     [:button {:class "button-icon"}
+      (gen-icon "cog" 20 5 2)]]))
 
 (defn widget [data owner]
   (reify
     om/IRender
     (render [this]
-      (html (view-header-signed-in data)))))
+      (if (-> data :user :username)
+        (html (view-header-signed-in data))
+        (html (view-header-signed-out data))))))
 
