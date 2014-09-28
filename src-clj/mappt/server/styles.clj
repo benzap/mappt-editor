@@ -113,8 +113,8 @@
   {:position :relative
    :margin :auto
    :top (px 30)
-   :width (px 600)
-   :height "80%"
+   :width (px 500)
+   :height-max "80%"
    :z-index 999
    :background-color :white
    :border-width (px 1)
@@ -219,26 +219,16 @@
     button-active-style]]
   [:.modal modal-style]
   [:#modal-header
-   {:position :absolute
-    :top (px 0)
-    :left (px 0)
-    :right (px 0)
+   {:position :relative
+    :width "100%"
     :height (px 40)
     :background-color (default-colors :grey)}]
   [:#modal-content
-   {:position :absolute
-    :top (px 40)
-    :left (px 0)
-    :right (px 0)
-    :bottom (px 0)}]
-  [:#modal-footer
-   {:position :absolute
-    :left (px 0)
-    :right (px 0)
-    :bottom (px 0)
-    :height (px 0)
-    :background-color (color/lighten (default-colors :grey) 10)}]
+   {:position :relative}]
   [:#modal-sign-in
+   {:text-align :center
+    :margin "10px 10px"}]
+  [:#modal-register
    {:text-align :center
     :margin "10px 10px"}]
   [:.input-text

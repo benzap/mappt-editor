@@ -4,7 +4,8 @@
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :refer [put! chan <!]]
             [mappt.style.icon :refer [gen-icon]]
-            [mappt.components.modal-sign-in :as sign-in]))
+            [mappt.components.modal-sign-in :as sign-in]
+            [mappt.components.modal-register :as register]))
 
 (def content-chan (chan))
 
@@ -53,4 +54,5 @@
              [:div {:id "modal-content"}
               (condp = (-> app :modal :content)
                 :sign-in (om/build sign-in/widget app)
+                :register (om/build register/widget app)
                 "Unknown Content")]]))))

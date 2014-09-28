@@ -19,12 +19,12 @@
            {:name "Go To Editor" :url "/#/editor" :icon ""}]
           :selected "Home"}
          :user
-         {:username nil #_"benzap"
+         {:username nil
           :email nil
           :is-admin? false}
          :modal
          {:open? true
-          :content :sign-in}}))
+          :content :register}}))
 
 (let [content-target (.getElementById js/document "header-breadcrumb")]
   (om/root breadcrumb/widget

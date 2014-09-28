@@ -1,4 +1,4 @@
-(ns mappt.components.modal-sign-in
+(ns mappt.components.modal-register
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
@@ -6,18 +6,18 @@
             [mappt.style.icon :refer [gen-icon]]
             [mappt.ajax :refer [post-request]]))
 
-
-(defn request-login
-  [{:keys [username password
-           login-channel
+(defn request-register
+  [{:keys [username password email
+           register-channel
            error-channel]
     :as state}]
   (post-request
-   "/api/login"
-   :success-chan login-channel
+   "/api/register"
+   :success-chan register-channel
    :error-chan error-channel
    :data {:username username
-          :password password}))
+          :password password
+          :email email}))
 
 (defn widget [app owner]
   (reify
@@ -25,8 +25,10 @@
     (init-state [this]
       {:username nil
        :password nil
+       :password2 nil
+       :email nil
        :change-channel (chan)
-       :login-channel (chan)
+       :register-channel (chan)
        :error-channel (chan)})
     om/IWillMount
     (will-mount [this]
@@ -39,10 +41,10 @@
                    (merge (om/get-state owner)
                           state-change))))
               (recur))))
-      (let [login-channel (om/get-state owner :login-channel)]
+      (let [register-channel (om/get-state owner :register-channel)]
         (go (loop []
-              (let [login-data (<! login-channel)]
-                (.log js/console "login:" (clj->js login-data)))
+              (let [register-data (<! register-channel)]
+                (.log js/console "register:" (clj->js register-data)))
               (recur))))
       (let [error-channel (om/get-state owner :error-channel)]
         (go (loop []
@@ -50,36 +52,47 @@
                 (.log js/console "error:" (clj->js error-data)))
               (recur)))))
     om/IRenderState
-    (render-state [this {:keys [username password
-                                change-channel
-                                login-channel
-                                error-channel]
-                         :as state}]
+    (render-state [this {:keys [change-channel] :as state}]
       (html
-       [:div {:id "modal-sign-in"}
-        [:input {:class "input-text"
-                 :type "text"
+       [:div {:id "modal-register"}
+        [:input {:type "text"
+                 :class "input-text"
                  :style #js {:margin "5px"}
-                 :placeholder "Username"
                  :on-change
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:username value})))
-                 :value username}]
+                 :placeholder "Username"}]
         [:br]
-        [:input {:class "input-text"
-                 :type "password"
+        [:input {:type "password"
+                 :class "input-text"
                  :style #js {:margin "5px"}
-                 :placeholder "Password"
                  :on-change
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:password value})))
-                 :value password}]
+                 :placeholder "Password"}]
+        [:br]
+        [:input {:type "password"
+                 :class "input-text"
+                 :style #js {:margin "5px"}
+                 :on-change
+                 (fn [e]
+                   (let [value (-> e .-target .-value)]
+                     (put! change-channel {:password2 value})))
+                 :placeholder "Re-type Password"}]
+        [:br]
+        [:input {:type "text"
+                 :class "input-text"
+                 :style #js {:margin "5px"}
+                 :on-change
+                 (fn [e]
+                   (let [value (-> e .-target .-value)]
+                     (put! change-channel {:email value})))
+                 :placeholder "Email"}]
         [:br]
         [:button {:class "button"
-                  :style #js {:text-align "center"}
                   :on-click
                   (fn [_]
-                    (request-login state))}
-         "Sign In"]]))))
+                    (request-register state))}
+         "Register"]]))))

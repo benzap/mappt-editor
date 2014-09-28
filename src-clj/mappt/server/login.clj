@@ -4,7 +4,8 @@
   (:require [mappt.database.core :refer [db]]))
 
 
-(defn register-user! [data session])
+(defn register-user! [data session]
+  (generate-api-response data session))
 
 (defn login-user! [{:keys [username password] :as data}
                    {:keys [is-admin? username]
