@@ -3,6 +3,7 @@
         ring.middleware.session
         ring.middleware.edn
         mappt.server.views
+        mappt.server.utils
         [hiccup.middleware :only (wrap-base-url)])
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
@@ -10,18 +11,9 @@
             [prone.middleware :refer [wrap-exceptions]]
             [mappt.server.login :as login]))
 
-(defn generate-api-response [data session]
-  {:status 200
-   :headers {"Content-Type" "application/edn"}
-   :body (pr-str data)
-   :session session})
-
 (defn generate-main-page [session]
-  (if (:test-var session)
-    {:status 200
-     :body (index-page)}
-    {:body "No Session"
-     :session (assoc session :test-var "foo")}))
+  {:status 200
+   :body (index-page)})
 
 (defroutes main-routes
   (GET "/" {session :session}
@@ -37,7 +29,7 @@
   
   (POST "/api/login" {session :session 
                       {:keys [data]} :params}
-        (generate-api-response data session))
+        (login/login-user! data session))
 
   (route/resources "/")
   (route/not-found "Page not found"))
