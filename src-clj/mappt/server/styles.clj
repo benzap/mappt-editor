@@ -220,27 +220,35 @@
    [:&:active
     button-active-style]]
   [:.modal modal-style]
+  [:.modal-shade
+   {:background-color (rgba 27 27 27 0.7)
+    :box-shadow "0 1px 5px rgba(0, 0, 0, 0.25)"
+    :position :absolute
+    :z-index (dec (:z-index modal-style))
+    :top 0
+    :right 0
+    :bottom 0
+    :left 0}]
   [:#modal-header
    {:position :relative
     :width "100%"
     :height (px 40)
     :background-color (default-colors :grey)}]
   [:#modal-content
-   {:position :relative}]
+   {:position :relative
+    :overflow-y :scroll}]
   [:#modal-sign-in
    {:text-align :right
     :margin-top (px 20)
     :margin-right (px 80)
     :margin-bottom (px 20)
-    :margin-left (px 40)
-    :overflow-scrolling :auto}]
+    :margin-left (px 20)}]
   [:#modal-register
    {:text-align :right
     :margin-top (px 20)
     :margin-right (px 75)
     :margin-bottom (px 20)
-    :margin-left (px 40)
-    :overflow-scrolling :auto}]
+    :margin-left (px 20)}]
   [:.input-text
    {:border-radius (px 5)
     :padding (px 5)

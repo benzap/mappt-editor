@@ -25,7 +25,8 @@
      header
      [:div {:id :sidebar :class :sidebar}]
      [:div {:id :content :class :content}]
-     [:div {:id :modal :class :modal}]]
+     [:div {:id :modal :class :modal}]
+     [:div {:id :modal-shade :class :modal-shade}]]
     (include-js "/js/main.js")
     (include-css "/css/fontello-fix.css")
     (include-css "/css/main.css")

@@ -10,12 +10,16 @@
 (def content-chan (chan))
 
 (defn show-modal []
-  (let [target (.getElementById js/document "modal")]
-    (set! (-> target .-style .-display) "block")))
+  (let [target (.getElementById js/document "modal")
+        shade (.getElementById js/document "modal-shade")]
+    (set! (-> target .-style .-display) "block")
+    (set! (-> shade .-style .-display) "block")))
 
 (defn hide-modal []
-  (let [target (.getElementById js/document "modal")]
-    (set! (-> target .-style .-display) "none")))
+  (let [target (.getElementById js/document "modal")
+        shade (.getElementById js/document "modal-shade")]
+    (set! (-> target .-style .-display) "none")
+    (set! (-> shade .-style .-display) "none")))
 
 (defn modal-header-widget [app owner]
   (reify
