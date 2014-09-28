@@ -27,8 +27,9 @@
      [:div {:id :content :class :content}]
      [:div {:id :modal :class :modal}]]
     (include-js "/js/main.js")
+    (include-css "/css/fontello-fix.css")
     (include-css "/css/main.css")
-    (include-css "/css/mappt.css")
+    (include-css "/css/mappt-icons.css")
     (include-css "/css/animation.css")]))
 
 (defn viewer-page []

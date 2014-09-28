@@ -31,7 +31,6 @@
                     :top 0
                     :right 0
                     :left 0
-                    :width "100%"
                     :height (px 40)}))
 
 (def sidebar-style {:position :absolute
@@ -114,7 +113,7 @@
    :margin :auto
    :top (px 30)
    :width (px 500)
-   :height-max "80%"
+   :max-height "80%"
    :z-index 999
    :background-color :white
    :border-width (px 1)

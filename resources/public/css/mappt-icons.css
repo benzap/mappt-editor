@@ -1,10 +1,10 @@
 @font-face {
-  font-family: 'mappt';
-  src: url('../font/mappt.eot?4862257');
-  src: url('../font/mappt.eot?4862257#iefix') format('embedded-opentype'),
-       url('../font/mappt.woff?4862257') format('woff'),
-       url('../font/mappt.ttf?4862257') format('truetype'),
-       url('../font/mappt.svg?4862257#mappt') format('svg');
+  font-family: 'mappt-icons';
+  src: url('../font/mappt-icons.eot?22359075');
+  src: url('../font/mappt-icons.eot?22359075#iefix') format('embedded-opentype'),
+       url('../font/mappt-icons.woff?22359075') format('woff'),
+       url('../font/mappt-icons.ttf?22359075') format('truetype'),
+       url('../font/mappt-icons.svg?22359075#mappt-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -13,14 +13,14 @@
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
-    font-family: 'mappt';
-    src: url('../font/mappt.svg?4862257#mappt') format('svg');
+    font-family: 'mappt-icons';
+    src: url('../font/mappt-icons.svg?22359075#mappt-icons') format('svg');
   }
 }
 */
  
  [class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "mappt";
+  font-family: "mappt-icons";
   font-style: normal;
   font-weight: normal;
   speak: none;

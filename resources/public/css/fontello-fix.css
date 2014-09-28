@@ -1,0 +1,3 @@
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+  margin: 0;
+}

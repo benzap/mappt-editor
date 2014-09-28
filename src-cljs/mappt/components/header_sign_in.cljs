@@ -9,19 +9,35 @@
     [:div {:class "header-right-container"}
      [:span (str "Signed in as " username)]
      [:button {:class "button-icon"}
-      (gen-icon "cog" 20 5 2)]]))
+      (gen-icon "cog" 20 -1 2)]]))
 
 (defn view-header-signed-out [app]
   (let []
-    [:div {:class "header-right-container"} 
+    [:div {:class "header-right-container"
+           :style #js {:position "relative"
+                       :height "40px"}}
+     [:a {:style
+          #js {:vertical-align "middle"}
+          :on-click
+          (fn [e]
+            (.preventDefault e)
+            (om/update! app [:modal :open?] true)
+            (om/update! app [:modal :content] :register))}
+      "Register"]
      [:button {:class "button"
+               :style #js {:position "relative"
+                           :margin "5px"
+                           :padding "5px"}
                :on-click
                (fn [_]
                  (om/update! app [:modal :open?] true)
                  (om/update! app [:modal :content] :sign-in))}
       "Sign-in"]
-     [:button {:class "button-icon"}
-      (gen-icon "cog" 20 5 2)]]))
+     [:button {:class "button-icon"
+               :style #js {:position "relative"
+                           :padding "5px"
+                           :margin "5px"}}
+      (gen-icon "cog" 18 -1)]]))
 
 (defn widget [data owner]
   (reify

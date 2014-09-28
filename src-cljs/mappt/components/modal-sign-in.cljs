@@ -20,6 +20,9 @@
    :data {:username username
           :password password}))
 
+(defn process-login [app {:keys [username] :as login-data}]
+  )
+
 (defn widget [app owner]
   (reify
     om/IInitState
@@ -43,7 +46,8 @@
       (let [login-channel (om/get-state owner :login-channel)]
         (go (loop []
               (let [login-data (<! login-channel)]
-                (.log js/console "login:" (clj->js login-data)))
+                (.log js/console "login:" (clj->js login-data))
+                (process-login app login-data))
               (recur))))
       (let [error-channel (om/get-state owner :error-channel)]
         (go (loop []
