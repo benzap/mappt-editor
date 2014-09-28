@@ -21,7 +21,6 @@
           :selected "Home"}
          :user
          {:username nil
-          :email nil
           :is-admin? false}
          :modal
          {:open? true

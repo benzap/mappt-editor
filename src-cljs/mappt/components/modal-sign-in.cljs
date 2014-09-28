@@ -62,6 +62,7 @@
                          :as state}]
       (html
        [:div {:id "modal-sign-in"}
+        "Username: "
         [:input {:class "input-text"
                  :type "text"
                  :style #js {:margin "5px"}
@@ -72,6 +73,7 @@
                      (put! change-channel {:username value})))
                  :value username}]
         [:br]
+        "Password: "
         [:input {:class "input-text"
                  :type "password"
                  :style #js {:margin "5px"}

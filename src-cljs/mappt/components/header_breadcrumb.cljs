@@ -2,7 +2,8 @@
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :refer [put! chan <!]]
-            [secretary.core :as secretary]))
+            [secretary.core :as secretary]
+            [mappt.style.icon :refer [gen-icon]]))
 
 (defn append-breadcrumb!
   "appends a breadcrumb to the list of breadcrumbs"
@@ -42,6 +43,6 @@
                    (map gen-partial (data :breadcrumbs))
                    crumbs
                    (interpose
-                    [:span {:class "breadcrumb-separator"} ">"]
+                    [:span {:class "breadcrumb-separator"} (gen-icon "right-open")]
                     crumbs-dom)]
                crumbs)]))))

@@ -56,6 +56,7 @@
     (render-state [this {:keys [change-channel] :as state}]
       (html
        [:div {:id "modal-register"}
+        "Username: "
         [:input {:type "text"
                  :class "input-text"
                  :style #js {:margin "5px"}
@@ -63,8 +64,9 @@
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:username value})))
-                 :placeholder "Username"}]
+                 :placeholder "At least 5 characters"}]
         [:br]
+        "Password: "
         [:input {:type "password"
                  :class "input-text"
                  :style #js {:margin "5px"}
@@ -72,8 +74,9 @@
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:password value})))
-                 :placeholder "Password"}]
+                 :placeholder "*****"}]
         [:br]
+        "Re-type Password: "
         [:input {:type "password"
                  :class "input-text"
                  :style #js {:margin "5px"}
@@ -81,8 +84,9 @@
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:password2 value})))
-                 :placeholder "Re-type Password"}]
+                 :placeholder "*****"}]
         [:br]
+        "Email: "
         [:input {:type "text"
                  :class "input-text"
                  :style #js {:margin "5px"}
@@ -90,7 +94,7 @@
                  (fn [e]
                    (let [value (-> e .-target .-value)]
                      (put! change-channel {:email value})))
-                 :placeholder "Email"}]
+                 :placeholder "name@domain.com"}]
         [:br]
         [:button {:class "button"
                   :on-click

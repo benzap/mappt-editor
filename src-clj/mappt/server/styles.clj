@@ -81,6 +81,7 @@
    :background-color (default-colors :lime-green)
    :color (default-colors :offwhite)
    :user-select :none
+   :outline :none
    :-webkit-touch-callout :none
    :-webkit-user-select :none
    :-khtml-user-select :none
@@ -98,14 +99,14 @@
 
 (def breadcrumb-style
   {:background-color
-   (color/lighten (header-style :background-color) 10)
+   (color/darken (header-style :background-color) 10)
    :padding-top (px 5)
    :padding-right (px 10)
    :padding-bottom (px 5)
    :padding-left (px 10)})
 
 (def link-style
-  {:color (default-colors :blue)
+  {:color (default-colors :baby-blue)
    :text-decoration :none})
 
 (def modal-style
@@ -131,10 +132,12 @@
   [:*
    {:margin 0
     :padding 0
-    :box-sizing :border-box}]
+    :box-sizing :border-box
+    :font-family "Arial, Helvetica, sans-serif"}]
   [:a link-style
    [:&:hover
-    {:color (color/lighten (link-style :color) 20)}]]
+    {:color (color/lighten (link-style :color) 20)
+     :cursor :pointer}]]
   [:body
    {:position :absolute
     :top 0 :right 0 :bottom 0 :left 0}]
@@ -225,11 +228,19 @@
   [:#modal-content
    {:position :relative}]
   [:#modal-sign-in
-   {:text-align :center
-    :margin "10px 10px"}]
+   {:text-align :right
+    :margin-top (px 20)
+    :margin-right (px 80)
+    :margin-bottom (px 20)
+    :margin-left (px 40)
+    :overflow-scrolling :auto}]
   [:#modal-register
-   {:text-align :center
-    :margin "10px 10px"}]
+   {:text-align :right
+    :margin-top (px 20)
+    :margin-right (px 75)
+    :margin-bottom (px 20)
+    :margin-left (px 40)
+    :overflow-scrolling :auto}]
   [:.input-text
    {:border-radius (px 5)
     :padding (px 5)
