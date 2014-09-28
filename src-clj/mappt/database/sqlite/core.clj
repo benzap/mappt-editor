@@ -61,8 +61,8 @@
     (let []
       (jdbc/with-db-connection [conn db-spec]
         (jdbc/insert! conn :users {:username username
-                                    :password_hash password_hash
-                                    :email email}))))
+                                   :password_hash password_hash
+                                   :email email}))))
   (user-update! [this id {:as user-map}]
     (jdbc/with-db-connection [conn db-spec]
       (jdbc/update! conn :users user-map ["uid = ?" id])))
@@ -75,9 +75,9 @@
               :subprotocol "sqlite"
               :subname     "mappt.db"})
 
-(def sql (Sqlite. db-spec))
+#_(def sql (Sqlite. db-spec))
 
-(let [sql (Sqlite. db-spec)]
+#_(let [sql (Sqlite. db-spec)]
   (when (not (user-tbl-exists? sql))
     (user-tbl-create! sql))
   (when (not (user-has-user? sql "benzap"))

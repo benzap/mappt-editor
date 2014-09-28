@@ -14,6 +14,7 @@
     :as state}]
   (post-request
    "/api/login"
+   :timeout 5
    :success-chan login-channel
    :error-chan error-channel
    :data {:username username

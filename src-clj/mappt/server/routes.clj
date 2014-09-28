@@ -29,8 +29,7 @@
   
   (POST "/api/login" {session :session 
                       {:keys [data]} :params}
-        #_(login/login-user! data session)
-        (generate-api-response data session))
+        (login/login-user data session))
 
   (route/resources "/")
   (route/not-found "Page not found"))

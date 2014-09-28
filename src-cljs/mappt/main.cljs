@@ -4,7 +4,8 @@
             [mappt.components.sidebar :as sidebar]
             [mappt.components.content :as content]
             [mappt.components.header-sign-in :as sign-in]
-            [mappt.components.modal :as modal]))
+            [mappt.components.modal :as modal]
+            [mappt.storage :as storage]))
 
 (def app-state
   (atom {:breadcrumbs
@@ -25,6 +26,13 @@
          :modal
          {:open? true
           :content :register}}))
+
+(add-watch app-state :storage
+           (fn [key ref old new]
+             (storage/store-app-state! new)))
+
+(when (storage/retrieve-app-state)
+  (reset! app-state (storage/retrieve-app-state)))
 
 (let [content-target (.getElementById js/document "header-breadcrumb")]
   (om/root breadcrumb/widget

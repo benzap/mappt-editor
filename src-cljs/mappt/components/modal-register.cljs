@@ -13,6 +13,7 @@
     :as state}]
   (post-request
    "/api/register"
+   :timeout 5
    :success-chan register-channel
    :error-chan error-channel
    :data {:username username

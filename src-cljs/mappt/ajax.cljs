@@ -24,7 +24,7 @@
                timeout 30}}]
   (POST url
         {:format :edn
-         :timeout timeout
+         :timeout (* timeout 1000)
          :params {:data data}
          :handler
          (fn [response]
