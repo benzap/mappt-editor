@@ -66,7 +66,7 @@
         [:input {:class "input-text"
                  :type "text"
                  :style #js {:margin "5px"}
-                 :placeholder "Username"
+                 :placeholder "Your Username"
                  :on-change
                  (fn [e]
                    (let [value (-> e .-target .-value)]
@@ -77,7 +77,7 @@
         [:input {:class "input-text"
                  :type "password"
                  :style #js {:margin "5px"}
-                 :placeholder "Password"
+                 :placeholder "*****"
                  :on-change
                  (fn [e]
                    (let [value (-> e .-target .-value)]

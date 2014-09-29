@@ -4,6 +4,8 @@
             [cljs.core.async :refer [put! chan <!]]
             [mappt.style.icon :refer [gen-icon]]))
 
+
+
 (defn view-header-signed-in [app]
   (let [username (-> app :user :username)]
     [:div {:class "header-right-container"}
@@ -15,9 +17,12 @@
   (let []
     [:div {:class "header-right-container"
            :style #js {:position "relative"
-                       :height "40px"}}
+                       :height "40px"
+                       :margin-top "3px"
+                       :float "right"}}
      [:a {:style
-          #js {:vertical-align "middle"}
+          #js {:vertical-align "middle"
+               :padding "5px"}
           :on-click
           (fn [e]
             (.preventDefault e)
@@ -34,10 +39,8 @@
                  (om/update! app [:modal :content] :sign-in))}
       "Sign-in"]
      [:button {:class "button-icon"
-               :style #js {:position "relative"
-                           :padding "5px"
-                           :margin "5px"}}
-      (gen-icon "cog" 18 -1)]]))
+               :style #js {}}
+      (gen-icon "cog" 12 -1 2)]]))
 
 (defn widget [data owner]
   (reify

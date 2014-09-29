@@ -97,6 +97,8 @@
   {:background-color
    (color/darken (button-style :background-color) 10)})
 
+
+
 (def breadcrumb-style
   {:background-color
    (color/darken (header-style :background-color) 10)
@@ -159,7 +161,7 @@
     (color/lighten (panel-style :background-color) 30)}]
   [:.header-breadcrumb
    {:position :absolute
-    :padding (px 5)
+    :padding (px 7)
     :height (header-style :height)
     :top 0
     :left (sidebar-style :width)}]
@@ -204,7 +206,7 @@
   [:.button
    (merge
     button-style
-    {:height (px 30)
+    {:height (px 25)
      :width (px 150)})
    [:&:hover
     button-hover-style]
@@ -213,8 +215,8 @@
   [:.button-icon
    (merge
     button-style
-    {:height (px 30)
-     :width (px 30)})
+    {:height (px 25)
+     :width (px 25)})
    [:&:hover
     button-hover-style]
    [:&:active
@@ -228,7 +230,8 @@
     :top 0
     :right 0
     :bottom 0
-    :left 0}]
+    :left 0
+    :display :none}]
   [:#modal-header
    {:position :relative
     :width "100%"
@@ -236,13 +239,14 @@
     :background-color (default-colors :grey)}]
   [:#modal-content
    {:position :relative
-    :overflow-y :scroll}]
+    :overflow-scrolling :auto}]
   [:#modal-sign-in
    {:text-align :right
     :margin-top (px 20)
     :margin-right (px 80)
     :margin-bottom (px 20)
-    :margin-left (px 20)}]
+    :margin-left (px 20)
+    :overflow-scrolling :inherit}]
   [:#modal-register
    {:text-align :right
     :margin-top (px 20)

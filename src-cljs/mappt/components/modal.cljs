@@ -41,7 +41,7 @@
                  (om/update! app [:modal :open?] false))
                :style #js {:position "absolute"
                            :right 0}}
-         (gen-icon "cancel" 16 -1)]]))))
+         (gen-icon "cancel" 12 -1 3)]]))))
 
 (defn widget [app owner]
   (reify
