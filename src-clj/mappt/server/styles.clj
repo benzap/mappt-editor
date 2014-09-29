@@ -206,7 +206,7 @@
      :border-right-color (default-colors :orange)})]
   [:.sidebar-icon
    {:position :absolute
-    :padding (px 3)
+    :padding (px 4)
     :margin-right (px 5)
     :top 0
     :right 0

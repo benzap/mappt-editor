@@ -16,7 +16,7 @@
      [:span {:style #js {:padding "5px"}}
       (str "Signed in as " username)]
      [:button {:class "button-icon"}
-      (gen-icon "cog" 12 -1 2)]]))
+      (gen-icon "cog" 12 0 1)]]))
 
 (defn view-header-signed-out [app]
   (let []
@@ -45,7 +45,7 @@
       "Sign-in"]
      [:button {:class "button-icon"
                :style #js {}}
-      (gen-icon "cog" 12 -1 2)]]))
+      (gen-icon "cog" 12 0 1)]]))
 
 (defn widget [data owner]
   (reify
