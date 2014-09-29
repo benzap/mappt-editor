@@ -47,7 +47,8 @@
 (def sidebar-element-style
   (merge
    panel-style
-   {:color (default-colors :orange)
+   {:position :relative
+    :color (default-colors :orange)
     :background-color
     (color/lighten (panel-style :background-color) 5)
     :padding-top (px 5)
@@ -203,6 +204,13 @@
      :border-right-width (px 5)
      :border-right-style :solid
      :border-right-color (default-colors :orange)})]
+  [:.sidebar-icon
+   {:position :absolute
+    :padding (px 3)
+    :margin-right (px 5)
+    :top 0
+    :right 0
+    :bottom 0}]
   [:.button
    (merge
     button-style

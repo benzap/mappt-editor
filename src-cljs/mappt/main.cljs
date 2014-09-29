@@ -13,18 +13,19 @@
           {:name "User" :url "#/users/1"}]
          :sidebar
          {:buttons
-          [{:name "Home" :url "/#/" :icon ""}
-           {:name "Get Directions" :url "/#/get_directions" :icon ""}
-           {:name "Explore" :url "/#/explore" :icon ""}
-           {:name "Search" :url "/#/search" :icon ""}
-           {:name "Go To Editor" :url "/#/editor" :icon ""}]
-          :selected "Home"}
+          [{:name "Home" :url "/#/" :icon "home"}
+           {:name "Get Directions" :url "/#/get_directions" :icon "search"}
+           {:name "Explore" :url "/#/explore" :icon "search"}
+           {:name "Search" :url "/#/search" :icon "search"}
+           {:name "Go To Editor" :url "/#/editor" :icon "menu"}]
+          :selected "Home"
+          :collapsed? true}
          :user
          {:username nil
           :is-admin? false}
          :modal
-         {:open? true
-          :content :register}}))
+         {:open? false
+          :content ""}}))
 
 (add-watch app-state :storage
            (fn [key ref old new]

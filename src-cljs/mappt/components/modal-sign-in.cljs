@@ -20,8 +20,12 @@
    :data {:username username
           :password password}))
 
-(defn process-login [app {:keys [username] :as login-data}]
-  )
+(defn process-login [app {:keys [username error] 
+                          :as login-data}]
+  (if (nil? error)
+    (do 
+      (om/update! app [:user :username] username)
+      (om/update! app [:modal :open?] false))))
 
 (defn widget [app owner]
   (reify
@@ -31,7 +35,8 @@
        :password nil
        :change-channel (chan)
        :login-channel (chan)
-       :error-channel (chan)})
+       :error-channel (chan)
+       :error-message nil})
     om/IWillMount
     (will-mount [this]
       (let [change-channel (om/get-state owner :change-channel)]

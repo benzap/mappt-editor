@@ -8,10 +8,15 @@
 
 (defn view-header-signed-in [app]
   (let [username (-> app :user :username)]
-    [:div {:class "header-right-container"}
-     [:span (str "Signed in as " username)]
+    [:div {:class "header-right-container"
+           :style #js {:position "relative"
+                       :height "40px"
+                       :margin-top "3px"
+                       :float "right"}}
+     [:span {:style #js {:padding "5px"}}
+      (str "Signed in as " username)]
      [:button {:class "button-icon"}
-      (gen-icon "cog" 20 -1 2)]]))
+      (gen-icon "cog" 12 -1 2)]]))
 
 (defn view-header-signed-out [app]
   (let []

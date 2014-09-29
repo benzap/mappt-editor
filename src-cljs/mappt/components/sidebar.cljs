@@ -3,7 +3,7 @@
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :refer [put! chan <!]]
-            [mappt.style.icon :refer [gen-icon]]))
+            [mappt.style.icon :as i :refer [gen-icon]]))
 
 (defn sidebar-widget [{:keys [name url icon] :as data} owner]
   (reify
@@ -15,8 +15,8 @@
                    :on-click
                    (fn [_]
                      (put! select-chan name))}
-             [:div {:class (str "sidebar-icon")}]
-             [:div {:class "sidebar-name"} name]]))))
+             [:div {:class "sidebar-name"} name]
+             [:div {:class (str "sidebar-icon")} (gen-icon icon 20)]]))))
 
 (defn widget [data owner]
   (reify
