@@ -12,3 +12,4 @@ resources/public/js/main.min.js
 resources/public/css/main.css
 *.db
 .#*
+misc/
