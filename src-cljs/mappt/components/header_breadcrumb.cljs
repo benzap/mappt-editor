@@ -43,6 +43,6 @@
                    (map gen-partial (data :breadcrumbs))
                    crumbs
                    (interpose
-                    [:span {:class "breadcrumb-separator"} (gen-icon "right-open")]
+                    [:span {:class "breadcrumb-separator"} (gen-icon "right-open" 16)]
                     crumbs-dom)]
                crumbs)]))))

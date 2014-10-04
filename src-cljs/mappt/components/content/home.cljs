@@ -1,4 +1,4 @@
-(ns mappt.content.home
+(ns mappt.components.content.home
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [om.core :as om :include-macros true]
             [sablono.core :as html :refer-macros [html]]

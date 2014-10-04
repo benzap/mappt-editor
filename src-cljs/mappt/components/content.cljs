@@ -3,7 +3,7 @@
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :refer [put! chan <!]]
             [secretary.core :as secretary]
-            [mappt.content.home :as home]))
+            [mappt.components.content.home :as home]))
 
 (defn widget [app owner]
   (reify
