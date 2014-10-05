@@ -142,3 +142,7 @@ File for tasks
    - make sure that the development environment is painless to work
      with. Who wants to spend hours working in an environment that is
      annoying to work in? 
+* Canvas Protocol
+  Need a protocol for manipulating the canvas. The main advantage to
+  doing it this way, is to separate out drawing logic from the data
+* draw map

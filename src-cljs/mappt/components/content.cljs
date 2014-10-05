@@ -11,7 +11,11 @@
     om/IRenderState
     (render-state [this state]
       (html 
-       [:div {:id "content-container"}
+       [:div {:id "content-container"
+              :style
+              #js {:position "absolute"
+                   :width "100%"
+                   :height "100%"}}
         (let [category (-> app :sidebar :selected)]
           (condp = category
             "Home" (om/build home/widget app)

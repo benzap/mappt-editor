@@ -17,6 +17,5 @@
 
 (defn cube []
   (let [geometry (new js/THREE.BoxGeometry 1 1 1)
-        material (new js/THREE.MeshBasicMaterial
-                      #js {:color 0x00ff00})]
+        material (new js/THREE.MeshBasicMaterial #js {:color 0xaaffaa})]
     (new js/THREE.Mesh geometry material)))
