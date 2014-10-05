@@ -19,7 +19,11 @@
     [:link
      {:href "http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Righteous|Inconsolata"
       :rel "stylesheet"
-      :type "text/css"}]]
+      :type "text/css"}]
+    (include-css "/css/fontello-fix.css")
+    (include-css "/css/main.css")
+    (include-css "/css/mappt-icons.css")
+    (include-css "/css/animation.css")]
    [:body
     [:div {:class :main-container}
      header
@@ -27,11 +31,8 @@
      [:div {:id :content :class :content}]
      [:div {:id :modal :class :modal}]
      [:div {:id :modal-shade :class :modal-shade}]]
-    (include-js "/js/main.js")
-    (include-css "/css/fontello-fix.css")
-    (include-css "/css/main.css")
-    (include-css "/css/mappt-icons.css")
-    (include-css "/css/animation.css")]))
+    (include-js "/js/extern/three/three.js")
+    (include-js "/js/main.js")]))
 
 (defn viewer-page []
   (html5

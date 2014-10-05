@@ -3,7 +3,8 @@
             [sablono.core :as html :refer-macros [html]]
             [cljs.core.async :refer [put! chan <!]]
             [secretary.core :as secretary]
-            [mappt.components.content.home :as home]))
+            [mappt.components.content.home :as home]
+            [mappt.components.content.editor :as editor]))
 
 (defn widget [app owner]
   (reify
@@ -14,4 +15,5 @@
         (let [category (-> app :sidebar :selected)]
           (condp = category
             "Home" (om/build home/widget app)
+            "Go To Editor" (om/build editor/widget app)
             (str "Unable to find component for category: " category)))]))))
