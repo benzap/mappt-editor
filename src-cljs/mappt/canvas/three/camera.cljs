@@ -1,4 +1,4 @@
-(ns mappt.canvas.camera)
+(ns mappt.canvas.three.camera)
 
 (def default-fov 90)
 (def default-near 1)

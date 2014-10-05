@@ -1,13 +1,19 @@
-(ns mappt.canvas.core)
+(ns mappt.canvas.core
+  (:require [mappt.canvas.canvas-protocols :as c]
+            [mappt.canvas.three.core
+             :as three
+             :refer [create-three-canvas]]
+            [mappt.canvas.three.camera :as camera]))
 
 (declare cube)
 
 (defn init [dom]
-  (let [scene (new js/THREE.Scene)
-        aspect-ratio (/ (.-clientWidth dom) (.-clientHeight dom))
+  (let [aspect-ratio (/ (.-clientWidth dom) (.-clientHeight dom))
         camera (new js/THREE.PerspectiveCamera 75 aspect-ratio 0.1 1000)
-        renderer (new js/THREE.WebGLRenderer)
-        renderer-dom (.-domElement renderer)]
+        canvas (create-three-canvas camera)
+        scene (:scene canvas)
+        renderer (:renderer canvas)
+        renderer-dom (c/get-dom-node canvas)]
     (doto renderer
       (.setSize (.-clientWidth dom) (.-clientHeight dom)))
     (.add scene (cube))
