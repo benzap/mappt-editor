@@ -2,7 +2,7 @@
 
 (defprotocol Canvas_Camera
   "A set of canvas functions for navigating and moving the camera"
-  (camera-translate! [this x y] [this x y z])
+  (camera-translate! [this x y z])
   (camera-rotate! [this i j k])
   (camera-rotate-x! [this angle])
   (camera-rotate-y! [this angle])
