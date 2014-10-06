@@ -5,21 +5,24 @@
              :refer [create-three-canvas]]
             [mappt.canvas.three.camera :as camera]))
 
-(declare cube)
+(declare cube animate)
 
 (defn init [dom]
   (let [aspect-ratio (/ (.-clientWidth dom) (.-clientHeight dom))
-        camera (new js/THREE.PerspectiveCamera 75 aspect-ratio 0.1 1000)
+        camera (THREE.PerspectiveCamera. 75 aspect-ratio 0.1 1000)
         canvas (create-three-canvas camera)
-        scene (:scene canvas)
-        renderer (:renderer canvas)
-        renderer-dom (c/get-dom-node canvas)]
-    (doto renderer
-      (.setSize (.-clientWidth dom) (.-clientHeight dom)))
+        scene (:scene canvas)]
+    (set! (.-rotationAutoUpdate camera) true)
+    (c/set-size! canvas (.-clientWidth dom) (.-clientHeight dom))  
     (.add scene (cube))
-    (set! (-> camera .-position .-z) 5)
-    (.appendChild dom renderer-dom)
-    (.render renderer scene camera)))
+    (c/camera-translate! canvas 0 0 3)
+    (.appendChild dom (c/get-dom-node canvas))
+    (animate canvas)))
+
+(defn animate [canvas]
+  (js/requestAnimationFrame (partial animate canvas))
+  (c/camera-rotate! canvas 0 0.0 1 0.01)
+  (c/render canvas))
 
 (defn cube []
   (let [geometry (new js/THREE.BoxGeometry 1 1 1)
