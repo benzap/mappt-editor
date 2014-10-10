@@ -1,5 +1,6 @@
 (ns mappt.database.sqlite.core
-  (:use mappt.database.database-protocols)
+  (:use mappt.database.database-protocols
+        mappt.database.utils)
   (:require [clojure.java.jdbc :as jdbc]))
 
 (defrecord Sqlite [db-spec]
@@ -69,25 +70,91 @@
   
   (user-delete! [this id]
     (jdbc/with-db-connection [conn db-spec]
-      (jdbc/delete! conn :users ["uid = ?" id]))))
+      (jdbc/delete! conn :users ["uid = ?" id])))
+
+  VectorTable
+  (vector-tbl-exists? [this]
+    (tbl-table-exists? this "vectors"))
+  
+  (vector-tbl-create! [this]
+    (let [schema
+          "CREATE TABLE vectors (
+             uuid VARCHAR(36) NOT NULL UNIQUE,
+             x REAL NOT NULL,
+             y REAL NOT NULL,
+             z REAL NOT NULL
+           )"]
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/execute! conn [schema]))))
+  
+  (vector-get-by-uuid [this uuid]
+    (let [result
+          (jdbc/with-db-connection [conn db-spec]
+            (jdbc/query
+             conn
+             ["SELECT * FROM vectors WHERE uuid = ?" uuid]))]
+      (first result)))
+  
+  (vector-get-list [this])
+  (vector-insert! [this {:keys [x y z uuid] :or {uuid (uuid)}}]
+    (let []
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/insert! conn :vectors {:uuid uuid
+                                     :x x :y y :z z}))) uuid)
+  
+  (vector-update! [this {:keys [x y z uuid]}]
+    (let []
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/update! conn :vectors
+                      {:x x :y y :z z}
+                      ["uuid = ?" uuid]))))
+  (vector-delete! [this {:keys [uuid]}]
+    (let []
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/delete! conn :vectors ["uuid = ?" uuid]))))
+
+  VectorArrayTable
+  (vecarray-tbl-exists? [this])
+  (vecarray-tbl-create! [this])
+  (vecarray-get-by-uuid [this uuid])
+  (vecarray-append! [this uuid vec])
+  (vecarray-insert! [this uuid vec index])
+  (vecarray-update! [this uuid vecs])
+
+  MapptObjectTable
+  (object-tbl-exists? [this])
+  (object-tbl-create! [this])
+  (object-get-by-uuid [this uuid])
+  (object-insert! [this obj])
+  (object-update! [this obj])
+  (object-delete! [this obj])
+  (object-delete-by-uuid! [this uuid])
+  
+  MapptPropertyTable
+  (property-tbl-exists? [this])
+  (property-tbl-create! [this])
+  (property-get-by-uuid [this uuid])
+  (property-insert! [this uuid])
+  (property-update! [this uuid])
+  (property-delete! [this uuid])
+
+  MapptHierarchy
+  (hierarchy-tbl-exists? [this])
+  (hierarchy-tbl-create! [this])
+  (hierarchy-insert! [this parent-uuid child-uuid])
+  (hierarchy-remove! [this parent-uuid child-uuid])
+  (hierarchy-get-parent [this child-uuid])
+  (hierarchy-get-children [this parent-uuid]))
 
 (def db-spec {:classname   "org.sqlite.JDBC"
               :subprotocol "sqlite"
               :subname     "mappt.db"})
 
-#_(def sql (Sqlite. db-spec))
+(def db (Sqlite. db-spec))
 
-#_(let [sql (Sqlite. db-spec)]
-  (when (not (user-tbl-exists? sql))
-    (user-tbl-create! sql))
-  (when (not (user-has-user? sql "benzap"))
-    (user-insert! sql
-                  {:username "benzap"
-                   :email "benzaporzan@gmail.com"
-                   :password_hash "test"}))
-  (let [user (user-get-by-username sql "benzap")
-        id (user :uid)]
-    (user-update! sql id {:email "btzaporz@lakeheadu.ca"})))
+(when (not (vector-tbl-exists? db))
+  (vector-tbl-create! db))
 
-;;(user-has-user? (Sqlite. db-spec) "benzap")
-;;(user-get-by-username (Sqlite. db-spec) "benzap")
+(let [uuid-v1 (vector-insert! db {:x 1.0 :y 1.0 :z 1.0})]
+  (vector-get-by-uuid db uuid-v1))
+

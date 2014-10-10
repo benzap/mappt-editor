@@ -29,3 +29,45 @@
        :email email")
   (user-update! [this id user-map])
   (user-delete! [this id]))
+
+(defprotocol VectorTable
+  (vector-tbl-exists? [this])
+  (vector-tbl-create! [this])
+  (vector-get-by-uuid [this uuid])
+  (vector-get-list [this])
+  (vector-insert! [this vec])
+  (vector-update! [this vec])
+  (vector-delete! [this vec]))
+
+(defprotocol VectorArrayTable
+  (vecarray-tbl-exists? [this])
+  (vecarray-tbl-create! [this])
+  (vecarray-get-by-uuid [this uuid])
+  (vecarray-append! [this uuid vec])
+  (vecarray-insert! [this uuid vec index])
+  (vecarray-update! [this uuid vecs]))
+
+(defprotocol MapptObjectTable
+  (object-tbl-exists? [this])
+  (object-tbl-create! [this])
+  (object-get-by-uuid [this uuid])
+  (object-insert! [this obj])
+  (object-update! [this obj])
+  (object-delete! [this obj])
+  (object-delete-by-uuid! [this uuid]))
+
+(defprotocol MapptPropertyTable
+  (property-tbl-exists? [this])
+  (property-tbl-create! [this])
+  (property-get-by-uuid [this uuid])
+  (property-insert! [this uuid])
+  (property-update! [this uuid])
+  (property-delete! [this uuid]))
+
+(defprotocol MapptHierarchy
+  (hierarchy-tbl-exists? [this])
+  (hierarchy-tbl-create! [this])
+  (hierarchy-insert! [this parent-uuid child-uuid])
+  (hierarchy-remove! [this parent-uuid child-uuid])
+  (hierarchy-get-parent [this child-uuid])
+  (hierarchy-get-children [this parent-uuid]))
