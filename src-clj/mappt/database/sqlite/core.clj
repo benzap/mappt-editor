@@ -1,4 +1,5 @@
 (ns mappt.database.sqlite.core
+  (:import java.io.File)
   (:use mappt.database.database-protocols
         mappt.database.utils)
   (:require [clojure.java.jdbc :as jdbc]))
@@ -7,8 +8,21 @@
   Database_Utils
   (db-database-exists? [this]
     true)
-  (db-create-database! [this])
-  (db-remove-database! [this])
+  
+  (db-create-database! [this]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [schema
+            "CREATE TABLE IF NOT EXISTS mappt_metadata (
+               key VARCHAR(255),
+               value VARCHAR(255)
+             )"]
+      (jdbc/execute! conn [schema]))))
+  
+  (db-remove-database! [this]
+    (let [filename (db-spec :subname)
+          file (File. filename)]
+      (.delete file)))
+  
   Table_Utils
   (tbl-table-exists? [this name]
     (jdbc/with-db-connection [conn db-spec]
@@ -18,6 +32,7 @@
                           WHERE type='table'
                           AND name=?" name])]
         (not (empty? result)))))
+  
   TableUser
   (user-tbl-exists? [this]
     (tbl-table-exists? this "users"))
@@ -153,7 +168,7 @@
          conn
          ["INSERT INTO vector_arrays 
           (uuid, vector_uuid, numindex)
-          VALUES (?, ?, ?)" uuid (:uuid vec) index]))))
+          VALUES (?, ?, ?)" uuid (:uuid vec) (inc index)]))))
   
   (vecarray-insert! [this uuid vec index])
   (vecarray-update! [this uuid vecs])
