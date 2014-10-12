@@ -1,6 +1,7 @@
 (defproject mappt "0.1.0-SNAPSHOT"
   :description "Map Application to get from point A to point B"
   :source-paths ["src-clj"]
+  :test-paths ["src-clj/test"]
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

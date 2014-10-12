@@ -114,10 +114,47 @@
         (jdbc/delete! conn :vectors ["uuid = ?" uuid]))))
 
   VectorArrayTable
-  (vecarray-tbl-exists? [this])
-  (vecarray-tbl-create! [this])
-  (vecarray-get-by-uuid [this uuid])
-  (vecarray-append! [this uuid vec])
+  (vecarray-tbl-exists? [this]
+    (tbl-table-exists? this "vector_arrays"))
+  
+  (vecarray-tbl-create! [this]
+    (let [schema
+          "CREATE TABLE vector_arrays (
+             uuid VARCHAR(36) NOT NULL UNIQUE,
+             vector_uuid VARCHAR(36) NOT NULL,
+             numindex INTEGER NOT NULL,
+             FOREIGN KEY (vector_uuid) REFERENCES vectors(uuid)
+           )"]
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/execute! conn [schema]))))
+  
+  (vecarray-get-by-uuid [this uuid]
+    (let []
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/query
+         conn
+         ["SELECT *
+           FROM vector_arrays,
+           INNER JOIN vectors
+             ON vector_arrays.vector_uuid = vectors.uuid
+           WHERE vector_arrays.uuid = ?" uuid]))))
+  
+  (vecarray-append! [this uuid vec]
+    (let [index-cursor
+          (jdbc/with-db-connection [conn db-spec]
+            (jdbc/query
+             conn
+             "SELECT max(numindex) AS i
+              FROM vector_arrays
+              WHERE uuid = ?" uuid))
+          index (or (-> index-cursor (first) :i) 0)]
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/query
+         conn
+         ["INSERT INTO vector_arrays 
+          (uuid, vector_uuid, numindex)
+          VALUES (?, ?, ?)" uuid (:uuid vec) index]))))
+  
   (vecarray-insert! [this uuid vec index])
   (vecarray-update! [this uuid vecs])
 
@@ -158,3 +195,5 @@
 (let [uuid-v1 (vector-insert! db {:x 1.0 :y 1.0 :z 1.0})]
   (vector-get-by-uuid db uuid-v1))
 
+(when (not (vecarray-tbl-exists? db))
+  (vecarray-tbl-create! db))
