@@ -127,7 +127,9 @@
       (jdbc/with-db-connection [conn db-spec]
         (jdbc/update! conn :vectors
                       {:x x :y y :z z}
-                      ["uuid = ?" uuid]))))
+                      ["uuid = ?" uuid])))
+    {:x x :y y :z z :uuid uuid})
+  
   (vector-delete! [this {:keys [uuid]}]
     (let []
       (jdbc/with-db-connection [conn db-spec]
