@@ -7,7 +7,9 @@
 (defrecord Sqlite [db-spec]
   Database_Utils
   (db-database-exists? [this]
-    true)
+    (let [filename (db-spec :subname)
+          file (File. filename)]
+      (.exists file)))
   
   (db-create-database! [this]
     (jdbc/with-db-connection [conn db-spec]
@@ -76,9 +78,12 @@
   (user-insert! [this {:keys [username password_hash email]}]
     (let []
       (jdbc/with-db-connection [conn db-spec]
-        (jdbc/insert! conn :users {:username username
-                                   :password_hash password_hash
-                                   :email email}))))
+        (let [query
+              (jdbc/insert! conn :users {:username username
+                                         :password_hash password_hash
+                                         :email email})]
+          (-> query first first second)))))
+  
   (user-update! [this id {:as user-map}]
     (jdbc/with-db-connection [conn db-spec]
       (jdbc/update! conn :users user-map ["uid = ?" id])))

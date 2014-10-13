@@ -18,4 +18,28 @@
   (database/db-remove-database! db)
   (is (not (database/db-database-exists? db))))
 
+(deftest db-user-table
+  (database/db-create-database! db)
+  (is (not (database/user-tbl-exists? db)))
+  (database/user-tbl-create! db)
+  (is (database/user-tbl-exists? db))
+  (let [user {:username "ben"
+              :password_hash "test"
+              :email "ben@test.com"}
+        id (database/user-insert! db user)]
+    (is (database/user-has-user? db "ben"))
+    (is (= (dissoc (database/user-get-by-username db "ben")
+                   :date_created)
+           (merge user {:uid id})))
+    (is (= (dissoc (database/user-get-by-id db id)
+                   :date_craeted)
+           (merge user {:uid id}))))
+
+  
+  
+  (database/db-remove-database! db))
+
+
+
+
 (run-all-tests)
