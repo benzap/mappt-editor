@@ -43,9 +43,10 @@
   (vecarray-tbl-exists? [this])
   (vecarray-tbl-create! [this])
   (vecarray-get-by-uuid [this uuid])
-  (vecarray-append! [this uuid vec])
-  (vecarray-insert! [this uuid vec index])
-  (vecarray-update! [this uuid vecs]))
+  (vecarray-get-vec-by-index [this uuid index])
+  (vecarray-append! [this uuid vuuid])
+  (vecarray-insert! [this uuid vuuid index])
+  (vecarray-remove! [this uuid index]))
 
 (defprotocol MapptObjectTable
   (object-tbl-exists? [this])

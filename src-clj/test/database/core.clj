@@ -72,12 +72,45 @@
   
   (database/db-remove-database! db))
 
+(def vauuid (uuid))
+
 (deftest db-vector-array
   (database/db-create-database! db)
-
+  (database/vector-tbl-create! db)
   
+  (is (not (database/vecarray-tbl-exists? db)))
+  (database/vecarray-tbl-create! db)
+  (is (database/vecarray-tbl-exists? db))
+
+  (let [vec1 {:x 1.0 :y 2.0 :z 3.0}
+        vuuid1 (database/vector-insert! db vec1)
+        vec1 (assoc vec1 :uuid vuuid1)
+        
+        vec2 {:x 2.0 :y 3.0 :z 4.0}
+        vuuid2 (database/vector-insert! db vec2)
+        vec2 (assoc vec2 :uuid vuuid2)]
+    
+    (database/vecarray-append! db vauuid vuuid1)
+    (database/vecarray-append! db vauuid vuuid2)
+    
+    ;;should be at least one at index 0
+    (let [ind1 (database/vecarray-get-vec-by-index db vauuid 0)
+          ind2 (database/vecarray-get-vec-by-index db vauuid 1)]
+      (is (= vec1 ind1))
+      (is (= vec2 ind2))))
+
+  (let [vec3 {:x -1.0 :y 0.0 :z -1.2}
+        vuuid3 (database/vector-insert! db vec3)
+        vec3 (assoc vec3 :uuid vuuid3)]
+    (database/vecarray-insert! db vauuid vuuid3 1)
+    (let [ind2 (database/vecarray-get-vec-by-index db vauuid 1)]
+      (is (= vec3 ind2)))
+
+    (database/vecarray-remove! db vauuid 1)
+
+    (let [ind2 (database/vecarray-get-vec-by-index db vauuid 1)]
+      (is (not= vec3 ind2))))
   
   (database/db-remove-database! db))
-
 
 (run-all-tests)

@@ -142,7 +142,7 @@
   (vecarray-tbl-create! [this]
     (let [schema
           "CREATE TABLE vector_arrays (
-             uuid VARCHAR(36) NOT NULL UNIQUE,
+             uuid VARCHAR(36) NOT NULL,
              vector_uuid VARCHAR(36) NOT NULL,
              numindex INTEGER NOT NULL,
              FOREIGN KEY (vector_uuid) REFERENCES vectors(uuid)
@@ -155,30 +155,65 @@
       (jdbc/with-db-connection [conn db-spec]
         (jdbc/query
          conn
-         ["SELECT *
-           FROM vector_arrays,
-           INNER JOIN vectors
-             ON vector_arrays.vector_uuid = vectors.uuid
-           WHERE vector_arrays.uuid = ?" uuid]))))
-  
-  (vecarray-append! [this uuid vec]
-    (let [index-cursor
-          (jdbc/with-db-connection [conn db-spec]
-            (jdbc/query
-             conn
-             "SELECT max(numindex) AS i
-              FROM vector_arrays
-              WHERE uuid = ?" uuid))
-          index (or (-> index-cursor (first) :i) 0)]
+         ["SELECT v.*
+           FROM vector_arrays AS va
+           INNER JOIN vectors AS v
+             ON va.vector_uuid = v.uuid
+           WHERE va.uuid = ?
+           ORDER BY va.numindex" uuid]))))
+
+  (vecarray-get-vec-by-index [this uuid index]
+    (let [query
+          "SELECT v.*
+           FROM vector_arrays AS va
+           INNER JOIN vectors AS v
+             ON va.vector_uuid = v.uuid
+           WHERE va.uuid = ?
+           AND va.numindex = ?"]
       (jdbc/with-db-connection [conn db-spec]
-        (jdbc/query
-         conn
-         ["INSERT INTO vector_arrays 
-          (uuid, vector_uuid, numindex)
-          VALUES (?, ?, ?)" uuid (:uuid vec) (inc index)]))))
+        (let [query
+              (jdbc/query conn [query uuid index])]
+          (first query)))))
   
-  (vecarray-insert! [this uuid vec index])
-  (vecarray-update! [this uuid vecs])
+  (vecarray-append! [this uuid vuuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [index-query-s
+            "SELECT MAX(va.numindex) AS i
+             FROM vector_arrays AS va
+             WHERE va.uuid = ?"
+            index-query
+            (jdbc/query conn [index-query-s uuid])
+            index (or (get-scalar index-query) -1)
+            insert-query-map
+            {:uuid uuid :vector_uuid vuuid :numindex (inc index)}
+            insert-query
+            (jdbc/insert! conn "vector_arrays" insert-query-map)])))
+
+  (vecarray-insert! [this uuid vuuid index]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [update-index-query-s
+            "UPDATE vector_arrays
+             SET numindex = numindex + 1
+             WHERE numindex >= ?
+             AND uuid = ?"
+            update-query
+            (jdbc/execute! conn [update-index-query-s index uuid])
+            insert-query-map
+            {:uuid uuid :vector_uuid vuuid :numindex index}
+            insert-query
+            (jdbc/insert! conn :vector_arrays insert-query-map)])))
+  
+  (vecarray-remove! [this uuid index]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [remove-query
+            (jdbc/delete! conn :vector_arrays ["numindex = ?" index])
+            update-index-query-s
+            "UPDATE vector_arrays
+             SET numindex = numindex - 1
+             WHERE numindex > ?
+             AND uuid = ?"
+            update-query
+            (jdbc/execute! conn [update-index-query-s index uuid])])))
 
   MapptObjectTable
   (object-tbl-exists? [this])
