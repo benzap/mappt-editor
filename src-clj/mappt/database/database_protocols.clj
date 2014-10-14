@@ -52,6 +52,7 @@
   (object-tbl-exists? [this])
   (object-tbl-create! [this])
   (object-get-by-uuid [this uuid])
+  (object-list-all-by-type [this type])
   (object-insert! [this obj])
   (object-update! [this obj])
   (object-delete! [this obj])

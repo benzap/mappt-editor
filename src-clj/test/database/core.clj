@@ -113,4 +113,9 @@
   
   (database/db-remove-database! db))
 
+(deftest db-objects
+  (database/db-create-database! db)
+  
+  (database/db-remove-database! db))
+
 (run-all-tests)

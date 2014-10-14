@@ -216,9 +216,37 @@
             (jdbc/execute! conn [update-index-query-s index uuid])])))
 
   MapptObjectTable
-  (object-tbl-exists? [this])
-  (object-tbl-create! [this])
-  (object-get-by-uuid [this uuid])
+  (object-tbl-exists? [this]
+    (tbl-table-exists? this "mappt_objects"))
+  
+  (object-tbl-create! [this]
+    (let [schema
+          "CREATE TABLE mappt_objects (
+             name VARCHAR(255),
+             uuid VARCHAR(36) NOT NULL,
+             type VARCHAR(255) 
+           )"]
+      (jdbc/with-db-connection [conn db-spec]
+        (jdbc/execute! conn [schema]))))
+  
+  (object-get-by-uuid [this uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [select-query
+            "SELECT *
+             FROM mappt_objects
+             WHERE uuid = ?"
+            query
+            (jdbc/query conn [select-query uuid])]
+        (first query))))
+  
+  (object-list-all-by-type [this type]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [select-query
+            "SELECT *
+             FROM mappt_objects
+             WHERE type = ?"]
+        (jdbc/query conn [select-query type]))))
+  
   (object-insert! [this obj])
   (object-update! [this obj])
   (object-delete! [this obj])
