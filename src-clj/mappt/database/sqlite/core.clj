@@ -222,8 +222,8 @@
   (object-tbl-create! [this]
     (let [schema
           "CREATE TABLE mappt_objects (
+             uuid VARCHAR(36) NOT NULL UNIQUE,
              name VARCHAR(255),
-             uuid VARCHAR(36) NOT NULL,
              type VARCHAR(255) 
            )"]
       (jdbc/with-db-connection [conn db-spec]
@@ -247,10 +247,28 @@
              WHERE type = ?"]
         (jdbc/query conn [select-query type]))))
   
-  (object-insert! [this obj])
-  (object-update! [this obj])
-  (object-delete! [this obj])
-  (object-delete-by-uuid! [this uuid])
+  (object-insert! [this {:keys [name uuid type]
+                         :or {name "untitled"
+                              uuid (uuid)
+                              type "OBJECT"}}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [obj {:name name :uuid uuid :type type}
+            result (jdbc/insert! conn :mappt_objects obj)]
+        uuid)))
+  
+  (object-update! [this {:keys [name uuid type]
+                         :as obj}]
+    (jdbc/with-db-connection [conn db-spec]
+      (jdbc/update! conn :mappt_objects {:name name :type type}
+                    ["uuid = ?" uuid])))
+  
+  (object-delete! [this {:keys [uuid]}]
+    (jdbc/with-db-connection [conn db-spec]
+      (jdbc/delete! conn :mappt_objects ["uuid = ?" uuid])))
+  
+  (object-delete-by-uuid! [this uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (jdbc/delete! conn :mappt_objects ["uuid = ?" uuid])))
   
   MapptPropertyTable
   (property-tbl-exists? [this])

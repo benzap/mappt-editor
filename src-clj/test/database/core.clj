@@ -115,6 +115,37 @@
 
 (deftest db-objects
   (database/db-create-database! db)
+  (is (not (database/object-tbl-exists? db)))
+  (database/object-tbl-create! db)
+  (is (database/object-tbl-exists? db))
+  (let [obj1 {:name "map1" :type "TEST"}
+        ouuid1 (database/object-insert! db obj1)
+        obj1 (assoc obj1 :uuid ouuid1)]
+    (is (= obj1 (database/object-get-by-uuid db ouuid1))))
+
+  (is (= 1 (count (database/object-list-all-by-type db "TEST"))))
+
+  (let [obj1 {:name "map2" :type "OBJECT"}
+        ouuid1 (database/object-insert! db obj1)
+        obj1 (assoc obj1 :uuid ouuid1 :name "map1")
+        
+        obj2 {:name "map3" :type "OBJECT"}
+        ouuid2 (database/object-insert! db obj2)
+        obj2 (assoc obj2 :uuid ouuid2)]
+    (database/object-update! db obj1)
+    (is (= obj1 (database/object-get-by-uuid db ouuid1)))
+    (is (= 2 (count (database/object-list-all-by-type db "OBJECT"))))
+    (database/object-delete-by-uuid! db ouuid1)
+    (is (= 1 (count (database/object-list-all-by-type db "OBJECT"))))
+    (database/object-delete! db obj2)
+    (is (= 0 (count (database/object-list-all-by-type db "OBJECT")))))
+  
+  (database/db-remove-database! db))
+
+(deftest db-property
+  (database/db-create-database! db)
+
+  
   
   (database/db-remove-database! db))
 
