@@ -146,6 +146,8 @@
              vector_uuid VARCHAR(36) NOT NULL,
              numindex INTEGER NOT NULL,
              FOREIGN KEY (vector_uuid) REFERENCES vectors(uuid)
+               ON DELETE RESTRICT
+               ON UPDATE CASCADE
            )"]
       (jdbc/with-db-connection [conn db-spec]
         (jdbc/execute! conn [schema]))))
@@ -271,13 +273,34 @@
       (jdbc/delete! conn :mappt_objects ["uuid = ?" uuid])))
   
   MapptPropertyTable
-  (property-tbl-exists? [this])
-  (property-tbl-create! [this])
-  (property-get-by-uuid [this uuid])
-  (property-insert! [this uuid])
-  (property-update! [this uuid])
-  (property-delete! [this uuid])
+  (property-tbl-exists? [this]
+    (tbl-table-exists? this "mappt_properties"))
+  
+  (property-tbl-create! [this]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [schema
+            "CREATE TABLE mappt_properties (
+               name VARCHAR(255) NOT NULL,
+               type VARCHAR(255) NOT NULL,
+               value_uuid VARCHAR(36) NOT NULL,
+               object_uuid VARCHAR(36) NOT NULL,
+               FOREIGN KEY (object_uuid) REFERENCES mappt_objects(uuid)
+                 ON DELETE CASCADE
+                 ON UPDATE CASCADE
+             )"]
+        (jdbc/execute! conn [schema]))))
 
+  (property-get-by-uuid [this uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [query
+            ["SELECT *
+              FROM mappt_properties
+              WHERE object_uuid = ?" uuid]]
+        (jdbc/query conn query))))
+  
+  (property-insert! [this prop])
+  (property-update! [this prop])
+  (property-delete! [this prop])
   MapptHierarchy
   (hierarchy-tbl-exists? [this])
   (hierarchy-tbl-create! [this])

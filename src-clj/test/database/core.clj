@@ -145,7 +145,9 @@
 (deftest db-property
   (database/db-create-database! db)
 
-  
+  (is (not (database/property-tbl-exists? db)))
+  (database/property-tbl-create! db)
+  (is (database/property-tbl-exists? db))
   
   (database/db-remove-database! db))
 

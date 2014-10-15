@@ -62,9 +62,9 @@
   (property-tbl-exists? [this])
   (property-tbl-create! [this])
   (property-get-by-uuid [this uuid])
-  (property-insert! [this uuid])
-  (property-update! [this uuid])
-  (property-delete! [this uuid]))
+  (property-insert! [this prop])
+  (property-update! [this prop])
+  (property-delete! [this prop]))
 
 (defprotocol MapptHierarchy
   (hierarchy-tbl-exists? [this])
