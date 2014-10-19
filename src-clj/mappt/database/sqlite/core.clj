@@ -298,7 +298,17 @@
               WHERE object_uuid = ?" uuid]]
         (jdbc/query conn query))))
   
-  (property-insert! [this prop])
+  (property-insert! [this {:keys [name type value_uuid object_uuid]
+                           :or {name (str "property-" (uuid))}
+                           :as props}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [prop-map
+            {:name name 
+             :type type 
+             :value_uuid value_uuid 
+             :object_uuid object_uuid}]
+        (jdbc/insert! conn :mappt_properties prop-map))))
+
   (property-update! [this prop])
   (property-delete! [this prop])
   MapptHierarchy
