@@ -149,6 +149,12 @@
   (database/property-tbl-create! db)
   (is (database/property-tbl-exists? db))
   
+  (if-not (database/object-tbl-exists? db)
+    (database/object-tbl-create! db))
+  
+  (let [])
+  
+  
   (database/db-remove-database! db))
 
 (run-all-tests)

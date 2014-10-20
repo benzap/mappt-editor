@@ -48,6 +48,14 @@
   (vecarray-insert! [this uuid vuuid index])
   (vecarray-remove! [this uuid index]))
 
+(defprotocol ScalarTable
+  (scalar-tbl-exists? [this])
+  (scalar-tbl-create! [this])
+  (scalar-get-by-uuid [this uuid])
+  (scalar-insert! [this scalar])
+  (scalar-update! [this scalar])
+  (scalar-delete! [this scalar]))
+
 (defprotocol MapptObjectTable
   (object-tbl-exists? [this])
   (object-tbl-create! [this])
@@ -61,7 +69,8 @@
 (defprotocol MapptPropertyTable
   (property-tbl-exists? [this])
   (property-tbl-create! [this])
-  (property-get-by-uuid [this uuid])
+  (property-get-list-by-uuid [this uuid])
+  (property-get-by-name [this uuid name])
   (property-insert! [this prop])
   (property-update! [this prop])
   (property-delete! [this prop]))

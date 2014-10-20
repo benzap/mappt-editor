@@ -290,13 +290,23 @@
              )"]
         (jdbc/execute! conn [schema]))))
 
-  (property-get-by-uuid [this uuid]
+  (property-get-list-by-uuid [this uuid]
     (jdbc/with-db-connection [conn db-spec]
       (let [query
             ["SELECT *
               FROM mappt_properties
               WHERE object_uuid = ?" uuid]]
         (jdbc/query conn query))))
+
+  (property-get-by-name [this uuid name]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [select-query
+            ["SELECT * FROM mappt_properties
+             WHERE object_uuid = ?
+             AND name = ?" name uuid]
+            result
+            (jdbc/query select-query)]
+        (first result))))
   
   (property-insert! [this {:keys [name type value_uuid object_uuid]
                            :or {name (str "property-" (uuid))}
@@ -309,8 +319,23 @@
              :object_uuid object_uuid}]
         (jdbc/insert! conn :mappt_properties prop-map))))
 
-  (property-update! [this prop])
-  (property-delete! [this prop])
+  (property-update! [this {:keys [name type value_uuid object_uuid]}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let []
+        (jdbc/update!
+         db-spec :mappt_properties
+         {:type type :value_uuid value_uuid}
+         ["name = ? AND object_uuid = ?"
+          name object_uuid]))))
+  
+  (property-delete! [this {:keys [name object_uuid]}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let []
+        (jdbc/delete!
+         db-spec :mappt_properties
+         ["name = ? object_uuid = ?"
+          name object_uuid]))))
+  
   MapptHierarchy
   (hierarchy-tbl-exists? [this])
   (hierarchy-tbl-create! [this])
@@ -318,18 +343,3 @@
   (hierarchy-remove! [this parent-uuid child-uuid])
   (hierarchy-get-parent [this child-uuid])
   (hierarchy-get-children [this parent-uuid]))
-
-(def db-spec {:classname   "org.sqlite.JDBC"
-              :subprotocol "sqlite"
-              :subname     "mappt.db"})
-
-(def db (Sqlite. db-spec))
-
-(when (not (vector-tbl-exists? db))
-  (vector-tbl-create! db))
-
-(let [uuid-v1 (vector-insert! db {:x 1.0 :y 1.0 :z 1.0})]
-  (vector-get-by-uuid db uuid-v1))
-
-(when (not (vecarray-tbl-exists? db))
-  (vecarray-tbl-create! db))
