@@ -152,7 +152,11 @@
   (if-not (database/object-tbl-exists? db)
     (database/object-tbl-create! db))
   
-  (let [])
+  (let [obj1 {:name "map2" :type "OBJECT"}
+        ouuid1 (database/object-insert! db obj1)
+        obj1 (assoc obj1 :uuid ouuid1)
+
+        prop1 ])
   
   
   (database/db-remove-database! db))
