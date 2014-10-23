@@ -156,7 +156,7 @@
         ouuid1 (database/object-insert! db obj1)
         obj1 (assoc obj1 :uuid ouuid1)
 
-        prop1 ])
+        prop1 nil])
   
   
   (database/db-remove-database! db))

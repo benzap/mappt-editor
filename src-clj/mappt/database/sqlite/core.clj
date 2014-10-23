@@ -116,6 +116,7 @@
       (first result)))
   
   (vector-get-list [this])
+  
   (vector-insert! [this {:keys [x y z uuid] :or {uuid (uuid)}}]
     (let []
       (jdbc/with-db-connection [conn db-spec]
@@ -217,6 +218,48 @@
             update-query
             (jdbc/execute! conn [update-index-query-s index uuid])])))
 
+  ScalarTable
+  (scalar-tbl-exists? [this]
+    (tbl-table-exists? this "scalars"))
+  
+  (scalar-tbl-create! [this]
+    (let [schema
+          "CREATE TABLE scalars (
+             uuid VARCHAR(36) NOT NULL UNIQUE,
+             type VARCHAR(255),
+             value VARCHAR(255)
+           )"]))
+  
+  (scalar-get-by-uuid [this uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [query
+            "SELECT *
+             FROM scalars
+             WHERE uuid = ?"
+            result
+            (jdbc/query conn [query uuid])]
+        (first result))))
+  
+  (scalar-insert! [this {:keys [uuid type value]
+                         :or {uuid (uuid)}}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [scalar-map
+            {:uuid uuid
+             :type type
+             :value value}]
+        (jdbc/insert! conn :scalar scalar-map))))
+  
+  (scalar-update! [this {:keys [uuid type value]
+                         :as scalar}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let []
+        (jdbc/update! conn :scalars scalar ["uuid = ?" uuid]))))
+  
+  (scalar-delete! [this {:keys [uuid]}]
+    (jdbc/with-db-connection [conn db-spec]
+      (let []
+        (jdbc/delete! conn :scalars ["uuid = ?" uuid]))))
+  
   MapptObjectTable
   (object-tbl-exists? [this]
     (tbl-table-exists? this "mappt_objects"))
@@ -337,9 +380,50 @@
           name object_uuid]))))
   
   MapptHierarchy
-  (hierarchy-tbl-exists? [this])
-  (hierarchy-tbl-create! [this])
-  (hierarchy-insert! [this parent-uuid child-uuid])
-  (hierarchy-remove! [this parent-uuid child-uuid])
-  (hierarchy-get-parent [this child-uuid])
-  (hierarchy-get-children [this parent-uuid]))
+  (hierarchy-tbl-exists? [this]
+    (tbl-table-exists? this "mappt_hierarchies"))
+  
+  (hierarchy-tbl-create! [this]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [schema
+            "CREATE TABLE mappt_hierarchies (
+               parent_uuid VARCHAR(36) NOT NULL,
+               child_uuid VARCHAR(36) NOT NULL,
+               FOREIGN KEY (parent_uuid)
+                 REFERENCES mappt_objects(uuid)
+                 ON DELETE CASCADE
+                 ON UPDATE CASCADE
+               FOREIGN KEY (child_uuid)
+                 REFERENCES mappt_objects(uuid)
+                 ON DELETE CASCADE
+                 ON UPDATE CASCADE
+             )"])))
+  
+  (hierarchy-insert! [this parent-uuid child-uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [hierarchy-map
+            {:parent_uuid parent-uuid
+             :child_uuid child-uuid}]
+        (jdbc/insert! conn :mappt_hierarchies hierarchy-map))))
+  
+  (hierarchy-remove! [this parent-uuid child-uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (jdbc/delete! conn :mappt_hierarchies
+                    ["parent_uuid = ? AND child_uuid = ?"
+                     parent-uuid child-uuid])))
+  
+  (hierarchy-get-parent [this child-uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [query
+            "SELECT * FROM mappt_hierarchies
+             WHERE child_uuid = ?"
+            result
+            (jdbc/query conn [query child-uuid])]
+        (first result))))
+  
+  (hierarchy-get-children [this parent-uuid]
+    (jdbc/with-db-connection [conn db-spec]
+      (let [query
+            "SELECT * FROM mappt_hierarchies
+             WHERE parent_uuid = ?"]
+        (jdbc/query conn [query parent-uuid])))))
