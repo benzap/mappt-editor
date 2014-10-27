@@ -4,7 +4,6 @@
   (:require [mappt.database.sqlite.core :refer [->Sqlite]]
             [mappt.database.database-protocols :as database]))
 
-
 ;;tests for sqlite
 (def db-spec {:classname   "org.sqlite.JDBC"
               :subprotocol "sqlite"
@@ -142,21 +141,85 @@
   
   (database/db-remove-database! db))
 
-(deftest db-property
+(deftest db-scalar
   (database/db-create-database! db)
 
+  (is (not (database/scalar-tbl-exists? db)))
+  (database/scalar-tbl-create! db)
+  (is (database/scalar-tbl-exists? db))
+
+  (let [scalar-map1 {:type "STRING" :value "test"}
+        scalar-uuid1 (database/scalar-insert! db scalar-map1)
+        scalar1 (assoc scalar-map1 :uuid scalar-uuid1)
+        
+        scalar-map2 {:type "INT" :value "12"}
+        scalar-uuid2 (database/scalar-insert! db scalar-map2)
+        scalar2 (assoc scalar-map2 :uuid scalar-uuid2)]
+    (is (= scalar1 (database/scalar-get-by-uuid db scalar-uuid1)))
+    (is (= scalar2 (database/scalar-get-by-uuid db scalar-uuid2))))
+  
+  
+  (database/db-remove-database! db))
+
+(deftest db-property
+  (database/db-create-database! db)
+  
   (is (not (database/property-tbl-exists? db)))
   (database/property-tbl-create! db)
   (is (database/property-tbl-exists? db))
-  
+
+  ;;objects table which will hold properties
   (if-not (database/object-tbl-exists? db)
     (database/object-tbl-create! db))
+
+  ;;for our property types
+  (if-not (database/vector-tbl-exists? db)
+    (database/vector-tbl-create! db))
+
+  ;;scalar types
+  (if-not (database/scalar-tbl-exists? db)
+    (database/scalar-tbl-create! db))
   
   (let [obj1 {:name "map2" :type "OBJECT"}
         ouuid1 (database/object-insert! db obj1)
         obj1 (assoc obj1 :uuid ouuid1)
 
-        prop1 nil])
+        scalar1 {:type "STRING" :value "benjamin"}
+        scalar-uuid1 (database/scalar-insert! db scalar1)
+        scalar1 (assoc scalar1 :uuid scalar-uuid1)
+        
+        prop1 {:name "first-name"
+               :type "SCALAR"
+               :value_uuid scalar-uuid1
+               :object_uuid ouuid1}
+        prop1 (database/property-insert! db prop1)
+
+        _ (is (= 1 (count (database/property-get-list-by-uuid db ouuid1))))
+        _ (is (= prop1 (database/property-get-by-name db ouuid1 "first-name")))
+
+        vec1 {:x 1.0 :y 1.0 :z 1.0}
+        vuuid (database/vector-insert! db vec1)
+        vec1 (assoc vec1 :uuid vuuid)
+
+        prop2 {:name "position"
+               :type "VECTOR"
+               :value_uuid vuuid
+               :object_uuid ouuid1}
+        prop2 (database/property-insert! db prop2)
+
+        _ (is (= 2 (count (database/property-get-list-by-uuid db ouuid1))))
+        _ (is (= prop2 (database/property-get-by-name db ouuid1 "position")))
+
+        ;;delete first property
+        _ (database/property-delete! db prop1)
+        _ (is (= 1 (count (database/property-get-list-by-uuid db ouuid1))))
+        ])
+  
+  (database/db-remove-database! db))
+
+(deftest db-hierarchy
+  (database/db-create-database! db)
+
   
   
   (database/db-remove-database! db))

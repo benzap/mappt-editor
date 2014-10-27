@@ -223,12 +223,14 @@
     (tbl-table-exists? this "scalars"))
   
   (scalar-tbl-create! [this]
-    (let [schema
-          "CREATE TABLE scalars (
-             uuid VARCHAR(36) NOT NULL UNIQUE,
-             type VARCHAR(255),
-             value VARCHAR(255)
-           )"]))
+    (jdbc/with-db-connection [conn db-spec]
+      (let [schema
+            "CREATE TABLE scalars (
+               uuid VARCHAR(36) NOT NULL UNIQUE,
+               type VARCHAR(255),
+               value VARCHAR(255)
+             )"]
+        (jdbc/execute! conn [schema]))))
   
   (scalar-get-by-uuid [this uuid]
     (jdbc/with-db-connection [conn db-spec]
@@ -247,7 +249,8 @@
             {:uuid uuid
              :type type
              :value value}]
-        (jdbc/insert! conn :scalar scalar-map))))
+        (jdbc/insert! conn :scalars scalar-map)))
+    uuid)
   
   (scalar-update! [this {:keys [uuid type value]
                          :as scalar}]
@@ -345,10 +348,10 @@
     (jdbc/with-db-connection [conn db-spec]
       (let [select-query
             ["SELECT * FROM mappt_properties
-             WHERE object_uuid = ?
-             AND name = ?" name uuid]
+              WHERE object_uuid = ? AND name = ?"
+             uuid name]
             result
-            (jdbc/query select-query)]
+            (jdbc/query conn select-query)]
         (first result))))
   
   (property-insert! [this {:keys [name type value_uuid object_uuid]
@@ -360,7 +363,8 @@
              :type type 
              :value_uuid value_uuid 
              :object_uuid object_uuid}]
-        (jdbc/insert! conn :mappt_properties prop-map))))
+        (jdbc/insert! conn :mappt_properties prop-map)
+        prop-map)))
 
   (property-update! [this {:keys [name type value_uuid object_uuid]}]
     (jdbc/with-db-connection [conn db-spec]
@@ -376,7 +380,7 @@
       (let []
         (jdbc/delete!
          db-spec :mappt_properties
-         ["name = ? object_uuid = ?"
+         ["name = ? AND object_uuid = ?"
           name object_uuid]))))
   
   MapptHierarchy
