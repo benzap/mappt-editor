@@ -220,6 +220,36 @@
 (deftest db-hierarchy
   (database/db-create-database! db)
 
+  (is (not (database/hierarchy-tbl-exists? db)))
+  (database/hierarchy-tbl-create! db)
+  (is (database/hierarchy-tbl-exists? db))
+
+  (if-not (database/object-tbl-exists? db)
+    (database/object-tbl-create! db))
+
+  (let [obj1 {:name "map" :type "OBJECT"}
+        ouuid1 (database/object-insert! db obj1)
+        obj1 (assoc obj1 :uuid ouuid1)
+
+        obj2 {:name "child2" :type "OBJECT"}
+        ouuid2 (database/object-insert! db obj2)
+        obj2 (assoc obj2 :uuid ouuid2)
+
+        obj3 {:name "child3" :type "OBJECT"}
+        ouuid3 (database/object-insert! db obj3)
+        obj3 (assoc obj3 :uuid ouuid3)
+        
+        ;;form a relationship between map and children
+        _ (database/hierarchy-insert! db ouuid1 ouuid2)
+        _ (database/hierarchy-insert! db ouuid1 ouuid3)
+
+        t (is (= 1 (count (database/hierarchy-get-parents db ouuid2))))
+        t (is (= obj1 (first (database/hierarchy-get-parents db ouuid2))))
+        t (is (= obj1 (first (database/hierarchy-get-parents db ouuid3))))
+
+        
+        
+        ])
   
   
   (database/db-remove-database! db))

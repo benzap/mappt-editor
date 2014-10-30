@@ -80,5 +80,5 @@
   (hierarchy-tbl-create! [this])
   (hierarchy-insert! [this parent-uuid child-uuid])
   (hierarchy-remove! [this parent-uuid child-uuid])
-  (hierarchy-get-parent [this child-uuid])
+  (hierarchy-get-parents [this child-uuid])
   (hierarchy-get-children [this parent-uuid]))

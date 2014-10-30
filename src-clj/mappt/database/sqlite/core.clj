@@ -401,7 +401,8 @@
                  REFERENCES mappt_objects(uuid)
                  ON DELETE CASCADE
                  ON UPDATE CASCADE
-             )"])))
+             )"]
+        (jdbc/execute! conn [schema]))))
   
   (hierarchy-insert! [this parent-uuid child-uuid]
     (jdbc/with-db-connection [conn db-spec]
@@ -416,14 +417,14 @@
                     ["parent_uuid = ? AND child_uuid = ?"
                      parent-uuid child-uuid])))
   
-  (hierarchy-get-parent [this child-uuid]
+  (hierarchy-get-parents [this child-uuid]
     (jdbc/with-db-connection [conn db-spec]
       (let [query
             "SELECT * FROM mappt_hierarchies
              WHERE child_uuid = ?"
             result
             (jdbc/query conn [query child-uuid])]
-        (first result))))
+        result)))
   
   (hierarchy-get-children [this parent-uuid]
     (jdbc/with-db-connection [conn db-spec]
