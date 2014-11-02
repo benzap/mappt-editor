@@ -26,7 +26,8 @@
                  [org.clojure/core.async "0.1.338.0-5c5012-alpha"]]
   :plugins [[lein-cljsbuild "1.0.2"]
             [lein-ring "0.8.11"]
-            [lein-garden "0.2.1"]]
+            [lein-garden "0.2.1"]
+            [com.keminglabs/cljx "0.4.0"]]
   :hooks [leiningen.cljsbuild]
   :cljsbuild {:builds {:dev
                        {:source-paths ["src-cljs"]
@@ -40,6 +41,13 @@
                         :compiler {:output-to "resources/public/js/main.min.js"
                                    :optimizations :advanced
                                    :pretty-print false}}}}
+  :cljx {:builds [{:source-paths ["src-cljx"]
+                 :output-path "target/classes"
+                 :rules :clj}
+
+                {:source-paths ["src-cljx"]
+                 :output-path "target/classes"
+                 :rules :cljs}]}
   :garden {:builds [{:id "main"
                      :stylesheet mappt.server.styles/main
                      :compiler {:output-to "resources/public/css/main.css"
