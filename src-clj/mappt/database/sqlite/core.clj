@@ -420,8 +420,10 @@
   (hierarchy-get-parents [this child-uuid]
     (jdbc/with-db-connection [conn db-spec]
       (let [query
-            "SELECT * FROM mappt_hierarchies
-             WHERE child_uuid = ?"
+            "SELECT *.obj FROM mappt_hierarchies AS hierarchy
+             INNER JOIN mappt_objects AS obj
+             ON obj.uuid = hierarchy.parent_uuid
+             WHERE hierarchy.child_uuid = ?"
             result
             (jdbc/query conn [query child-uuid])]
         result)))
@@ -429,6 +431,8 @@
   (hierarchy-get-children [this parent-uuid]
     (jdbc/with-db-connection [conn db-spec]
       (let [query
-            "SELECT * FROM mappt_hierarchies
-             WHERE parent_uuid = ?"]
+            "SELECT *.obj FROM mappt_hierarchies AS hierarchy
+             INNER JOIN mappt_objects AS obj
+             ON obj.uuid = hierarchy.parent_uuid
+             WHERE hierarchy.parent_uuid = ?"]
         (jdbc/query conn [query parent-uuid])))))
